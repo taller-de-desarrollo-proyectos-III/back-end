@@ -25,6 +25,7 @@
     "typescript": "3.7.4"
   },
   "scripts": {
+    "start": "node build/src/index.js",
     "dev": "nodemon src/index.ts",
     "build": "tsc --project .",
     "test": "echo hello"
