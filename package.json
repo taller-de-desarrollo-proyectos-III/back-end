@@ -17,7 +17,8 @@
     "body-parser": "1.19.0",
     "express": "4.17.1",
     "node": "12.14.0",
-    "nodemon": "2.0.4"
+    "nodemon": "2.0.4",
+    "typescript-logging": "^1.0.0"
   },
   "devDependencies": {
     "ts-node": "8.5.4",

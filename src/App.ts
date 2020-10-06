@@ -1,6 +1,7 @@
 import express from "express";
 import { routes } from "./routes";
 import { middlewares } from "./middlewares";
+import { Logger } from "./libs";
 
 export class App {
   public app: express.Application;
@@ -23,7 +24,7 @@ export class App {
 
   public listen() {
     this.app.listen(this.port, () => {
-      console.log(`App listening on the port ${this.port}`);
+      Logger.info(`App listening on the port ${this.port}`);
     });
   }
 }
