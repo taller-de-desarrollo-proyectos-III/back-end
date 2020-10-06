@@ -1,5 +1,6 @@
 import express from "express";
 import { routes } from "./routes";
+import { middlewares } from "./middlewares";
 
 export class App {
   public app: express.Application;
@@ -8,7 +9,12 @@ export class App {
   constructor(port: number) {
     this.app = express();
     this.port = port;
+    this.initializeMiddlewares();
     this.initializeRoutes();
+  }
+
+  private initializeMiddlewares() {
+    middlewares.forEach(middleware => this.app.use(middleware));
   }
 
   private initializeRoutes() {
