@@ -2,8 +2,8 @@
 
 ## Install Tools
 
-- __`nvm`__: You can follow the following instructions: [instructions](https://github.com/nvm-sh/nvm)
-- __`yarn`__: You can follow the following instructions: [instructions](https://classic.yarnpkg.com/en/docs/install/#debian-stable)
+- __`nvm`__: You can follow the following [instructions](https://github.com/nvm-sh/nvm)
+- __`yarn`__: You can follow the following [instructions](https://classic.yarnpkg.com/en/docs/install/#debian-stable)
 - __`node`__: ```nvm install 12.14.0```
 
 ### Set node version
