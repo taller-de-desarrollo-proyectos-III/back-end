@@ -21,6 +21,12 @@
     "typescript-logging": "^1.0.0"
   },
   "devDependencies": {
+    "@babel/core": "7.11.6",
+    "@types/jest": "26.0.14",
+    "@types/supertest": "2.0.10",
+    "jest": "26.5.2",
+    "supertest": "5.0.0",
+    "ts-jest": "26.4.1",
     "ts-node": "8.5.4",
     "typescript": "3.7.4"
   },
@@ -28,7 +34,7 @@
     "start": "node build/src/index.js",
     "dev": "nodemon src/index.ts",
     "build": "tsc --project .",
-    "test": "echo hello"
+    "test": "jest --coverage --colors --verbose=false --config ./test/jest.config.js"
   },
   "repository": "git@github.com:taller-de-desarrollo-proyectos-III/back-end.git",
   "license": "MIT"
