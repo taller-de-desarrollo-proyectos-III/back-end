@@ -19,7 +19,7 @@ export class App {
   }
 
   private initializeRoutes() {
-    routes.forEach(route => this.app.use('/', route.initialize()));
+    routes.forEach(route => this.app.use("/", route.initialize()));
   }
 
   public listen() {
