@@ -26,6 +26,18 @@ yarn dev
 
 The page will reload if you make edits.
 
+## Tests
+
+```bash
+yarn test
+```
+
+## Linter
+
+```bash
+yarn lint
+```
+
 ## Javascript Compilation
 
 Builds the app for production to the `build` folder.
