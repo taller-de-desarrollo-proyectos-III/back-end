@@ -38,9 +38,10 @@
     "dev": "nodemon src/index.ts",
     "build": "tsc --project .",
     "test": "jest --coverage --colors --verbose=false --config ./test/jest.config.js",
+    "compiler:lint": "tsc --noEmit -p .",
     "lint:src": "tslint -c tslint.json 'src/**/*.ts'",
     "lint:test": "tslint -c tslint.json 'test/**/*.ts'",
-    "lint": "yarn lint:src && yarn lint:test"
+    "lint": "yarn lint:src && yarn lint:test && yarn compiler:lint"
   },
   "repository": "git@github.com:taller-de-desarrollo-proyectos-III/back-end.git",
   "license": "MIT",
