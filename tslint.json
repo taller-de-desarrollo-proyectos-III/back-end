@@ -96,8 +96,7 @@
   "linterOptions": {
     "exclude": [
       "node_modules/**/*.ts",
-      "dist/**/*.js",
-      "config/**/*.js"
+      "build/**/*.js"
     ]
   },
   "rulesDirectory": [],
