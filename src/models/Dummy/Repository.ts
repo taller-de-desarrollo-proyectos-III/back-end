@@ -13,4 +13,12 @@ export class DummyRepository extends AbstractRepository<Dummy> {
 
     return dummy;
   }
+
+  public findAll() {
+    return this.repository.find();
+  }
+
+  public truncate() {
+    return this.repository.delete({});
+  }
 }
