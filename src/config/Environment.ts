@@ -6,9 +6,9 @@ const variablesKeys = {
 type Env = "production" | "development" | "test";
 
 export const Environment = {
-  PRODUCTION: "production",
-  DEVELOPMENT: "development",
-  TEST: "test",
+  PRODUCTION: "production" as Env,
+  DEVELOPMENT: "development" as Env,
+  TEST: "test" as Env,
   NODE_ENV: () => process.env[variablesKeys.NODE_ENV] as Env || Environment.DEVELOPMENT,
   database: {
     url: () => process.env[variablesKeys.DATABASE_URL] as string
