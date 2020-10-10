@@ -1,1 +1,1 @@
-export * from "./Dummy/Model.entity";
+export * from "./Dummy/Model";
