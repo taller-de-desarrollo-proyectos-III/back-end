@@ -2,7 +2,7 @@ import { Entity, Column } from "typeorm";
 import { UuidGenerator } from "../UuidGenerator";
 import { isDefined, isUUID } from "class-validator";
 
-@Entity()
+@Entity({ name: "Dummies" })
 export class Dummy {
   constructor({ welcomeMessage }: IDummyAttributes) {
     this.welcomeMessage = welcomeMessage;

@@ -1,1 +1,1 @@
-export * from "./PingController";
+export * from "./DummyController";

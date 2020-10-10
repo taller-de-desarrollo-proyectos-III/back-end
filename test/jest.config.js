@@ -15,6 +15,7 @@ module.exports = {
     "!<rootDir>/node_modules/"
   ],
   collectCoverage: true,
+  setupFilesAfterEnv: ["./test/jestConfig/setup.ts"],
   watchPathIgnorePatterns: ["./node_modules/"],
   testPathIgnorePatterns: [".d.ts", ".js"]
 };

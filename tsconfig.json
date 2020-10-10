@@ -22,7 +22,8 @@
     "emitDecoratorMetadata": true,
     "noUnusedParameters": true,
     "allowUnusedLabels": false,
-    "allowUnreachableCode": false
+    "allowUnreachableCode": false,
+    "strict": true
   },
   "exclude": [
     "node_modules",

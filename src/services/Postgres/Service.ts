@@ -1,15 +1,25 @@
-import { createConnection } from "typeorm";
+import { createConnection, getConnection } from "typeorm";
 import { createDatabase, dropDatabase } from "pg-god";
 import { parsePostgresUrl } from "pg-god/lib/utils";
 import { DatabaseConfig, Environment } from "../../config";
 import { Logger } from "../../libs";
+import { Dummy } from "../../models";
 import typeOrmConfig from "../../config/TypeORM";
 import "reflect-metadata";
 
 export class PostgresService {
   public connect() {
     const config = this.loadConfig();
-    return createConnection({ ...config, ...typeOrmConfig });
+    return createConnection({
+      ...config,
+      ...typeOrmConfig,
+      entities: this.entities()
+    });
+  }
+
+  public async closeConnection() {
+    const connection = await getConnection();
+    return connection.close();
   }
 
   public async dropDatabase() {
@@ -53,5 +63,11 @@ export class PostgresService {
       return { ...DatabaseConfig, url: Environment.database.url() };
     }
     return DatabaseConfig;
+  }
+
+  private entities() {
+    return [
+      Dummy
+    ];
   }
 }

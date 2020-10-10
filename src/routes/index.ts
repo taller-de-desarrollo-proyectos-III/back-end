@@ -1,3 +1,3 @@
-import { PingRoutes } from "./PingRoutes";
+import { DummyRoutes } from "./DummyRoutes";
 
-export const routes = [PingRoutes];
+export const routes = [DummyRoutes];
