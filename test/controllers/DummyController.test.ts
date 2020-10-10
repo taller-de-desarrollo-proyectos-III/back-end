@@ -14,6 +14,6 @@ describe("DummyController", () => {
     const dummyRepository = getCustomRepository(DummyRepository);
     const dummy = await dummyRepository.findByUuid(request.body);
     expect(dummy.welcomeMessage).toEqual("hello");
-    expect(request.status).toEqual(StatusCodes.OK);
+    expect(request.status).toEqual(StatusCodes.CREATED);
   });
 });

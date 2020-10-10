@@ -10,6 +10,6 @@ export const DummyController = {
     const dummy = new Dummy({ welcomeMessage });
     const dummyRepository = getCustomRepository(DummyRepository);
     await dummyRepository.create(dummy);
-    response.status(StatusCodes.OK).json(dummy.uuid);
+    response.status(StatusCodes.CREATED).json(dummy.uuid);
   }
 };
