@@ -9,7 +9,8 @@ export class CreateDummiesTable1602283377060 implements MigrationInterface {
           name: "uuid",
           type: "uuid",
           isPrimary: true,
-          isNullable: false
+          isNullable: false,
+          default: ""
         },
         {
           name: "welcomeMessage",

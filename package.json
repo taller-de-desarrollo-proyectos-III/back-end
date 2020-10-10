@@ -16,7 +16,9 @@
     "@types/node": "14.11.4",
     "@types/pg": "7.14.5",
     "@types/shelljs": "0.8.8",
+    "@types/uuid": "8.3.0",
     "body-parser": "1.19.0",
+    "class-validator": "0.12.2",
     "core-js": "3.6.5",
     "coveralls": "3.1.0",
     "express": "4.17.1",
@@ -28,13 +30,14 @@
     "reflect-metadata": "0.1.13",
     "shelljs": "0.8.4",
     "typeorm": "0.2.28",
-    "typescript-logging": "1.0.0"
+    "typescript-logging": "1.0.0",
+    "uuid": "8.3.1"
   },
   "devDependencies": {
     "@babel/core": "7.11.6",
     "@types/jest": "26.0.14",
     "@types/supertest": "2.0.10",
-    "husky": "^4.3.0",
+    "husky": "4.3.0",
     "jest": "26.5.2",
     "supertest": "5.0.0",
     "ts-jest": "26.4.1",

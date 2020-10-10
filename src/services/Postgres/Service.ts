@@ -4,6 +4,7 @@ import { parsePostgresUrl } from "pg-god/lib/utils";
 import { DatabaseConfig, Environment } from "../../config";
 import { Logger } from "../../libs";
 import typeOrmConfig from "../../config/TypeORM";
+import "reflect-metadata";
 
 export class PostgresService {
   public connect() {
