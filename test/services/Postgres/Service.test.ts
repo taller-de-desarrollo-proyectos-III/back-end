@@ -19,7 +19,7 @@ describe("PostgresService", () => {
     const createConnection = jest.fn();
     jest.spyOn(typeorm, "createConnection").mockImplementationOnce(createConnection);
     await postgresService.connect();
-    expect(createConnection.mock.calls).toEqual([[{
+    expect(createConnection.mock.calls).toMatchObject([[{
       ...DatabaseConfig,
       ...typeOrmConfig
     }]]);
@@ -31,7 +31,7 @@ describe("PostgresService", () => {
     const createConnection = jest.fn();
     jest.spyOn(typeorm, "createConnection").mockImplementationOnce(createConnection);
     await postgresService.connect();
-    expect(createConnection.mock.calls).toEqual([[{
+    expect(createConnection.mock.calls).toMatchObject([[{
       ...DatabaseConfig,
       url: "someURL",
       ...typeOrmConfig
