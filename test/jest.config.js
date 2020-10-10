@@ -7,6 +7,14 @@ module.exports = {
       isolatedModules: true
     }
   },
+  verbose: true,
+  rootDir: "../",
+  setupFiles: ["core-js"],
+  collectCoverageFrom: [
+    "src/**/*.ts",
+    "!<rootDir>/node_modules/"
+  ],
+  collectCoverage: true,
   watchPathIgnorePatterns: ["./node_modules/"],
   testPathIgnorePatterns: [".d.ts", ".js"]
 };
