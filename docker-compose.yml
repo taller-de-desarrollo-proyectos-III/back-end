@@ -1,0 +1,17 @@
+version: "3.5"
+networks:
+  taller-de-desarrollo-de-proyectos-III:
+    name: taller-de-desarrollo-de-proyectos-III
+services:
+  taller-de-desarrollo-de-proyectos-III-database-postgres:
+    image: postgres:13
+    networks:
+      - taller-de-desarrollo-de-proyectos-III
+    container_name: taller-de-desarrollo-de-proyectos-III-database-postgres
+    volumes:
+      - ./data/db:/usr/data/db
+    restart: always
+    ports:
+      - 5433:5432
+    env_file:
+      - ./.env
