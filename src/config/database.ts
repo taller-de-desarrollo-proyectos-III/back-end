@@ -9,7 +9,8 @@ export const DatabaseConfig = {
   },
   development: {
     url: "postgres://postgres:postgres@localhost:5433/development",
-    type: "postgres" as "postgres"
+    type: "postgres" as "postgres",
+    logging: true
   },
   test: {
     url: "postgres://postgres:postgres@localhost:5433/test",
