@@ -12,8 +12,13 @@ describe("DummyController", () => {
       welcomeMessage: "hello"
     });
     const dummyRepository = getCustomRepository(DummyRepository);
-    const dummy = await dummyRepository.findByUuid(request.body);
-    expect(dummy.welcomeMessage).toEqual("hello");
+    const dummy = await dummyRepository.findByUuid(request.body.uuid);
+    expect(dummy).toEqual(request.body);
     expect(request.status).toEqual(StatusCodes.CREATED);
+  });
+
+  it("returns error if no payload is provided", async () => {
+    const request = await testClient.post(DummyRoutes.path).send();
+    expect(request.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
   });
 });
