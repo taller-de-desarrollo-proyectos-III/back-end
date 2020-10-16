@@ -15,5 +15,9 @@ export const DatabaseConfig = {
   test: {
     url: "postgres://postgres:postgres@localhost:5433/test",
     type: "postgres" as "postgres"
+  },
+  travis: {
+    type: "postgres" as "postgres",
+    url: "DATABASE_URL"
   }
 }[env];

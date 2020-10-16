@@ -1,19 +1,24 @@
 import { createConnection, getConnection } from "typeorm";
 import { createDatabase, dropDatabase } from "pg-god";
 import { parsePostgresUrl } from "pg-god/lib/utils";
-import { DatabaseConfig, Environment } from "../../config";
+import { Environment } from "../../config";
 import { Logger } from "../../libs";
 import { Dummy } from "../../models";
-import typeOrmConfig from "../../config/TypeORM";
+import { IDatabaseConfig } from "./Interfaces";
 import "reflect-metadata";
 
 export class PostgresService {
+  private readonly databaseConfig: IDatabaseConfig;
+
+  constructor(databaseConfig: IDatabaseConfig) {
+    this.databaseConfig = databaseConfig;
+  }
+
   public connect() {
     const config = this.loadConfig();
     return createConnection({
       ...config,
-      ...typeOrmConfig,
-      entities: this.entities()
+      entities: PostgresService.entities()
     });
   }
 
@@ -58,14 +63,14 @@ export class PostgresService {
     };
   }
 
-  private loadConfig() {
-    if (DatabaseConfig.url === "DATABASE_URL") {
-      return { ...DatabaseConfig, url: Environment.database.url() };
+  public loadConfig() {
+    if (this.databaseConfig.url === "DATABASE_URL") {
+      return { ...this.databaseConfig, url: Environment.database.url() };
     }
-    return DatabaseConfig;
+    return this.databaseConfig;
   }
 
-  private entities() {
+  private static entities() {
     return [
       Dummy
     ];

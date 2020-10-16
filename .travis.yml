@@ -1,0 +1,21 @@
+language: node_js
+services:
+  - docker
+addons:
+  postgresql: "10"
+install: yarn install
+env:
+  - NODE_ENV="travis"
+    DATABASE_URL="postgres://postgres:postgres@localhost:5432/travis"
+before_script:
+  - yarn db:drop || true && yarn db:create && yarn db:migrate
+script:
+  - yarn lint && yarn test
+after_success: yarn coverage
+notifications:
+  email:
+    recipients:
+      - sebastian.e.blanco@gmail.com
+        - nerenap@gmail.com
+        - sebastian.leo.perez@gmail.com
+        - lautarodelosheros@gmail.com
