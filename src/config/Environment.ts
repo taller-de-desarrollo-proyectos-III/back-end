@@ -3,18 +3,19 @@ const variablesKeys = {
   DATABASE_URL: "DATABASE_URL"
 };
 
-type Env = "production" | "development" | "test";
+type Env = "production" | "development" | "test" | "travis";
 
 export const Environment = {
   PRODUCTION: "production" as Env,
   DEVELOPMENT: "development" as Env,
   TEST: "test" as Env,
+  TRAVIS: "travis" as Env,
   NODE_ENV: () => process.env[variablesKeys.NODE_ENV] as Env || Environment.DEVELOPMENT,
   database: {
     url: () => process.env[variablesKeys.DATABASE_URL] as string
   },
   validEnvironments() {
-    return [this.DEVELOPMENT, this.TEST, this.PRODUCTION];
+    return [this.DEVELOPMENT, this.TEST, this.PRODUCTION, this.TRAVIS];
   },
   isLocal() {
     return [this.DEVELOPMENT, this.TEST].includes(this.NODE_ENV());
