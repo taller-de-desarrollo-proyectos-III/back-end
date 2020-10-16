@@ -1,4 +1,7 @@
 language: node_js
+cache:
+  yarn: false
+  npm: false
 services:
   - docker
 addons:
