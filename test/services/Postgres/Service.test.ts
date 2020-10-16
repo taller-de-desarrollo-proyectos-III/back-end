@@ -7,14 +7,14 @@ import { Logger } from "../../../src/libs";
 describe("PostgresService", () => {
   it("connects to the database", async () => {
     const createConnection = jest.fn();
-    jest.spyOn(typeorm, "createConnection").mockImplementationOnce(createConnection);
+    jest.spyOn(typeorm, "createConnection").mockImplementation(createConnection);
     await new PostgresService(DatabaseConfig).connect();
     expect(createConnection.mock.calls).toHaveLength(1);
   });
 
   it("connects to the database with the test credentials and typeorm config", async () => {
     const createConnection = jest.fn();
-    jest.spyOn(typeorm, "createConnection").mockImplementationOnce(createConnection);
+    jest.spyOn(typeorm, "createConnection").mockImplementation(createConnection);
     await new PostgresService({ type: "postgres", url: "urlTest" }).connect();
     expect(createConnection.mock.calls).toMatchObject([[{
       type: "postgres",
@@ -36,9 +36,9 @@ describe("PostgresService", () => {
   });
 
   it("creates the database with the correct credentials", async () => {
-    jest.spyOn(Logger, "info").mockImplementationOnce(jest.fn());
+    jest.spyOn(Logger, "info").mockImplementation(jest.fn());
     const createDatabase = jest.fn();
-    jest.spyOn(pgGod, "createDatabase").mockImplementationOnce(createDatabase);
+    jest.spyOn(pgGod, "createDatabase").mockImplementation(createDatabase);
     await new PostgresService({
       url: "postgres://postgres:postgres@localhost:5433/test",
       type: "postgres"
@@ -58,17 +58,17 @@ describe("PostgresService", () => {
   });
 
   it("throws an error if the createDatabase operation fails", async () => {
-    jest.spyOn(Logger, "info").mockImplementationOnce(jest.fn());
-    jest.spyOn(Logger, "error").mockImplementationOnce(jest.fn());
+    jest.spyOn(Logger, "info").mockImplementation(jest.fn());
+    jest.spyOn(Logger, "error").mockImplementation(jest.fn());
     const createDatabase = jest.fn(() => { throw new Error("ERROR"); });
-    jest.spyOn(pgGod, "createDatabase").mockImplementationOnce(createDatabase);
+    jest.spyOn(pgGod, "createDatabase").mockImplementation(createDatabase);
     await expect(new PostgresService(DatabaseConfig).createDatabase()).rejects.toThrow("ERROR");
   });
 
   it("drops the database with the correct credentials", async () => {
-    jest.spyOn(Logger, "info").mockImplementationOnce(jest.fn());
+    jest.spyOn(Logger, "info").mockImplementation(jest.fn());
     const dropDatabase = jest.fn();
-    jest.spyOn(pgGod, "dropDatabase").mockImplementationOnce(dropDatabase);
+    jest.spyOn(pgGod, "dropDatabase").mockImplementation(dropDatabase);
     await new PostgresService({
       url: "postgres://postgres:postgres@localhost:5433/test",
       type: "postgres" as "postgres"
@@ -88,10 +88,10 @@ describe("PostgresService", () => {
   });
 
   it("throws an error if the dropDatabase operation fails", async () => {
-    jest.spyOn(Logger, "info").mockImplementationOnce(jest.fn());
-    jest.spyOn(Logger, "error").mockImplementationOnce(jest.fn());
+    jest.spyOn(Logger, "info").mockImplementation(jest.fn());
+    jest.spyOn(Logger, "error").mockImplementation(jest.fn());
     const dropDatabase = jest.fn(() => { throw new Error("ERROR"); });
-    jest.spyOn(pgGod, "dropDatabase").mockImplementationOnce(dropDatabase);
+    jest.spyOn(pgGod, "dropDatabase").mockImplementation(dropDatabase);
     await expect(new PostgresService(DatabaseConfig).dropDatabase()).rejects.toThrow("ERROR");
   });
 });
