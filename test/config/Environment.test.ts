@@ -41,12 +41,4 @@ describe("Environment", () => {
     jest.spyOn(Environment.database, "url").mockImplementationOnce(() => "someUrl");
     expect(Environment.database.url()).toEqual("someUrl");
   });
-
-  it("returns undefined if no database url was defined", async () => {
-    expect(Environment.database.url()).toBeUndefined();
-  });
-
-  it("returns test for the NODE_ENV environment key", async () => {
-    expect(Environment.NODE_ENV()).toEqual(Environment.TEST);
-  });
 });
