@@ -1,6 +1,10 @@
 import { Environment } from "../../src/config";
 
 describe("Environment", () => {
+  it("returns the default port if it is not defined as environment variable", async () => {
+    expect(Environment.PORT()).toEqual(5000);
+  });
+
   it("checks for the presence of all environment variables", async () => {
     jest.spyOn(Environment, "isLocal").mockImplementation(() => false);
     jest.spyOn(Environment.database, "url").mockImplementation(() => "someUrl");

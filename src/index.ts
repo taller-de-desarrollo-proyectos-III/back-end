@@ -2,7 +2,7 @@ import { App } from "./App";
 import { DatabaseConfig, Environment } from "./config";
 import { PostgresService } from "./services";
 
-const app = new App(5000);
+const app = new App(Environment.PORT());
 const postgresService = new PostgresService(DatabaseConfig);
 
 app.listen();
