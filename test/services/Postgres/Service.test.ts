@@ -1,40 +1,35 @@
 import { PostgresService } from "../../../src/services";
 import { DatabaseConfig, Environment } from "../../../src/config";
-import typeOrmConfig from "../../../src/config/TypeORM";
 import * as typeorm from "typeorm";
 import * as pgGod from "pg-god";
 import { Logger } from "../../../src/libs";
 
 describe("PostgresService", () => {
-  const postgresService = new PostgresService();
-
   it("connects to the database", async () => {
     const createConnection = jest.fn();
     jest.spyOn(typeorm, "createConnection").mockImplementationOnce(createConnection);
-    await postgresService.connect();
+    await new PostgresService(DatabaseConfig).connect();
     expect(createConnection.mock.calls).toHaveLength(1);
   });
 
   it("connects to the database with the test credentials and typeorm config", async () => {
     const createConnection = jest.fn();
     jest.spyOn(typeorm, "createConnection").mockImplementationOnce(createConnection);
-    await postgresService.connect();
+    await new PostgresService(DatabaseConfig).connect();
     expect(createConnection.mock.calls).toMatchObject([[{
-      ...DatabaseConfig,
-      ...typeOrmConfig
+      ...DatabaseConfig
     }]]);
   });
 
   it("requests the database url from the environment variable in travis", async () => {
-    jest.spyOn(Environment, "NODE_ENV").mockImplementationOnce(() => Environment.TRAVIS);
-    jest.spyOn(Environment.database, "url").mockImplementationOnce(() => "someURL");
+    jest.spyOn(Environment.database, "url").mockImplementation(() => "someURL");
     const createConnection = jest.fn();
-    jest.spyOn(typeorm, "createConnection").mockImplementationOnce(createConnection);
+    jest.spyOn(typeorm, "createConnection").mockImplementation(createConnection);
+    const postgresService = new PostgresService({ type: "postgres", url: "DATABASE_URL" });
     await postgresService.connect();
     expect(createConnection.mock.calls).toMatchObject([[{
       ...DatabaseConfig,
-      url: "someURL",
-      ...typeOrmConfig
+      url: "someURL"
     }]]);
   });
 
@@ -42,7 +37,7 @@ describe("PostgresService", () => {
     jest.spyOn(Logger, "info").mockImplementationOnce(jest.fn());
     const createDatabase = jest.fn();
     jest.spyOn(pgGod, "createDatabase").mockImplementationOnce(createDatabase);
-    await postgresService.createDatabase();
+    await new PostgresService(DatabaseConfig).createDatabase();
     expect(createDatabase.mock.calls).toEqual([[
       {
         databaseName: "test",
@@ -62,14 +57,14 @@ describe("PostgresService", () => {
     jest.spyOn(Logger, "error").mockImplementationOnce(jest.fn());
     const createDatabase = jest.fn(() => { throw new Error("ERROR"); });
     jest.spyOn(pgGod, "createDatabase").mockImplementationOnce(createDatabase);
-    await expect(postgresService.createDatabase()).rejects.toThrow("ERROR");
+    await expect(new PostgresService(DatabaseConfig).createDatabase()).rejects.toThrow("ERROR");
   });
 
   it("drops the database with the correct credentials", async () => {
     jest.spyOn(Logger, "info").mockImplementationOnce(jest.fn());
     const dropDatabase = jest.fn();
     jest.spyOn(pgGod, "dropDatabase").mockImplementationOnce(dropDatabase);
-    await postgresService.dropDatabase();
+    await new PostgresService(DatabaseConfig).dropDatabase();
     expect(dropDatabase.mock.calls).toEqual([[
       {
         databaseName: "test",
@@ -89,6 +84,6 @@ describe("PostgresService", () => {
     jest.spyOn(Logger, "error").mockImplementationOnce(jest.fn());
     const dropDatabase = jest.fn(() => { throw new Error("ERROR"); });
     jest.spyOn(pgGod, "dropDatabase").mockImplementationOnce(dropDatabase);
-    await expect(postgresService.dropDatabase()).rejects.toThrow("ERROR");
+    await expect(new PostgresService(DatabaseConfig).dropDatabase()).rejects.toThrow("ERROR");
   });
 });

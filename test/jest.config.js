@@ -1,7 +1,7 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
-  coveragePathIgnorePatterns: ["node_modules", "test"],
+  coveragePathIgnorePatterns: ["node_modules", "test", "src/migrations"],
   globals: {
     "ts-jest": {
       isolatedModules: true

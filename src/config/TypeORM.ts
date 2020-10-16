@@ -1,7 +1,10 @@
-import { DatabaseConfig } from "./database";
+import { PostgresService } from "../services";
+import { DatabaseConfig } from "../config";
+
+const postgresService = new PostgresService(DatabaseConfig);
 
 export = {
-  ...DatabaseConfig,
+  ...postgresService.loadConfig(),
   migrations: ["src/migrations/*.ts"],
   cli: {
     migrationsDir: "src/migrations"

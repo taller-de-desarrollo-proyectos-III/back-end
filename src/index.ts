@@ -1,9 +1,9 @@
 import { App } from "./App";
-import { Environment } from "./config";
+import { DatabaseConfig, Environment } from "./config";
 import { PostgresService } from "./services";
 
 const app = new App(5000);
-const postgresService = new PostgresService();
+const postgresService = new PostgresService(DatabaseConfig);
 
 app.listen();
 Environment.validate();
