@@ -26,6 +26,5 @@ deploy:
   on:
     branch: main
     repo: taller-de-desarrollo-proyectos-III/back-end
-  run:
-    - "yarn install"
-    - "yarn db:migrate"
+  after_deploy:
+    - yarn install && yarn db:migrate
