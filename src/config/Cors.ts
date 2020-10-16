@@ -1,8 +1,8 @@
 import { Environment } from "./Environment";
 
 export const CorsConfig = {
-  productions: {
-    origin: "http://localhost:3001",
+  production: {
+    origin: "https://tdp3-frontend.herokuapp.com",
     credentials: true,
     optionsSuccessStatus: 200
   },
