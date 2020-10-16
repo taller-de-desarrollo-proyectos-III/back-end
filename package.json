@@ -51,7 +51,7 @@
     "start": "node build/src/index.js",
     "dev": "nodemon src/index.ts",
     "build": "rm -rf build && tsc --project .",
-    "test": "jest --colors --config ./test/jest.config.js",
+    "test": "jest --coverage --colors --config ./test/jest.config.js",
     "coverage": "cat coverage/lcov.info | coveralls",
     "coveralls": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls",
     "compiler:lint": "tsc --noEmit -p .",
