@@ -25,8 +25,8 @@ describe("PostgresService", () => {
     }]]);
   });
 
-  it("requests the database url from the environment variable in production", async () => {
-    jest.spyOn(Environment, "NODE_ENV").mockImplementationOnce(() => Environment.PRODUCTION);
+  it("requests the database url from the environment variable in travis", async () => {
+    jest.spyOn(Environment, "NODE_ENV").mockImplementationOnce(() => Environment.TRAVIS);
     jest.spyOn(Environment.database, "url").mockImplementationOnce(() => "someURL");
     const createConnection = jest.fn();
     jest.spyOn(typeorm, "createConnection").mockImplementationOnce(createConnection);
