@@ -39,8 +39,12 @@ describe("Environment", () => {
     expect(() => Environment.validate()).not.toThrow();
   });
 
-  it("return the database url", async () => {
+  it("returns the database url", async () => {
     jest.spyOn(Environment.database, "url").mockImplementationOnce(() => "someUrl");
     expect(Environment.database.url()).toEqual("someUrl");
+  });
+
+  it("returns undefined if no database url was defined", async () => {
+    expect(Environment.database.url()).toBeUndefined();
   });
 });
