@@ -13,7 +13,7 @@ module.exports = {
       isolatedModules: true
     }
   },
-  verbose: true,
+  verbose: false,
   rootDir: "../",
   setupFiles: ["core-js"],
   collectCoverageFrom: [
