@@ -48,3 +48,67 @@ Builds the app for production to the `build` folder.
 ```bash
 yarn build
 ```
+
+## Database
+
+### Development setup
+
+* Runs the database container in the background:
+```bash
+yarn db:start
+```
+
+* Runs up the database container:
+```bash
+yarn db:up
+```
+
+* Stops the database container:
+```bash
+yarn db:stop
+```
+
+### Connections
+
+#### Create
+ 
+* Creates the current NODE_ENV stage database
+```bash
+yarn db:create
+```
+
+* Creates the test database
+```bash
+yarn db:test:create
+```
+
+#### Migrate
+ 
+* Migrates the current NODE_ENV stage database
+```bash
+yarn db:migrate
+```
+
+* Migrates the test database
+```bash
+yarn db:test:migrate
+```
+
+#### Drop
+ 
+* Drops the current NODE_ENV stage database
+```bash
+yarn db:drop
+```
+
+* Drops the test database
+```bash
+yarn db:test:drop
+```
+
+#### Shortcut
+
+* Drops, creates and migrates the current NODE_ENV stage and test database
+```bash
+yarn db:all:reboot
+```
