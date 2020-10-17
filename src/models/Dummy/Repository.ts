@@ -1,4 +1,5 @@
 import { EntityRepository, AbstractRepository } from "typeorm";
+import { getCustomRepository } from "typeorm";
 import { Dummy } from "../../models";
 
 @EntityRepository(Dummy)
@@ -22,3 +23,5 @@ export class DummyRepository extends AbstractRepository<Dummy> {
     return this.repository.delete({});
   }
 }
+
+export const dummyRepository = () => getCustomRepository(DummyRepository);

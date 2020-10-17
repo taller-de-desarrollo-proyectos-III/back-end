@@ -1,1 +1,1 @@
-export { DummyRepository } from "./Repository";
+export * from "./Repository";
