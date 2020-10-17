@@ -1,18 +1,16 @@
 import { testClient } from "./TestClient";
 import { StatusCodes } from "http-status-codes";
-import { getCustomRepository } from "typeorm";
-import { DummyRepository } from "../../src/models/Dummy";
+import { dummyRepository } from "../../src/models/Dummy";
 import { DummyRoutes } from "../../src/routes/DummyRoutes";
 
 describe("DummyController", () => {
-  beforeAll(() => getCustomRepository(DummyRepository).truncate());
+  beforeAll(() => dummyRepository().truncate());
 
   it("creates a dummy model", async () => {
     const request = await testClient.post(DummyRoutes.path).send({
       welcomeMessage: "hello"
     });
-    const dummyRepository = getCustomRepository(DummyRepository);
-    const dummy = await dummyRepository.findByUuid(request.body.uuid);
+    const dummy = await dummyRepository().findByUuid(request.body.uuid);
     expect(dummy).toEqual(request.body);
     expect(request.status).toEqual(StatusCodes.CREATED);
   });
