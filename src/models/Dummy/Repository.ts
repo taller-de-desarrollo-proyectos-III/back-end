@@ -1,5 +1,4 @@
-import { EntityRepository, AbstractRepository } from "typeorm";
-import { getCustomRepository } from "typeorm";
+import { EntityRepository, AbstractRepository, getCustomRepository } from "typeorm";
 import { Dummy } from "../../models";
 
 @EntityRepository(Dummy)
