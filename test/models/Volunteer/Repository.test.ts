@@ -1,5 +1,6 @@
-import { volunteerRepository } from "../../../src/models/Volunteer";
+import { volunteerRepository, VolunteerNotFoundError } from "../../../src/models/Volunteer";
 import { Volunteer } from "../../../src/models/Volunteer/Model";
+import { QueryFailedError } from "typeorm";
 
 describe("volunteerRepository", () => {
   beforeAll(async () => {
@@ -22,7 +23,18 @@ describe("volunteerRepository", () => {
       name: "John",
       surname: "Doe"
     });
-    await expect(volunteerRepository().findByUuid(volunteer.uuid)).rejects.toThrow("VolunteerNotFoundError");
+    await expect(volunteerRepository().findByUuid(volunteer.uuid))
+      .rejects.toThrow(VolunteerNotFoundError);
+  });
+
+  it("throws an error when trying to insert a duplicated volunteer", async () => {
+    const volunteer = new Volunteer({
+      dni: "12345678",
+      name: "John",
+      surname: "Doe"
+    });
+    await volunteerRepository().create(volunteer);
+    await expect(volunteerRepository().create(volunteer)).rejects.toThrow(QueryFailedError);
   });
 
   it("removes all entries from Volunteers table", async () => {
