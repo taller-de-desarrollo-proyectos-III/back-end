@@ -33,6 +33,7 @@
       "error",
       "always"
     ],
+    "eofline": true,
     "comma-spacing": [
       "error",
       {
