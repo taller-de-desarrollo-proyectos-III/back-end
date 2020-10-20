@@ -1,6 +1,8 @@
 import { Volunteer } from "../../../src/models/Volunteer/Model";
 import { UUID_REGEX } from "../index";
 import { UuidGenerator } from "../../../src/models/UuidGenerator";
+import { AttributeNotDefinedError } from "../../../src/models/Volunteer/Errors/AttributeNotDefinedError";
+import { InvalidAttributeFormatError } from "../../../src/models/Volunteer/Errors/InvalidAttributeFormatError";
 
 describe("Volunteer", () => {
   it("creates a valid volunteer model with its uuid generated", async () => {
@@ -23,7 +25,7 @@ describe("Volunteer", () => {
         name: "John",
         surname: "Doe"
       })
-    ).toThrow("dni must be defined");
+    ).toThrow(AttributeNotDefinedError);
   });
 
   it("throws an error if no name is provided", async () => {
@@ -33,7 +35,7 @@ describe("Volunteer", () => {
         name: undefined as any,
         surname: "Doe"
       })
-    ).toThrow("name must be defined");
+    ).toThrow(AttributeNotDefinedError);
   });
 
   it("throws an error if no surname is provided", async () => {
@@ -43,7 +45,7 @@ describe("Volunteer", () => {
         name: "John",
         surname: undefined as any
       })
-    ).toThrow("surname must be defined");
+    ).toThrow(AttributeNotDefinedError);
   });
 
   it("throws an error if no uuid is generated", () => {
@@ -54,7 +56,7 @@ describe("Volunteer", () => {
         name: "John",
         surname: "Doe"
       })
-    ).toThrow("uuid must be defined");
+    ).toThrow(AttributeNotDefinedError);
   });
 
   it("throws an error if uuid has invalid format", () => {
@@ -65,6 +67,6 @@ describe("Volunteer", () => {
         name: "John",
         surname: "Doe"
       })
-    ).toThrow("uuid must have uuid format");
+    ).toThrow(InvalidAttributeFormatError);
   });
 });

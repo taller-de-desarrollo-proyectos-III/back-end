@@ -1,6 +1,8 @@
 import { Entity, Column } from "typeorm";
 import { UuidGenerator } from "../UuidGenerator";
 import { isDefined, isUUID } from "class-validator";
+import { AttributeNotDefinedError } from "./Errors/AttributeNotDefinedError";
+import { InvalidAttributeFormatError } from "./Errors/InvalidAttributeFormatError";
 
 @Entity({ name: "Volunteers" })
 export class Volunteer {
@@ -29,11 +31,11 @@ export class Volunteer {
   surname: string;
 
   public validate() {
-    if (!isDefined(this.uuid)) throw new Error("uuid must be defined");
-    if (!isDefined(this.dni)) throw new Error("dni must be defined");
-    if (!isDefined(this.name)) throw new Error("name must be defined");
-    if (!isDefined(this.surname)) throw new Error("surname must be defined");
-    if (!isUUID(this.uuid)) throw new Error("uuid must have uuid format");
+    if (!isDefined(this.uuid)) throw new AttributeNotDefinedError("uuid");
+    if (!isDefined(this.dni)) throw new AttributeNotDefinedError("dni");
+    if (!isDefined(this.name)) throw new AttributeNotDefinedError("name");
+    if (!isDefined(this.surname)) throw new AttributeNotDefinedError("surname");
+    if (!isUUID(this.uuid)) throw new InvalidAttributeFormatError("uuid");
   }
 }
 
