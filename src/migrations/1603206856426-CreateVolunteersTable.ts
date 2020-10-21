@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
 export class CreateVolunteersTable1603206856426 implements MigrationInterface {
-  public async up(queryRunner: QueryRunner): Promise<void> {
+  public async up(queryRunner: QueryRunner) {
     return queryRunner.createTable(new Table({
       name: "Volunteers",
       columns: [
