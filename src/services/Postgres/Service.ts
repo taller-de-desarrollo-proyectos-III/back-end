@@ -3,7 +3,7 @@ import { createDatabase, dropDatabase } from "pg-god";
 import { parsePostgresUrl } from "pg-god/lib/utils";
 import { Environment } from "../../config";
 import { Logger } from "../../libs";
-import { Dummy } from "../../models";
+import { Dummy, Volunteer } from "../../models";
 import { IDatabaseConfig } from "./Interfaces";
 import "reflect-metadata";
 
@@ -72,7 +72,8 @@ export class PostgresService {
 
   private static entities() {
     return [
-      Dummy
+      Dummy,
+      Volunteer
     ];
   }
 }
