@@ -30,7 +30,7 @@ export class CreateVolunteersTable1603206856426 implements MigrationInterface {
     }));
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
+  public async down(queryRunner: QueryRunner) {
     return queryRunner.dropTable("Volunteers");
   }
 }

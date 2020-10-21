@@ -1,8 +1,7 @@
-import { Volunteer } from "../../../src/models/Volunteer/Model";
+import { Volunteer } from "../../../src/models";
 import { UUID_REGEX } from "../index";
 import { UuidGenerator } from "../../../src/models/UuidGenerator";
-import { AttributeNotDefinedError } from "../../../src/models/Volunteer/Errors/AttributeNotDefinedError";
-import { InvalidAttributeFormatError } from "../../../src/models/Volunteer/Errors/InvalidAttributeFormatError";
+import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../../src/models/Volunteer/Errors";
 
 describe("Volunteer", () => {
   it("creates a valid volunteer model with its uuid generated", async () => {

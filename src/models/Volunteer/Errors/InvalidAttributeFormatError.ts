@@ -1,6 +1,6 @@
 export class InvalidAttributeFormatError extends Error {
   public static buildMessage(attributeName: string) {
-    return `Format for attribute ${attributeName} is invalid`;
+    return `The attribute ${attributeName} has an invalid format`;
   }
 
   constructor(attributeName: string) {

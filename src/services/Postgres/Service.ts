@@ -3,8 +3,7 @@ import { createDatabase, dropDatabase } from "pg-god";
 import { parsePostgresUrl } from "pg-god/lib/utils";
 import { Environment } from "../../config";
 import { Logger } from "../../libs";
-import { Dummy } from "../../models";
-import { Volunteer } from "../../models/Volunteer/Model";
+import { Dummy, Volunteer } from "../../models";
 import { IDatabaseConfig } from "./Interfaces";
 import "reflect-metadata";
 
