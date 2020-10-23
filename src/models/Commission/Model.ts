@@ -4,43 +4,29 @@ import { isDefined, isUUID } from "class-validator";
 import { AttributeNotDefinedError } from "../Errors/AttributeNotDefinedError";
 import { InvalidAttributeFormatError } from "../Errors/InvalidAttributeFormatError";
 
-@Entity({ name: "Volunteers" })
-export class Volunteer {
-  constructor({ dni, name, surname }: IVolunteerAttributes) {
+@Entity({ name: "Commissions" })
+export class Commission {
+  constructor({ name }: ICommissionAttributes) {
     this.uuid = UuidGenerator.generate();
-    this.dni = dni;
     this.name = name;
-    this.surname = surname;
     this.validate();
   }
 
   @Column({
-    type: "uuid",
-    nullable: false,
     primary: true
   })
   uuid: string;
 
-  @Column({ type: "varchar", nullable: false })
-  dni: string;
-
-  @Column({ type: "varchar", nullable: false })
+  @Column()
   name: string;
-
-  @Column({ type: "varchar", nullable: false })
-  surname: string;
 
   public validate() {
     if (!isDefined(this.uuid)) throw new AttributeNotDefinedError("uuid");
-    if (!isDefined(this.dni)) throw new AttributeNotDefinedError("dni");
     if (!isDefined(this.name)) throw new AttributeNotDefinedError("name");
-    if (!isDefined(this.surname)) throw new AttributeNotDefinedError("surname");
     if (!isUUID(this.uuid)) throw new InvalidAttributeFormatError("uuid");
   }
 }
 
-interface IVolunteerAttributes {
-  dni: string;
+interface ICommissionAttributes {
   name: string;
-  surname: string;
 }
