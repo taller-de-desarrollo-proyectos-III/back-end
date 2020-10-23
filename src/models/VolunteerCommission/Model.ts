@@ -1,4 +1,4 @@
-import { Entity, Column } from "typeorm";
+import { Entity, PrimaryColumn } from "typeorm";
 import { isDefined, isUUID } from "class-validator";
 import { AttributeNotDefinedError } from "../Errors/AttributeNotDefinedError";
 import { InvalidAttributeFormatError } from "../Errors/InvalidAttributeFormatError";
@@ -11,10 +11,10 @@ export class VolunteerCommission {
     this.validate();
   }
 
-  @Column()
+  @PrimaryColumn()
   public volunteerUuid: string;
 
-  @Column()
+  @PrimaryColumn()
   public commissionUuid: string;
 
   public validate() {
