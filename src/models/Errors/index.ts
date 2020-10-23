@@ -1,4 +1,4 @@
 export * from "./AttributeNotDefinedError";
 export * from "./InvalidAttributeFormatError";
-export * from "./VolunteerNotFoundError";
-export * from "./CommissionNotFoundError";
+export * from "../Volunteer/Errors/VolunteerNotFoundError";
+export * from "../Commission/Errors/CommissionNotFoundError";

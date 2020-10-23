@@ -4,7 +4,7 @@ import { isDefined, isUUID } from "class-validator";
 import { AttributeNotDefinedError } from "../Errors/AttributeNotDefinedError";
 import { InvalidAttributeFormatError } from "../Errors/InvalidAttributeFormatError";
 
-@Entity({ name: "Commission" })
+@Entity({ name: "Commissions" })
 export class Commission {
   constructor({ name }: ICommissionAttributes) {
     this.uuid = UuidGenerator.generate();
@@ -19,7 +19,7 @@ export class Commission {
   })
   uuid: string;
 
-  @Column({ type: "varchar", nullable: false })
+  @Column()
   name: string;
 
   public validate() {

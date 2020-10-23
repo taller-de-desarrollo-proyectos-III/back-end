@@ -1,6 +1,6 @@
 import { EntityRepository, AbstractRepository, getCustomRepository } from "typeorm";
 import { Commission } from "./Model";
-import { CommissionNotFoundError } from "../Errors/CommissionNotFoundError";
+import { CommissionNotFoundError } from "./Errors/CommissionNotFoundError";
 
 @EntityRepository(Commission)
 export class CommissionRepository extends AbstractRepository<Commission> {
