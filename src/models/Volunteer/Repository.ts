@@ -1,6 +1,6 @@
 import { EntityRepository, AbstractRepository, getCustomRepository } from "typeorm";
 import { Volunteer } from "./Model";
-import { VolunteerNotFoundError } from "./Errors/VolunteerNotFoundError";
+import { VolunteerNotFoundError } from "../Errors/VolunteerNotFoundError";
 
 @EntityRepository(Volunteer)
 export class VolunteerRepository extends AbstractRepository<Volunteer> {
