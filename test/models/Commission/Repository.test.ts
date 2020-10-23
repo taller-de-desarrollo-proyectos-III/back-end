@@ -1,7 +1,7 @@
 import { commissionRepository } from "../../../src/models/Commission";
 import { Commission } from "../../../src/models";
 import { QueryFailedError } from "typeorm";
-import { CommissionNotFoundError } from "../../../src/models/Errors";
+import { CommissionNotFoundError } from "../../../src/models/Commission/Errors";
 
 describe("commissionRepository", () => {
   beforeAll(async () => {

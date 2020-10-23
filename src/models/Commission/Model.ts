@@ -13,8 +13,6 @@ export class Commission {
   }
 
   @Column({
-    type: "uuid",
-    nullable: false,
     primary: true
   })
   uuid: string;

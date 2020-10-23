@@ -1,7 +1,7 @@
 import { volunteerRepository } from "../../../src/models/Volunteer";
 import { Volunteer } from "../../../src/models";
 import { QueryFailedError } from "typeorm";
-import { VolunteerNotFoundError } from "../../../src/models/Errors";
+import { VolunteerNotFoundError } from "../../../src/models/Volunteer/Errors";
 
 describe("volunteerRepository", () => {
   beforeAll(async () => {
