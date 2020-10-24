@@ -4,6 +4,8 @@ import { Volunteer, VolunteerCommission } from "..";
 @EntityRepository(VolunteerCommission)
 export class VolunteerCommissionRepository extends AbstractRepository<VolunteerCommission> {
   public bulkCreate(volunteerCommissions: VolunteerCommission[]) {
+    if (volunteerCommissions.length === 0) return [];
+
     return this.repository.insert(volunteerCommissions);
   }
 

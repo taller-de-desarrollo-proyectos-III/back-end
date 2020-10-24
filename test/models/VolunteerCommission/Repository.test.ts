@@ -13,7 +13,7 @@ describe("volunteerCommissionRepository", () => {
 
   const createVolunteer = async () => {
     const volunteer = new Volunteer({ dni: "12345678", name: "John", surname: "Doe" });
-    await volunteerRepository().create(volunteer);
+    await volunteerRepository().create({ volunteer });
     return volunteer;
   };
 
@@ -41,6 +41,11 @@ describe("volunteerCommissionRepository", () => {
     ]);
     const commissions = await volunteerCommissionRepository().findByVolunteer(volunteer);
     expect(commissions).toEqual([volunteerCommissionA, volunteerCommissionB]);
+  });
+
+  it("does no save if given an empty array", async () => {
+    const volunteerCommissions = await volunteerCommissionRepository().bulkCreate([]);
+    expect(volunteerCommissions).toEqual([]);
   });
 
   it("throws an error if the volunteer commission is duplicated", async () => {
