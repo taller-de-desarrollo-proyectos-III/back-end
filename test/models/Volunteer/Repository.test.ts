@@ -16,6 +16,9 @@ describe("VolunteerRepository", () => {
 
   beforeAll(async () => {
     await volunteerRepository().truncate();
+    await commissionRepository().truncate();
+    await commissionRepository().create(commissionA);
+    await commissionRepository().create(commissionB);
   });
 
   it("saves a volunteer model on the database", async () => {
@@ -26,12 +29,29 @@ describe("VolunteerRepository", () => {
 
   it("saves a volunteer with commissions", async () => {
     const volunteer = new Volunteer({ commissions: [commissionA, commissionB], ...attributes });
-    await commissionRepository().create(commissionA);
-    await commissionRepository().create(commissionB);
     await volunteerRepository().create(volunteer);
     await volunteerRepository().findByUuid(volunteer.uuid);
     const commissions = (await volunteerRepository().findByUuid(volunteer.uuid)).commissions;
     expect(commissions).toEqual(expect.arrayContaining([commissionA, commissionB]));
+  });
+
+  describe("findByCommissions", () => {
+    it("returns empty list if no commission is passed", async () => {
+      const commissions = [commissionA, commissionB];
+      const volunteer = new Volunteer({ commissions, ...attributes });
+      await volunteerRepository().create(volunteer);
+      expect(await volunteerRepository().findByCommissions([])).toHaveLength(0);
+    });
+
+    it("returns all the volunteers by commissions", async () => {
+      const volunteerA = new Volunteer({ commissions: [commissionA], ...attributes });
+      const volunteerB = new Volunteer({ commissions: [commissionB], ...attributes });
+      await volunteerRepository().create(volunteerA);
+      await volunteerRepository().create(volunteerB);
+      expect(
+        await volunteerRepository().findByCommissions([commissionA, commissionB])
+      ).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
+    });
   });
 
   it("throws an error if the volunteer does not exist", async () => {
