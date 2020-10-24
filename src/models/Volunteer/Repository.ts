@@ -10,10 +10,12 @@ export class VolunteerRepository extends AbstractRepository<Volunteer> {
   public create(volunteer: Volunteer) {
     return this.manager.transaction(async manager => {
       await manager.insert(Volunteer, volunteer);
-      const volunteerCommissions = volunteer.commissions.map(commission => new VolunteerCommission({
-        volunteerUuid: volunteer.uuid,
-        commissionUuid: commission.uuid
-      }));
+      const volunteerCommissions = volunteer.commissions.map(commission =>
+        new VolunteerCommission({
+          volunteerUuid: volunteer.uuid,
+          commissionUuid: commission.uuid
+        })
+      );
       await manager
         .getCustomRepository(VolunteerCommissionRepository)
         .bulkCreate(volunteerCommissions);
