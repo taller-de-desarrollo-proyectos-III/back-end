@@ -1,5 +1,5 @@
-import { EntityRepository, AbstractRepository, getCustomRepository } from "typeorm";
-import { Volunteer, VolunteerCommission } from "..";
+import { EntityRepository, AbstractRepository, getCustomRepository, Any } from "typeorm";
+import { Commission, Volunteer, VolunteerCommission } from "..";
 
 @EntityRepository(VolunteerCommission)
 export class VolunteerCommissionRepository extends AbstractRepository<VolunteerCommission> {
@@ -11,6 +11,11 @@ export class VolunteerCommissionRepository extends AbstractRepository<VolunteerC
 
   public findByVolunteer(volunteer: Volunteer) {
     return this.repository.find({ where: { volunteerUuid: volunteer.uuid } });
+  }
+
+  public findByCommissions(commissions: Commission[]) {
+    const commissionsUuids = commissions.map(({ uuid }) => uuid);
+    return this.repository.find({ where: { commissionUuid: Any(commissionsUuids) } });
   }
 
   public findAll() {

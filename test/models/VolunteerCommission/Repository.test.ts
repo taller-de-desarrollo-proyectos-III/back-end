@@ -5,7 +5,7 @@ import { volunteerRepository } from "../../../src/models/Volunteer";
 import { commissionRepository } from "../../../src/models/Commission";
 import { Commission, Volunteer, VolunteerCommission } from "../../../src/models";
 
-describe("volunteerCommissionRepository", () => {
+describe("VolunteerCommissionRepository", () => {
   beforeAll(async () => {
     await volunteerRepository().truncate();
     await commissionRepository().truncate();
@@ -49,6 +49,67 @@ describe("volunteerCommissionRepository", () => {
   it("does no save if given an empty array", async () => {
     const volunteerCommissions = await volunteerCommissionRepository().bulkCreate([]);
     expect(volunteerCommissions).toEqual([]);
+  });
+
+  describe("findByCommissions", () => {
+    let firstVolunteer: Volunteer;
+    let secondVolunteer: Volunteer;
+    let firstCommission: Commission;
+    let secondCommission: Commission;
+    let firstVolunteerCommission: VolunteerCommission;
+    let secondVolunteerCommission: VolunteerCommission;
+    let thirdVolunteerCommission: VolunteerCommission;
+    let fourthVolunteerCommission: VolunteerCommission;
+    let allVolunteerCommissions: VolunteerCommission[];
+
+    beforeAll(async () => {
+      firstVolunteer = await createVolunteer();
+      secondVolunteer = await createVolunteer();
+      firstCommission = await createCommission();
+      secondCommission = await createCommission();
+
+      firstVolunteerCommission = new VolunteerCommission({
+        volunteerUuid: firstVolunteer.uuid,
+        commissionUuid: firstCommission.uuid
+      });
+      secondVolunteerCommission = new VolunteerCommission({
+        volunteerUuid: firstVolunteer.uuid,
+        commissionUuid: secondCommission.uuid
+      });
+      thirdVolunteerCommission = new VolunteerCommission({
+        volunteerUuid: secondVolunteer.uuid,
+        commissionUuid: firstCommission.uuid
+      });
+      fourthVolunteerCommission = new VolunteerCommission({
+        volunteerUuid: secondVolunteer.uuid,
+        commissionUuid: secondCommission.uuid
+      });
+      allVolunteerCommissions = [
+        firstVolunteerCommission,
+        secondVolunteerCommission,
+        thirdVolunteerCommission,
+        fourthVolunteerCommission
+      ];
+      await volunteerCommissionRepository().bulkCreate(allVolunteerCommissions);
+    });
+
+    it("finds by the all given commissions", async () => {
+      const volunteerCommissions = await volunteerCommissionRepository().findByCommissions([
+        firstCommission,
+        secondCommission
+      ]);
+      expect(volunteerCommissions).toEqual(expect.arrayContaining(allVolunteerCommissions));
+    });
+
+    it("finds by the some of the given commissions", async () => {
+      const volunteerCommissions = await volunteerCommissionRepository().findByCommissions([
+        firstCommission
+      ]);
+      expect(volunteerCommissions).toEqual(expect.arrayContaining([
+        firstVolunteerCommission,
+        thirdVolunteerCommission
+      ]));
+    });
   });
 
   it("throws an error if the volunteer commission is duplicated", async () => {
