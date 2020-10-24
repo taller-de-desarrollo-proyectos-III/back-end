@@ -40,7 +40,10 @@ describe("volunteerCommissionRepository", () => {
       volunteerCommissionB
     ]);
     const commissions = await volunteerCommissionRepository().findByVolunteer(volunteer);
-    expect(commissions).toEqual([volunteerCommissionA, volunteerCommissionB]);
+    expect(commissions).toEqual(expect.arrayContaining([
+      volunteerCommissionA,
+      volunteerCommissionB
+    ]));
   });
 
   it("does no save if given an empty array", async () => {

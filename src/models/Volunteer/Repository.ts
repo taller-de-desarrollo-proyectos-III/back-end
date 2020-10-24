@@ -1,7 +1,8 @@
-import { EntityRepository, AbstractRepository, getCustomRepository, Any } from "typeorm";
-import { Volunteer, VolunteerCommission, Commission } from "..";
+import { EntityRepository, AbstractRepository, getCustomRepository } from "typeorm";
+import { Volunteer, VolunteerCommission } from "..";
 import { VolunteerCommissionRepository } from "../VolunteerCommission";
 import { volunteerCommissionRepository } from "../VolunteerCommission";
+import { commissionRepository } from "../Commission";
 import { VolunteerNotFoundError } from "./Errors/VolunteerNotFoundError";
 
 @EntityRepository(Volunteer)
@@ -42,7 +43,7 @@ export class VolunteerRepository extends AbstractRepository<Volunteer> {
   private async loadCommissions(volunteer: Volunteer) {
     const volunteerCommissions = await volunteerCommissionRepository().findByVolunteer(volunteer);
     const commissionUuids = volunteerCommissions.map(({ commissionUuid }) => commissionUuid);
-    return this.manager.find(Commission, { where: { uuid: Any(commissionUuids) } });
+    return commissionRepository().findByUuids(commissionUuids);
   }
 }
 

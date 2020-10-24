@@ -1,4 +1,4 @@
-import { EntityRepository, AbstractRepository, getCustomRepository } from "typeorm";
+import { EntityRepository, AbstractRepository, getCustomRepository, Any } from "typeorm";
 import { Commission } from "./Model";
 import { CommissionNotFoundError } from "./Errors/CommissionNotFoundError";
 
@@ -13,6 +13,10 @@ export class CommissionRepository extends AbstractRepository<Commission> {
     if (!commission) throw new CommissionNotFoundError();
 
     return commission;
+  }
+
+  public findByUuids(uuids: string[]) {
+    return this.repository.find({ where: { uuid: Any(uuids) } });
   }
 
   public findAll() {
