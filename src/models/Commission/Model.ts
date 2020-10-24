@@ -12,13 +12,11 @@ export class Commission {
     this.validate();
   }
 
-  @Column({
-    primary: true
-  })
-  uuid: string;
+  @Column({ primary: true })
+  public uuid: string;
 
   @Column()
-  name: string;
+  public name: string;
 
   public validate() {
     if (!isDefined(this.uuid)) throw new AttributeNotDefinedError("uuid");

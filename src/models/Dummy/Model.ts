@@ -10,15 +10,11 @@ export class Dummy {
     this.validate();
   }
 
-  @Column({
-    type: "uuid",
-    nullable: false,
-    primary: true
-  })
-  uuid: string;
+  @Column({ primary: true })
+  public uuid: string;
 
-  @Column({ nullable: false, type: "varchar" })
-  welcomeMessage: string;
+  @Column()
+  public welcomeMessage: string;
 
   public validate() {
     if (!isDefined(this.uuid)) throw new Error("uuid must be defined");

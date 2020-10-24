@@ -18,7 +18,7 @@ describe("volunteerCommissionRepository", () => {
   };
 
   const createCommission = async () => {
-    const commission =  new Commission({ name: "name" });
+    const commission = new Commission({ name: "name" });
     await commissionRepository().create(commission);
     return commission;
   };
@@ -26,7 +26,7 @@ describe("volunteerCommissionRepository", () => {
   it("saves volunteer commissions on the database", async () => {
     const volunteer = await createVolunteer();
     const commissionA = await createCommission();
-    const commissionB =  await createCommission();
+    const commissionB = await createCommission();
     const volunteerCommissionA = new VolunteerCommission({
       volunteerUuid: volunteer.uuid,
       commissionUuid: commissionA.uuid

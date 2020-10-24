@@ -16,21 +16,17 @@ export class Volunteer {
     this.validate();
   }
 
-  @Column({
-    type: "uuid",
-    nullable: false,
-    primary: true
-  })
-  uuid: string;
+  @Column({ primary: true })
+  public uuid: string;
 
-  @Column({ type: "varchar", nullable: false })
-  dni: string;
+  @Column()
+  public dni: string;
 
-  @Column({ type: "varchar", nullable: false })
-  name: string;
+  @Column()
+  public name: string;
 
-  @Column({ type: "varchar", nullable: false })
-  surname: string;
+  @Column()
+  public surname: string;
 
   @ManyToMany(() => Commission)
   public commissions: Commission[];
