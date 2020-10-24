@@ -13,7 +13,7 @@ describe("volunteerCommissionRepository", () => {
 
   const createVolunteer = async () => {
     const volunteer = new Volunteer({ dni: "12345678", name: "John", surname: "Doe" });
-    await volunteerRepository().create({ volunteer });
+    await volunteerRepository().create(volunteer);
     return volunteer;
   };
 

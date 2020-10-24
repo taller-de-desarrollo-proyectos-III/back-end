@@ -1,16 +1,18 @@
-import { Entity, Column } from "typeorm";
+import { Entity, Column, ManyToMany } from "typeorm";
 import { UuidGenerator } from "../UuidGenerator";
 import { isDefined, isUUID } from "class-validator";
 import { AttributeNotDefinedError } from "../Errors/AttributeNotDefinedError";
 import { InvalidAttributeFormatError } from "../Errors/InvalidAttributeFormatError";
+import { Commission } from "..";
 
 @Entity({ name: "Volunteers" })
 export class Volunteer {
-  constructor({ dni, name, surname }: IVolunteerAttributes) {
+  constructor({ dni, name, surname, commissions }: IVolunteerAttributes) {
     this.uuid = UuidGenerator.generate();
     this.dni = dni;
     this.name = name;
     this.surname = surname;
+    this.commissions = commissions || [];
     this.validate();
   }
 
@@ -30,6 +32,9 @@ export class Volunteer {
   @Column({ type: "varchar", nullable: false })
   surname: string;
 
+  @ManyToMany(() => Commission)
+  public commissions: Commission[];
+
   public validate() {
     if (!isDefined(this.uuid)) throw new AttributeNotDefinedError("uuid");
     if (!isDefined(this.dni)) throw new AttributeNotDefinedError("dni");
@@ -43,4 +48,5 @@ interface IVolunteerAttributes {
   dni: string;
   name: string;
   surname: string;
+  commissions?: Commission[];
 }
