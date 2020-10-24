@@ -1,34 +1,35 @@
-import { Entity, Column } from "typeorm";
+import { Entity, Column, ManyToMany } from "typeorm";
 import { UuidGenerator } from "../UuidGenerator";
 import { isDefined, isUUID } from "class-validator";
 import { AttributeNotDefinedError } from "../Errors/AttributeNotDefinedError";
 import { InvalidAttributeFormatError } from "../Errors/InvalidAttributeFormatError";
+import { Commission } from "..";
 
 @Entity({ name: "Volunteers" })
 export class Volunteer {
-  constructor({ dni, name, surname }: IVolunteerAttributes) {
+  constructor({ dni, name, surname, commissions }: IVolunteerAttributes) {
     this.uuid = UuidGenerator.generate();
     this.dni = dni;
     this.name = name;
     this.surname = surname;
+    this.commissions = commissions || [];
     this.validate();
   }
 
-  @Column({
-    type: "uuid",
-    nullable: false,
-    primary: true
-  })
-  uuid: string;
+  @Column({ primary: true })
+  public uuid: string;
 
-  @Column({ type: "varchar", nullable: false })
-  dni: string;
+  @Column()
+  public dni: string;
 
-  @Column({ type: "varchar", nullable: false })
-  name: string;
+  @Column()
+  public name: string;
 
-  @Column({ type: "varchar", nullable: false })
-  surname: string;
+  @Column()
+  public surname: string;
+
+  @ManyToMany(() => Commission)
+  public commissions: Commission[];
 
   public validate() {
     if (!isDefined(this.uuid)) throw new AttributeNotDefinedError("uuid");
@@ -43,4 +44,5 @@ interface IVolunteerAttributes {
   dni: string;
   name: string;
   surname: string;
+  commissions?: Commission[];
 }

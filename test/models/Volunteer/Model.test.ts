@@ -13,6 +13,7 @@ describe("Volunteer", () => {
     const volunteer = new Volunteer(attributes);
     expect(volunteer).toEqual({
       uuid: expect.stringMatching(UUID_REGEX),
+      commissions: [],
       ...attributes
     });
   });
