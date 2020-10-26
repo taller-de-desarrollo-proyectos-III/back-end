@@ -1,9 +1,9 @@
 import { Response } from "express";
 import { flatten } from "lodash";
 import { StatusCodes } from "http-status-codes";
-import { IFetchRequest } from "./Request";
-import { volunteerRepository } from "../models/Volunteer";
-import { commissionRepository } from "../models/Commission";
+import { IFetchRequest } from "../Request";
+import { volunteerRepository } from "../../models/Volunteer";
+import { commissionRepository } from "../../models/Commission";
 
 export const VolunteersController = {
   get: async (request: IFetchRequest<IGetProps>, response: Response) => {
