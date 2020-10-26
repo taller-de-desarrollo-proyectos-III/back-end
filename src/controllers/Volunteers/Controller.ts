@@ -23,9 +23,6 @@ export const VolunteersController = {
       if (error instanceof InvalidAttributeFormatError) {
         return response.status(StatusCodes.BAD_REQUEST).json(error.message);
       }
-      if (error instanceof InvalidAttributeFormatError) {
-        return response.status(StatusCodes.BAD_REQUEST).json(error.message);
-      }
       return response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
     }
   },

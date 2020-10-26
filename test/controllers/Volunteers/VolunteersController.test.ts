@@ -6,7 +6,7 @@ import { UuidGenerator } from "../../../src/models/UuidGenerator";
 import { VolunteersRoutes } from "../../../src/routes/VolunteersRoutes";
 import { Commission, Volunteer } from "../../../src/models";
 import { UUID_REGEX } from "../../models";
-import { AttributeNotDefinedError } from "../../../src/models/Errors";
+import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../../src/models/Errors";
 
 describe("VolunteersController", () => {
   const firstCommission = new Commission({ name: "Commission A" });
@@ -74,7 +74,11 @@ describe("VolunteersController", () => {
   describe("POST /volunteers", () => {
     const commissionUuids = commissions.map(({ uuid }) => uuid);
 
-    const expectToReturnBadRequestOnUndefinedAttribute = async (attribute: string) => {
+    const expectToReturnBadRequestOnUndefinedAttribute = async ({
+      attribute,
+      message
+    }: { attribute: string; message: string; }
+    ) => {
       const attributes = { dni: "12345678", name: "John", surname: "Doe" };
       delete attributes[attribute];
       const response = await testClient.post(VolunteersRoutes.path).send({
@@ -82,7 +86,7 @@ describe("VolunteersController", () => {
         commissionUuids
       });
       expect(response.status).toEqual(StatusCodes.BAD_REQUEST);
-      expect(response.body).toEqual(AttributeNotDefinedError.buildMessage(attribute));
+      expect(response.body).toEqual(message);
     };
 
     it("creates a new volunteer with no commissions", async () => {
@@ -111,20 +115,54 @@ describe("VolunteersController", () => {
     });
 
     it("returns bad request if dni is not defined", async () => {
-      await expectToReturnBadRequestOnUndefinedAttribute("dni");
+      await expectToReturnBadRequestOnUndefinedAttribute({
+        attribute: "dni",
+        message: AttributeNotDefinedError.buildMessage("dni")
+      });
     });
 
     it("returns bad request if name is not defined", async () => {
-      await expectToReturnBadRequestOnUndefinedAttribute("name");
+      await expectToReturnBadRequestOnUndefinedAttribute({
+        attribute: "name",
+        message: AttributeNotDefinedError.buildMessage("name")
+      });
     });
 
     it("returns bad request if surname is not defined", async () => {
-      await expectToReturnBadRequestOnUndefinedAttribute("surname");
+      await expectToReturnBadRequestOnUndefinedAttribute({
+        attribute: "surname",
+        message: AttributeNotDefinedError.buildMessage("surname")
+      });
     });
 
     it("returns bad request the uuid generates an undefined value", async () => {
       jest.spyOn(UuidGenerator, "generate").mockImplementation(() => undefined as any);
-      await expectToReturnBadRequestOnUndefinedAttribute("uuid");
+      await expectToReturnBadRequestOnUndefinedAttribute({
+        attribute: "uuid",
+        message: AttributeNotDefinedError.buildMessage("uuid")
+      });
+    });
+
+    it("returns bad request the uuid generates an invalid value", async () => {
+      jest.spyOn(UuidGenerator, "generate").mockImplementation(() => "invalid");
+      await expectToReturnBadRequestOnUndefinedAttribute({
+        attribute: "uuid",
+        message: InvalidAttributeFormatError.buildMessage("uuid")
+      });
+    });
+
+    it("returns internal server error if generates two volunteers with the same uuid", async () => {
+      jest
+        .spyOn(UuidGenerator, "generate")
+        .mockImplementation(() => "4c925fdc-8fd4-47ed-9a24-fa81ed5cc9da");
+
+      const attributes = { dni: "12345678", name: "John", surname: "Doe" };
+      const firstResponse = await testClient.post(VolunteersRoutes.path).send(attributes);
+      expect(firstResponse.status).toEqual(StatusCodes.CREATED);
+
+      const secondResponse = await testClient.post(VolunteersRoutes.path).send(attributes);
+      expect(secondResponse.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(secondResponse.body).toContain("duplicate key value violates unique constraint");
     });
   });
 });
