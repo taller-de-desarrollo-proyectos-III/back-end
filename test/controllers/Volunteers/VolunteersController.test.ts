@@ -5,6 +5,8 @@ import { commissionRepository } from "../../../src/models/Commission";
 import { UuidGenerator } from "../../../src/models/UuidGenerator";
 import { VolunteersRoutes } from "../../../src/routes/VolunteersRoutes";
 import { Commission, Volunteer } from "../../../src/models";
+import { UUID_REGEX } from "../../models";
+import { AttributeNotDefinedError } from "../../../src/models/Errors";
 
 describe("VolunteersController", () => {
   const firstCommission = new Commission({ name: "Commission A" });
@@ -33,37 +35,96 @@ describe("VolunteersController", () => {
     await volunteerRepository().create(secondVolunteer);
   });
 
-  it("get all volunteers that belong to the given commissions", async () => {
+  describe("GET /volunteers", () => {
+    it("get all volunteers that belong to the given commissions", async () => {
+      const commissionUuids = commissions.map(({ uuid }) => uuid);
+      const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
+      expect(response.status).toEqual(StatusCodes.OK);
+      expect(response.body).toEqual(expect.arrayContaining([firstVolunteer, secondVolunteer]));
+    });
+
+    it("get all volunteers that belong the provided commission uuid", async () => {
+      const commissionUuids = [firstCommission.uuid];
+      const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
+      expect(response.status).toEqual(StatusCodes.OK);
+      expect(response.body).toEqual(expect.arrayContaining([firstVolunteer]));
+    });
+
+    it("returns no volunteers if given an empty array", async () => {
+      const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids: [] });
+      expect(response.status).toEqual(StatusCodes.OK);
+      expect(response.body).toEqual([]);
+    });
+
+    it("returns no volunteers if given unknown commissionUuids", async () => {
+      const commissionUuids = [UuidGenerator.generate()];
+      const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
+      expect(response.status).toEqual(StatusCodes.OK);
+      expect(response.body).toEqual([]);
+    });
+
+    it("returns an internal server error if given array of numbers", async () => {
+      const commissionUuids = [1, 2, 3, 4];
+      const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
+      expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(response.body).toEqual("invalid input syntax for type uuid: \"1\"");
+    });
+  });
+
+  describe("POST /volunteers", () => {
     const commissionUuids = commissions.map(({ uuid }) => uuid);
-    const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
-    expect(response.status).toEqual(StatusCodes.OK);
-    expect(response.body).toEqual(expect.arrayContaining([firstVolunteer, secondVolunteer]));
-  });
 
-  it("get all volunteers that belong the provided commission uuid", async () => {
-    const commissionUuids = [firstCommission.uuid];
-    const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
-    expect(response.status).toEqual(StatusCodes.OK);
-    expect(response.body).toEqual(expect.arrayContaining([firstVolunteer]));
-  });
+    const expectToReturnBadRequestOnUndefinedAttribute = async (attribute: string) => {
+      const attributes = { dni: "12345678", name: "John", surname: "Doe" };
+      delete attributes[attribute];
+      const response = await testClient.post(VolunteersRoutes.path).send({
+        ...attributes,
+        commissionUuids
+      });
+      expect(response.status).toEqual(StatusCodes.BAD_REQUEST);
+      expect(response.body).toEqual(AttributeNotDefinedError.buildMessage(attribute));
+    };
 
-  it("returns no volunteers if given an empty array", async () => {
-    const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids: [] });
-    expect(response.status).toEqual(StatusCodes.OK);
-    expect(response.body).toEqual([]);
-  });
+    it("creates a new volunteer with no commissions", async () => {
+      const attributes = { dni: "12345678", name: "John", surname: "Doe" };
+      const response = await testClient.post(VolunteersRoutes.path).send(attributes);
+      expect(response.status).toEqual(StatusCodes.CREATED);
+      expect(response.body).toEqual({
+        uuid: expect.stringMatching(UUID_REGEX),
+        ...attributes,
+        commissions: []
+      });
+    });
 
-  it("returns no volunteers if given unknown commissionUuids", async () => {
-    const commissionUuids = [UuidGenerator.generate()];
-    const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
-    expect(response.status).toEqual(StatusCodes.OK);
-    expect(response.body).toEqual([]);
-  });
+    it("creates a new volunteer with commissions", async () => {
+      const attributes = { dni: "12345678", name: "John", surname: "Doe" };
+      const response = await testClient.post(VolunteersRoutes.path).send({
+        ...attributes,
+        commissionUuids
+      });
+      expect(response.status).toEqual(StatusCodes.CREATED);
+      expect(response.body).toEqual({
+        uuid: expect.stringMatching(UUID_REGEX),
+        ...attributes,
+        commissions
+      });
+    });
 
-  it("returns an internal server error if given array of numbers", async () => {
-    const commissionUuids = [1, 2, 3, 4];
-    const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
-    expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
-    expect(response.body).toEqual("invalid input syntax for type uuid: \"1\"");
+    it("returns bad request if dni is not defined", async () => {
+      await expectToReturnBadRequestOnUndefinedAttribute("dni");
+    });
+
+    it("returns bad request if name is not defined", async () => {
+      await expectToReturnBadRequestOnUndefinedAttribute("name");
+    });
+
+    it("returns bad request if surname is not defined", async () => {
+      await expectToReturnBadRequestOnUndefinedAttribute("surname");
+    });
+
+    it("returns bad request the uuid generates an undefined value", async () => {
+      jest.spyOn(UuidGenerator, "generate").mockImplementation(() => undefined as any);
+      await expectToReturnBadRequestOnUndefinedAttribute("uuid");
+    });
   });
 });
