@@ -1,10 +1,10 @@
-import { testClient } from "./TestClient";
+import { testClient } from "../TestClient";
 import { StatusCodes } from "http-status-codes";
-import { volunteerRepository } from "../../src/models/Volunteer";
-import { commissionRepository } from "../../src/models/Commission";
-import { UuidGenerator } from "../../src/models/UuidGenerator";
-import { VolunteersRoutes } from "../../src/routes/VolunteersRoutes";
-import { Commission, Volunteer } from "../../src/models";
+import { volunteerRepository } from "../../../src/models/Volunteer";
+import { commissionRepository } from "../../../src/models/Commission";
+import { UuidGenerator } from "../../../src/models/UuidGenerator";
+import { VolunteersRoutes } from "../../../src/routes/VolunteersRoutes";
+import { Commission, Volunteer } from "../../../src/models";
 
 describe("VolunteersController", () => {
   const firstCommission = new Commission({ name: "Commission A" });

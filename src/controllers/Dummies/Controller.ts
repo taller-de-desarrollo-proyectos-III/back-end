@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { dummyRepository } from "../models/Dummy";
-import { Dummy } from "../models";
+import { dummyRepository } from "../../models/Dummy";
+import { Dummy } from "../../models";
 
-export const DummyController = {
+export const DummiesController = {
   create: async (request: Request, response: Response) => {
     try {
       const { welcomeMessage } = request.body;

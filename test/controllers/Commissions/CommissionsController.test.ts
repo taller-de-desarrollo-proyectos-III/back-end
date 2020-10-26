@@ -1,12 +1,12 @@
-import { testClient } from "./TestClient";
+import { testClient } from "../TestClient";
 import { StatusCodes } from "http-status-codes";
-import * as CommissionModule from "../../src/models/Commission";
-import { Commission } from "../../src/models";
-import { CommissionsRoutes } from "../../src/routes/CommissionsRoutes";
-import { commissionRepository } from "../../src/models/Commission";
-import { UuidGenerator } from "../../src/models/UuidGenerator";
-import { AttributeNotDefinedError } from "../../src/models/Errors";
-import { UUID_REGEX } from "../models";
+import * as CommissionModule from "../../../src/models/Commission";
+import { Commission } from "../../../src/models";
+import { CommissionsRoutes } from "../../../src/routes/CommissionsRoutes";
+import { commissionRepository } from "../../../src/models/Commission";
+import { UuidGenerator } from "../../../src/models/UuidGenerator";
+import { AttributeNotDefinedError } from "../../../src/models/Errors";
+import { UUID_REGEX } from "../../models";
 
 describe("CommissionsController", () => {
   const firstCommission = new Commission({ name: "Commission A" });

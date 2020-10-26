@@ -1,7 +1,7 @@
-import { testClient } from "./TestClient";
+import { testClient } from "../TestClient";
 import { StatusCodes } from "http-status-codes";
-import { dummyRepository } from "../../src/models/Dummy";
-import { DummyRoutes } from "../../src/routes/DummyRoutes";
+import { dummyRepository } from "../../../src/models/Dummy";
+import { DummyRoutes } from "../../../src/routes/DummyRoutes";
 
 describe("DummyController", () => {
   beforeAll(() => dummyRepository().truncate());
