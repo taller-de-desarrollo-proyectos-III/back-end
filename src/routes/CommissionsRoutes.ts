@@ -6,6 +6,7 @@ export const CommissionsRoutes = {
   initialize: () => {
     const router = Router();
     router.get(CommissionsRoutes.path, CommissionsController.get);
+    router.post(CommissionsRoutes.path, CommissionsController.create);
     return router;
   }
 };
