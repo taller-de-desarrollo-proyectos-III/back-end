@@ -5,7 +5,7 @@ import { Commission } from "../../../src/models";
 import { CommissionsRoutes } from "../../../src/routes/CommissionsRoutes";
 import { commissionRepository } from "../../../src/models/Commission";
 import { UuidGenerator } from "../../../src/models/UuidGenerator";
-import { AttributeNotDefinedError } from "../../../src/models/Errors";
+import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../../src/models/Errors";
 import { UUID_REGEX } from "../../models";
 
 describe("CommissionsController", () => {
@@ -72,6 +72,31 @@ describe("CommissionsController", () => {
       const response = await testClient.post(CommissionsRoutes.path).send({ name });
       expect(response.status).toEqual(StatusCodes.BAD_REQUEST);
       expect(response.body).toEqual(AttributeNotDefinedError.buildMessage("uuid"));
+    });
+
+    it("returns bad request if the generator returns an invalid format", async () => {
+      const name = "name";
+      jest.spyOn(UuidGenerator, "generate").mockImplementation(() => "invalidFormat");
+      const response = await testClient.post(CommissionsRoutes.path).send({ name });
+      expect(response.status).toEqual(StatusCodes.BAD_REQUEST);
+      expect(response.body).toEqual(InvalidAttributeFormatError.buildMessage("uuid"));
+    });
+
+    it("returns internal server error on duplicated uuids", async () => {
+      jest
+        .spyOn(UuidGenerator, "generate")
+        .mockImplementation(() => "4c925fdc-8fd4-47ed-9a24-fa81ed5cc9da");
+
+      const firstResponse = await testClient.post(CommissionsRoutes.path).send({
+        name: "firstName"
+      });
+      expect(firstResponse.status).toEqual(StatusCodes.CREATED);
+
+      const secondResponse = await testClient.post(CommissionsRoutes.path).send({
+        name: "secondName"
+      });
+      expect(secondResponse.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(secondResponse.body).toContain("duplicate key value violates unique constraint");
     });
 
     it("creates two commissions and expect them to be in the database", async () => {
