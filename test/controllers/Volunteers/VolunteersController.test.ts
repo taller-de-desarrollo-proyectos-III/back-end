@@ -67,7 +67,7 @@ describe("VolunteersController", () => {
       const commissionUuids = [1, 2, 3, 4];
       const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
       expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
-      expect(response.body).toEqual("invalid input syntax for type uuid: \"1\"");
+      expect(response.body).toEqual('invalid input syntax for type uuid: "1"');
     });
   });
 
@@ -77,8 +77,10 @@ describe("VolunteersController", () => {
     const expectToReturnBadRequestOnUndefinedAttribute = async ({
       attribute,
       message
-    }: { attribute: string; message: string; }
-    ) => {
+    }: {
+      attribute: string;
+      message: string;
+    }) => {
       const attributes = { dni: "12345678", name: "John", surname: "Doe" };
       delete attributes[attribute];
       const response = await testClient.post(VolunteersRoutes.path).send({

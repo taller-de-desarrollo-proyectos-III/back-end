@@ -21,17 +21,18 @@ describe("CommissionRepository", () => {
     await commissionRepository().create(secondCommission);
     const commissions = [firstCommission, secondCommission];
     const uuids = commissions.map(({ uuid }) => uuid);
-    expect(
-      await commissionRepository().findByUuids(uuids)
-    ).toEqual(expect.arrayContaining(commissions));
+    expect(await commissionRepository().findByUuids(uuids)).toEqual(
+      expect.arrayContaining(commissions)
+    );
   });
 
   it("throws an error if the commission does not exist", async () => {
     const commission = new Commission({
       name: "Commission B"
     });
-    await expect(commissionRepository().findByUuid(commission.uuid))
-      .rejects.toThrow(CommissionNotFoundError);
+    await expect(commissionRepository().findByUuid(commission.uuid)).rejects.toThrow(
+      CommissionNotFoundError
+    );
   });
 
   it("throws an error when trying to insert a duplicated commission", async () => {
@@ -46,9 +47,9 @@ describe("CommissionRepository", () => {
     await commissionRepository().create(firstCommission);
     await commissionRepository().create(secondCommission);
 
-    expect(
-      await commissionRepository().findAll()
-    ).toEqual(expect.arrayContaining([firstCommission, secondCommission]));
+    expect(await commissionRepository().findAll()).toEqual(
+      expect.arrayContaining([firstCommission, secondCommission])
+    );
 
     await commissionRepository().truncate();
     expect(await commissionRepository().findAll()).toHaveLength(0);

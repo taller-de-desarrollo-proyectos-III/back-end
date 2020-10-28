@@ -1,38 +1,15 @@
 {
-  "extends": "tslint:recommended",
+  "extends": ["tslint:recommended", "prettier", "tslint-config-prettier"],
   "rules": {
-    "max-line-length": {
-      "options": [
-        100
-      ]
-    },
+    "max-line-length": { "options": [100] },
     "only-arrow-functions": true,
-    "arrow-parens": [
-      true,
-      "ban-single-arg-parens"
-    ],
-    "semicolon": [
-      true,
-      "always"
-    ],
-    "indent": [
-      true,
-      "spaces",
-      2
-    ],
+    "arrow-parens": [true, "ban-single-arg-parens"],
+    "semicolon": [true, "always"],
+    "indent": [true, "spaces", 2],
     "forin": true,
-    "curly": [
-      true,
-      "ignore-same-line"
-    ],
-    "comment-format": [
-      true,
-      "check-space"
-    ],
-    "eol-last": [
-      "error",
-      "always"
-    ],
+    "curly": [true, "ignore-same-line"],
+    "comment-format": [true, "check-space"],
+    "eol-last": ["error", "always"],
     "eofline": true,
     "comma-spacing": [
       "error",
@@ -46,10 +23,7 @@
     "no-var-keyword": true,
     "no-var-requires": false,
     "no-require-imports": true,
-    "quotemark": [
-      true,
-      "double"
-    ],
+    "quotemark": [true, "double", "avoid-escape"],
     "jsx-wrap-multiline": false,
     "no-debugger": false,
     "ordered-imports": [false],
@@ -72,35 +46,21 @@
       }
     ],
     "object-literal-shorthand": false,
-    "whitespace": [
-      true,
-      "check-module"
-    ],
-    "align": [
-      true,
-      "parameters",
-      "statements",
-      "arguments",
-      "members",
-      "elements"
-    ],
-    "interface-over-type-literal": false
+    "whitespace": [true, "check-module"],
+    "align": [true, "parameters", "statements", "arguments", "members", "elements"],
+    "interface-over-type-literal": false,
+    "prettier": [true, null, { "ignorePath": "./.prettierignore" }]
   },
   "jsRules": {
     "max-line-length": {
-      "options": [
-        100
-      ]
+      "options": [100]
     }
   },
+  "rulesDirectory": ["tslint-plugin-prettier"],
   "defaultSeverity": "error",
   "linterOptions": {
-    "exclude": [
-      "node_modules/**/*.ts",
-      "build/**/*.js"
-    ]
+    "exclude": ["node_modules/**/*.ts", "build/**/*.js"]
   },
-  "rulesDirectory": [],
   "no-unused-variable": [
     true,
     {

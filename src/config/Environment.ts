@@ -11,7 +11,7 @@ export const Environment = {
   TEST: "test" as Env,
   TRAVIS: "travis" as Env,
   PORT: () => parseInt(process.env.PORT || "5000", 10),
-  NODE_ENV: () => process.env[variablesKeys.NODE_ENV] as Env || Environment.DEVELOPMENT,
+  NODE_ENV: () => (process.env[variablesKeys.NODE_ENV] as Env) || Environment.DEVELOPMENT,
   database: {
     url: () => process.env[variablesKeys.DATABASE_URL] as string
   },

@@ -48,16 +48,17 @@ describe("VolunteerRepository", () => {
       const volunteerB = new Volunteer({ commissions: [commissionB], ...attributes });
       await volunteerRepository().create(volunteerA);
       await volunteerRepository().create(volunteerB);
-      expect(
-        await volunteerRepository().findByCommissions([commissionA, commissionB])
-      ).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
+      expect(await volunteerRepository().findByCommissions([commissionA, commissionB])).toEqual(
+        expect.arrayContaining([volunteerA, volunteerB])
+      );
     });
   });
 
   it("throws an error if the volunteer does not exist", async () => {
     const volunteer = new Volunteer(attributes);
-    await expect(volunteerRepository().findByUuid(volunteer.uuid))
-      .rejects.toThrow(VolunteerNotFoundError);
+    await expect(volunteerRepository().findByUuid(volunteer.uuid)).rejects.toThrow(
+      VolunteerNotFoundError
+    );
   });
 
   it("throws an error when trying to insert a duplicated volunteer", async () => {
@@ -72,9 +73,9 @@ describe("VolunteerRepository", () => {
     await volunteerRepository().create(firstVolunteer);
     await volunteerRepository().create(secondVolunteer);
 
-    expect(
-      await volunteerRepository().findAll()
-    ).toEqual(expect.arrayContaining([firstVolunteer, secondVolunteer]));
+    expect(await volunteerRepository().findAll()).toEqual(
+      expect.arrayContaining([firstVolunteer, secondVolunteer])
+    );
 
     await volunteerRepository().truncate();
     expect(await volunteerRepository().findAll()).toHaveLength(0);

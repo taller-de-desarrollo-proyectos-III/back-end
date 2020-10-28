@@ -71,10 +71,6 @@ export class PostgresService {
   }
 
   private static entities() {
-    return [
-      Volunteer,
-      Commission,
-      VolunteerCommission
-    ];
+    return [Volunteer, Commission, VolunteerCommission];
   }
 }
