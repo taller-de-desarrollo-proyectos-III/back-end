@@ -36,12 +36,10 @@ describe("CommissionsController", () => {
     it("returns an internal server error if a commissionRepository() fails", async () => {
       const repository = commissionRepository();
       const errorMessage = "Something unexpected just happened";
-      jest
-        .spyOn(repository, "findAll")
-        .mockImplementation(() => { throw new Error(errorMessage); });
-      jest
-        .spyOn(CommissionModule, "commissionRepository")
-        .mockImplementation(() => repository);
+      jest.spyOn(repository, "findAll").mockImplementation(() => {
+        throw new Error(errorMessage);
+      });
+      jest.spyOn(CommissionModule, "commissionRepository").mockImplementation(() => repository);
       const response = await testClient.get(CommissionsRoutes.path);
       expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(response.body).toEqual(errorMessage);
@@ -53,10 +51,12 @@ describe("CommissionsController", () => {
       const name = "newCommission";
       const response = await testClient.post(CommissionsRoutes.path).send({ name });
       expect(response.status).toEqual(StatusCodes.CREATED);
-      expect(response.body).toEqual(expect.objectContaining({
-        uuid: expect.stringMatching(UUID_REGEX),
-        name
-      }));
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          uuid: expect.stringMatching(UUID_REGEX),
+          name
+        })
+      );
     });
 
     it("returns bad request if the name is not defined", async () => {

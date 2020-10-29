@@ -35,15 +35,11 @@ describe("VolunteerCommissionRepository", () => {
       volunteerUuid: volunteer.uuid,
       commissionUuid: commissionB.uuid
     });
-    await volunteerCommissionRepository().bulkCreate([
-      volunteerCommissionA,
-      volunteerCommissionB
-    ]);
+    await volunteerCommissionRepository().bulkCreate([volunteerCommissionA, volunteerCommissionB]);
     const commissions = await volunteerCommissionRepository().findByVolunteer(volunteer);
-    expect(commissions).toEqual(expect.arrayContaining([
-      volunteerCommissionA,
-      volunteerCommissionB
-    ]));
+    expect(commissions).toEqual(
+      expect.arrayContaining([volunteerCommissionA, volunteerCommissionB])
+    );
   });
 
   it("does no save if given an empty array", async () => {
@@ -105,10 +101,9 @@ describe("VolunteerCommissionRepository", () => {
       const volunteerCommissions = await volunteerCommissionRepository().findByCommissions([
         firstCommission
       ]);
-      expect(volunteerCommissions).toEqual(expect.arrayContaining([
-        firstVolunteerCommission,
-        thirdVolunteerCommission
-      ]));
+      expect(volunteerCommissions).toEqual(
+        expect.arrayContaining([firstVolunteerCommission, thirdVolunteerCommission])
+      );
     });
   });
 
@@ -130,10 +125,8 @@ describe("VolunteerCommissionRepository", () => {
       volunteerUuid: UuidGenerator.generate(),
       commissionUuid: commission.uuid
     });
-    await expect(
-      volunteerCommissionRepository().bulkCreate([volunteerCommission])
-    ).rejects.toThrow(
-      "insert or update on table \"VolunteerCommissions\" violates foreign key constraint"
+    await expect(volunteerCommissionRepository().bulkCreate([volunteerCommission])).rejects.toThrow(
+      'insert or update on table "VolunteerCommissions" violates foreign key constraint'
     );
   });
 
@@ -143,10 +136,8 @@ describe("VolunteerCommissionRepository", () => {
       volunteerUuid: volunteer.uuid,
       commissionUuid: UuidGenerator.generate()
     });
-    await expect(
-      volunteerCommissionRepository().bulkCreate([volunteerCommission])
-    ).rejects.toThrow(
-      "insert or update on table \"VolunteerCommissions\" violates foreign key constraint"
+    await expect(volunteerCommissionRepository().bulkCreate([volunteerCommission])).rejects.toThrow(
+      'insert or update on table "VolunteerCommissions" violates foreign key constraint'
     );
   });
 
@@ -160,9 +151,9 @@ describe("VolunteerCommissionRepository", () => {
       });
 
       await volunteerCommissionRepository().bulkCreate([volunteerCommission]);
-      expect(
-        await volunteerCommissionRepository().findAll()
-      ).toEqual(expect.arrayContaining([volunteerCommission]));
+      expect(await volunteerCommissionRepository().findAll()).toEqual(
+        expect.arrayContaining([volunteerCommission])
+      );
       await truncate();
       expect(await volunteerCommissionRepository().findAll()).toHaveLength(0);
     };

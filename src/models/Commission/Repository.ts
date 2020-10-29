@@ -9,7 +9,7 @@ export class CommissionRepository extends AbstractRepository<Commission> {
   }
 
   public async findByUuid(uuid: string) {
-    const commission = await this.repository.findOne({uuid});
+    const commission = await this.repository.findOne({ uuid });
     if (!commission) throw new CommissionNotFoundError();
 
     return commission;

@@ -6,7 +6,7 @@ module.exports = {
     "test",
     "src/migrations",
     "src/config/TypeORM.ts",
-    "src/index.ts",
+    "src/index.ts"
   ],
   globals: {
     "ts-jest": {
@@ -16,10 +16,7 @@ module.exports = {
   verbose: false,
   rootDir: "../",
   setupFiles: ["core-js"],
-  collectCoverageFrom: [
-    "src/**/*.ts",
-    "!<rootDir>/node_modules/"
-  ],
+  collectCoverageFrom: ["src/**/*.ts", "!<rootDir>/node_modules/"],
   setupFilesAfterEnv: ["./test/jestConfig/setup.ts"],
   watchPathIgnorePatterns: ["./node_modules/"],
   testPathIgnorePatterns: [".d.ts", ".js"]

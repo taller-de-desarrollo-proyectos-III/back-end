@@ -20,18 +20,24 @@ export class CreateVolunteerCommissionsTable1603409925001 implements MigrationIn
       ]
     });
     await queryRunner.createTable(table);
-    await queryRunner.createForeignKey(table, new TableForeignKey({
-      columnNames: ["volunteerUuid"],
-      referencedColumnNames: ["uuid"],
-      referencedTableName: "Volunteers",
-      onDelete: "CASCADE"
-    }));
-    await queryRunner.createForeignKey(table, new TableForeignKey({
-      columnNames: ["commissionUuid"],
-      referencedColumnNames: ["uuid"],
-      referencedTableName: "Commissions",
-      onDelete: "CASCADE"
-    }));
+    await queryRunner.createForeignKey(
+      table,
+      new TableForeignKey({
+        columnNames: ["volunteerUuid"],
+        referencedColumnNames: ["uuid"],
+        referencedTableName: "Volunteers",
+        onDelete: "CASCADE"
+      })
+    );
+    await queryRunner.createForeignKey(
+      table,
+      new TableForeignKey({
+        columnNames: ["commissionUuid"],
+        referencedColumnNames: ["uuid"],
+        referencedTableName: "Commissions",
+        onDelete: "CASCADE"
+      })
+    );
     await queryRunner.createPrimaryKey(table, ["volunteerUuid", "commissionUuid"]);
   }
 

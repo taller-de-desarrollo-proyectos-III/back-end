@@ -6,7 +6,7 @@ import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../mod
 import { StatusCodes } from "http-status-codes";
 import { commissionRepository } from "../../models/Commission";
 
-export const CommissionsController  = {
+export const CommissionsController = {
   create: async (request: IPostRequest<ICreateProps>, response: Response) => {
     try {
       const { name } = request.body;

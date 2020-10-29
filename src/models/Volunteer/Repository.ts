@@ -10,11 +10,12 @@ export class VolunteerRepository extends AbstractRepository<Volunteer> {
   public create(volunteer: Volunteer) {
     return this.manager.transaction(async manager => {
       await manager.insert(Volunteer, volunteer);
-      const volunteerCommissions = volunteer.commissions.map(commission =>
-        new VolunteerCommission({
-          volunteerUuid: volunteer.uuid,
-          commissionUuid: commission.uuid
-        })
+      const volunteerCommissions = volunteer.commissions.map(
+        commission =>
+          new VolunteerCommission({
+            volunteerUuid: volunteer.uuid,
+            commissionUuid: commission.uuid
+          })
       );
       await manager
         .getCustomRepository(VolunteerCommissionRepository)
@@ -28,10 +29,12 @@ export class VolunteerRepository extends AbstractRepository<Volunteer> {
     const volunteerCommission = await repository.findByCommissions(commissions);
     const uuids = volunteerCommission.map(({ volunteerUuid }) => volunteerUuid);
     const volunteers = await this.repository.find({ where: { uuid: Any(uuids) } });
-    return Promise.all(volunteers.map(async volunteer => {
-      volunteer.commissions = await VolunteerRepository.loadCommissions(volunteer);
-      return volunteer;
-    }));
+    return Promise.all(
+      volunteers.map(async volunteer => {
+        volunteer.commissions = await VolunteerRepository.loadCommissions(volunteer);
+        return volunteer;
+      })
+    );
   }
 
   public async findByUuid(uuid: string) {
