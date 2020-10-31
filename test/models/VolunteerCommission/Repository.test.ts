@@ -4,6 +4,7 @@ import { UuidGenerator } from "../../../src/models/UuidGenerator";
 import { volunteerRepository } from "../../../src/models/Volunteer";
 import { commissionRepository } from "../../../src/models/Commission";
 import { Commission, Volunteer, VolunteerCommission } from "../../../src/models";
+import { CommissionGenerator } from "../../Generators/Commission";
 
 describe("VolunteerCommissionRepository", () => {
   beforeAll(async () => {
@@ -17,16 +18,10 @@ describe("VolunteerCommissionRepository", () => {
     return volunteer;
   };
 
-  const createCommission = async () => {
-    const commission = new Commission({ name: "name" });
-    await commissionRepository().create(commission);
-    return commission;
-  };
-
   it("saves volunteer commissions on the database", async () => {
     const volunteer = await createVolunteer();
-    const commissionA = await createCommission();
-    const commissionB = await createCommission();
+    const commissionA = await CommissionGenerator.instance();
+    const commissionB = await CommissionGenerator.instance();
     const volunteerCommissionA = new VolunteerCommission({
       volunteerUuid: volunteer.uuid,
       commissionUuid: commissionA.uuid
@@ -61,8 +56,8 @@ describe("VolunteerCommissionRepository", () => {
     beforeAll(async () => {
       firstVolunteer = await createVolunteer();
       secondVolunteer = await createVolunteer();
-      firstCommission = await createCommission();
-      secondCommission = await createCommission();
+      firstCommission = await CommissionGenerator.instance();
+      secondCommission = await CommissionGenerator.instance();
 
       firstVolunteerCommission = new VolunteerCommission({
         volunteerUuid: firstVolunteer.uuid,
@@ -109,7 +104,7 @@ describe("VolunteerCommissionRepository", () => {
 
   it("throws an error if the volunteer commission is duplicated", async () => {
     const volunteer = await createVolunteer();
-    const commission = await createCommission();
+    const commission = await CommissionGenerator.instance();
     const volunteerCommission = new VolunteerCommission({
       volunteerUuid: volunteer.uuid,
       commissionUuid: commission.uuid
@@ -120,7 +115,7 @@ describe("VolunteerCommissionRepository", () => {
   });
 
   it("throws an error if the volunteer does not exist", async () => {
-    const commission = await createCommission();
+    const commission = await CommissionGenerator.instance();
     const volunteerCommission = new VolunteerCommission({
       volunteerUuid: UuidGenerator.generate(),
       commissionUuid: commission.uuid
@@ -144,7 +139,7 @@ describe("VolunteerCommissionRepository", () => {
   describe("Delete cascade", () => {
     const expectToDeleteAlEntries = async (truncate: () => Promise<DeleteResult>) => {
       const volunteer = await createVolunteer();
-      const commission = await createCommission();
+      const commission = await CommissionGenerator.instance();
       const volunteerCommission = new VolunteerCommission({
         volunteerUuid: volunteer.uuid,
         commissionUuid: commission.uuid

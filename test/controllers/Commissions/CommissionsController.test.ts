@@ -13,9 +13,7 @@ describe("CommissionsController", () => {
   const secondCommission = new Commission({ name: "Commission B" });
   const commissions = [firstCommission, secondCommission];
 
-  beforeAll(async () => {
-    await commissionRepository().truncate();
-  });
+  beforeEach(async () => commissionRepository().truncate());
 
   describe("GET /commissions", () => {
     it("get all existing commissions", async () => {
@@ -95,6 +93,16 @@ describe("CommissionsController", () => {
       const secondResponse = await testClient.post(CommissionsRoutes.path).send({
         name: "secondName"
       });
+      expect(secondResponse.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(secondResponse.body).toContain("duplicate key value violates unique constraint");
+    });
+
+    it("returns internal server error on duplicated name", async () => {
+      const name = "name";
+      const firstResponse = await testClient.post(CommissionsRoutes.path).send({ name });
+      expect(firstResponse.status).toEqual(StatusCodes.CREATED);
+
+      const secondResponse = await testClient.post(CommissionsRoutes.path).send({ name });
       expect(secondResponse.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(secondResponse.body).toContain("duplicate key value violates unique constraint");
     });
