@@ -112,7 +112,7 @@ describe("VolunteersController", () => {
       expect(response.body).toEqual({
         uuid: expect.stringMatching(UUID_REGEX),
         ...attributes,
-        commissions
+        commissions: expect.arrayContaining(commissions)
       });
     });
 

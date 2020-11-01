@@ -4,9 +4,7 @@ import { QueryFailedError } from "typeorm";
 import { CommissionNotFoundError } from "../../../src/models/Commission/Errors";
 
 describe("CommissionRepository", () => {
-  beforeAll(async () => {
-    await commissionRepository().truncate();
-  });
+  beforeEach(() => commissionRepository().truncate());
 
   it("saves a commission model on the database", async () => {
     const commission = new Commission({ name: "Commission A" });
@@ -27,9 +25,7 @@ describe("CommissionRepository", () => {
   });
 
   it("throws an error if the commission does not exist", async () => {
-    const commission = new Commission({
-      name: "Commission B"
-    });
+    const commission = new Commission({ name: "Commission B" });
     await expect(commissionRepository().findByUuid(commission.uuid)).rejects.toThrow(
       CommissionNotFoundError
     );
@@ -39,6 +35,17 @@ describe("CommissionRepository", () => {
     const commission = new Commission({ name: "Commission C" });
     await commissionRepository().create(commission);
     await expect(commissionRepository().create(commission)).rejects.toThrow(QueryFailedError);
+  });
+
+  it("throws an error when trying to insert a commission with an existing name", async () => {
+    const commission = new Commission({ name: "Commission C" });
+    const anotherCommission = new Commission({ name: "Commission C" });
+    await commissionRepository().create(commission);
+    const matcher = expect(commissionRepository().create(anotherCommission));
+    await matcher.rejects.toThrow(QueryFailedError);
+    await matcher.rejects.toThrow(
+      'duplicate key value violates unique constraint "CommissionsNameKey"'
+    );
   });
 
   it("removes all entries from Commission table", async () => {
