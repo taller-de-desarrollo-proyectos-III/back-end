@@ -97,24 +97,6 @@ describe("Volunteer", () => {
     ).toThrow(AttributeNotDefinedError);
   });
 
-  it("throws an error if no email is provided", async () => {
-    expect(
-      () =>
-        new Volunteer({
-          dni: "12345678",
-          name: "John",
-          surname: "Doe",
-          email: undefined as any,
-          linkedin: "John Doe",
-          phoneNumber: "1165287676",
-          telegram: "@JohnD",
-          admissionYear: undefined as any,
-          graduationYear: "2016",
-          country: "Argentina"
-        })
-    ).toThrow(AttributeNotDefinedError);
-  });
-
   it("throws an error if email has invalid format", async () => {
     expect(
       () =>
@@ -133,7 +115,7 @@ describe("Volunteer", () => {
     ).toThrow(InvalidAttributeFormatError);
   });
 
-  it("throws an error if admissionYear has invalid format", async () => {
+  it("throws an error if admissionYear has invalid caracters", async () => {
     expect(
       () =>
         new Volunteer({
@@ -151,7 +133,7 @@ describe("Volunteer", () => {
     ).toThrow(InvalidAttributeFormatError);
   });
 
-  it("throws an error if graduationYear has invalid format", async () => {
+  it("throws an error if graduationYear has invalid caracters", async () => {
     expect(
       () =>
         new Volunteer({
@@ -169,7 +151,7 @@ describe("Volunteer", () => {
     ).toThrow(InvalidAttributeFormatError);
   });
 
-  it("throws an error if graduationYear has invalid format", async () => {
+  it("throws an error if graduationYear has more than four caracters", async () => {
     expect(
       () =>
         new Volunteer({
@@ -187,7 +169,7 @@ describe("Volunteer", () => {
     ).toThrow(InvalidAttributeFormatError);
   });
 
-  it("throws an error if admissionYear has invalid format", async () => {
+  it("throws an error if admissionYear has more than four caracters", async () => {
     expect(
       () =>
         new Volunteer({
