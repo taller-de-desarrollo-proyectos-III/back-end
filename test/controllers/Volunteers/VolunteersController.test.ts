@@ -16,12 +16,26 @@ describe("VolunteersController", () => {
     dni: "12345678",
     name: "John",
     surname: "Doe",
+    mail: "johndoe@gmail.com",
+    linkedin: "John Doe",
+    celular: "1165287676",
+    telegram: "@JohnD",
+    entryDate: "2016",
+    graduationDate: "2016",
+    country: "Argentina",
     commissions: [firstCommission]
   });
   const secondVolunteer = new Volunteer({
     dni: "1234556",
     name: "Eric",
     surname: "Clapton",
+    mail: "ericclapton@gmail.com",
+    linkedin: "Eric Clapton",
+    celular: "1165342313",
+    telegram: "@Eric",
+    entryDate: "2019",
+    graduationDate: "2020",
+    country: "Argentina",
     commissions: [secondCommission]
   });
 
@@ -81,7 +95,18 @@ describe("VolunteersController", () => {
       attribute: string;
       message: string;
     }) => {
-      const attributes = { dni: "12345678", name: "John", surname: "Doe" };
+      const attributes = {
+        dni: "12345678",
+        name: "John",
+        surname: "Doe",
+        mail: "johndoe@",
+        linkedin: "John Doe",
+        celular: "1165287676",
+        telegram: "@JohnD",
+        entryDate: "2016",
+        graduationDate: "2016",
+        country: "Argentina"
+      };
       delete attributes[attribute];
       const response = await testClient.post(VolunteersRoutes.path).send({
         ...attributes,
@@ -92,7 +117,18 @@ describe("VolunteersController", () => {
     };
 
     it("creates a new volunteer with no commissions", async () => {
-      const attributes = { dni: "12345678", name: "John", surname: "Doe" };
+      const attributes = {
+        dni: "12345678",
+        name: "John",
+        surname: "Doe",
+        mail: "johndoe@gmail.com",
+        linkedin: "John Doe",
+        celular: "1165287676",
+        telegram: "@JohnD",
+        entryDate: "2016",
+        graduationDate: "2016",
+        country: "Argentina"
+      };
       const response = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(response.status).toEqual(StatusCodes.CREATED);
       expect(response.body).toEqual({
@@ -103,7 +139,18 @@ describe("VolunteersController", () => {
     });
 
     it("creates a new volunteer with commissions", async () => {
-      const attributes = { dni: "12345678", name: "John", surname: "Doe" };
+      const attributes = {
+        dni: "12345678",
+        name: "John",
+        surname: "Doe",
+        mail: "johndoe@gmail.com",
+        linkedin: "John Doe",
+        celular: "1165287676",
+        telegram: "@JohnD",
+        entryDate: "2016",
+        graduationDate: "2016",
+        country: "Argentina"
+      };
       const response = await testClient.post(VolunteersRoutes.path).send({
         ...attributes,
         commissionUuids
@@ -137,6 +184,20 @@ describe("VolunteersController", () => {
       });
     });
 
+    it("returns bad request if mail is not defined", async () => {
+      await expectToReturnBadRequestOnUndefinedAttribute({
+        attribute: "mail",
+        message: AttributeNotDefinedError.buildMessage("mail")
+      });
+    });
+
+    it("returns bad request if celular is not defined", async () => {
+      await expectToReturnBadRequestOnUndefinedAttribute({
+        attribute: "celular",
+        message: AttributeNotDefinedError.buildMessage("celular")
+      });
+    });
+
     it("returns bad request the uuid generates an undefined value", async () => {
       jest.spyOn(UuidGenerator, "generate").mockImplementation(() => undefined as any);
       await expectToReturnBadRequestOnUndefinedAttribute({
@@ -158,7 +219,18 @@ describe("VolunteersController", () => {
         .spyOn(UuidGenerator, "generate")
         .mockImplementation(() => "4c925fdc-8fd4-47ed-9a24-fa81ed5cc9da");
 
-      const attributes = { dni: "12345678", name: "John", surname: "Doe" };
+      const attributes = {
+        dni: "12345678",
+        name: "John",
+        surname: "Doe",
+        mail: "johndoe@gmail.com",
+        linkedin: "John Doe",
+        celular: "1165287676",
+        telegram: "@JohnD",
+        entryDate: "2016",
+        graduationDate: "2016",
+        country: "Argentina"
+      };
       const firstResponse = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(firstResponse.status).toEqual(StatusCodes.CREATED);
 

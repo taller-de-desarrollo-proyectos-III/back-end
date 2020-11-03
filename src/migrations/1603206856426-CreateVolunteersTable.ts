@@ -26,6 +26,41 @@ export class CreateVolunteersTable1603206856426 implements MigrationInterface {
             name: "surname",
             type: "varchar",
             isNullable: false
+          },
+          {
+            name: "mail",
+            type: "varchar",
+            isNullable: false
+          },
+          {
+            name: "linkedin",
+            type: "varchar",
+            isNullable: true
+          },
+          {
+            name: "celular",
+            type: "varchar",
+            isNullable: false
+          },
+          {
+            name: "telegram",
+            type: "varchar",
+            isNullable: true
+          },
+          {
+            name: "entryDate",
+            type: "varchar",
+            isNullable: true
+          },
+          {
+            name: "graduationDate",
+            type: "varchar",
+            isNullable: true
+          },
+          {
+            name: "country",
+            type: "varchar",
+            isNullable: true
           }
         ]
       })
