@@ -9,12 +9,12 @@ describe("Volunteer", () => {
       dni: "12345678",
       name: "John",
       surname: "Doe",
-      mail: "johndoe@gmail.com",
+      email: "johndoe@gmail.com",
       linkedin: "John Doe",
-      celular: "1165287676",
+      phoneNumber: "1165287676",
       telegram: "@JohnD",
-      entryDate: "2016",
-      graduationDate: undefined as any,
+      admissionYear: "2016",
+      graduationYear: undefined as any,
       country: "Argentina"
     };
     const volunteer = new Volunteer(attributes);
@@ -32,12 +32,12 @@ describe("Volunteer", () => {
           dni: undefined as any,
           name: "John",
           surname: "Doe",
-          mail: "johndoe@gmail.com",
+          email: "johndoe@gmail.com",
           linkedin: "John Doe",
-          celular: "1165287676",
+          phoneNumber: "1165287676",
           telegram: "@JohnD",
-          entryDate: "2016",
-          graduationDate: "2016",
+          admissionYear: "2016",
+          graduationYear: "2016",
           country: "Argentina"
         })
     ).toThrow(AttributeNotDefinedError);
@@ -50,12 +50,12 @@ describe("Volunteer", () => {
           dni: "12345678",
           name: undefined as any,
           surname: "Doe",
-          mail: "johndoe@gmail.com",
+          email: "johndoe@gmail.com",
           linkedin: "John Doe",
-          celular: "1165287676",
+          phoneNumber: "1165287676",
           telegram: "@JohnD",
-          entryDate: "2016",
-          graduationDate: "2016",
+          admissionYear: "2016",
+          graduationYear: "2016",
           country: "Argentina"
         })
     ).toThrow(AttributeNotDefinedError);
@@ -68,138 +68,138 @@ describe("Volunteer", () => {
           dni: "12345678",
           name: "John",
           surname: undefined as any,
-          mail: "johndoe@gmail.com",
+          email: "johndoe@gmail.com",
           linkedin: "John Doe",
-          celular: "1165287676",
+          phoneNumber: "1165287676",
           telegram: "@JohnD",
-          entryDate: "2016",
-          graduationDate: "2016",
+          admissionYear: "2016",
+          graduationYear: "2016",
           country: "Argentina"
         })
     ).toThrow(AttributeNotDefinedError);
   });
 
-  it("throws an error if no mail is provided", async () => {
+  it("throws an error if no email is provided", async () => {
     expect(
       () =>
         new Volunteer({
           dni: "12345678",
           name: "John",
           surname: "Doe",
-          mail: undefined as any,
+          email: undefined as any,
           linkedin: "John Doe",
-          celular: "1165287676",
+          phoneNumber: "1165287676",
           telegram: "@JohnD",
-          entryDate: "2016",
-          graduationDate: "2016",
+          admissionYear: "2016",
+          graduationYear: "2016",
           country: "Argentina"
         })
     ).toThrow(AttributeNotDefinedError);
   });
 
-  it("throws an error if no mail is provided", async () => {
+  it("throws an error if no email is provided", async () => {
     expect(
       () =>
         new Volunteer({
           dni: "12345678",
           name: "John",
           surname: "Doe",
-          mail: undefined as any,
+          email: undefined as any,
           linkedin: "John Doe",
-          celular: "1165287676",
+          phoneNumber: "1165287676",
           telegram: "@JohnD",
-          entryDate: undefined as any,
-          graduationDate: "2016",
+          admissionYear: undefined as any,
+          graduationYear: "2016",
           country: "Argentina"
         })
     ).toThrow(AttributeNotDefinedError);
   });
 
-  it("throws an error if mail has invalid format", async () => {
+  it("throws an error if email has invalid format", async () => {
     expect(
       () =>
         new Volunteer({
           dni: "12345678",
           name: "John",
           surname: "Doe",
-          mail: "john@",
+          email: "john@",
           linkedin: "John Doe",
-          celular: "1165287676",
+          phoneNumber: "1165287676",
           telegram: "@JohnD",
-          entryDate: "2016",
-          graduationDate: "2016",
+          admissionYear: "2016",
+          graduationYear: "2016",
           country: "Argentina"
         })
     ).toThrow(InvalidAttributeFormatError);
   });
 
-  it("throws an error if entryDate has invalid format", async () => {
+  it("throws an error if admissionYear has invalid format", async () => {
     expect(
       () =>
         new Volunteer({
           dni: "12345678",
           name: "John",
           surname: "Doe",
-          mail: "john@gmail.com",
+          email: "john@gmail.com",
           linkedin: "John Doe",
-          celular: "1165287676",
+          phoneNumber: "1165287676",
           telegram: "@JohnD",
-          entryDate: "20I6",
-          graduationDate: "2016",
+          admissionYear: "20I6",
+          graduationYear: "2016",
           country: "Argentina"
         })
     ).toThrow(InvalidAttributeFormatError);
   });
 
-  it("throws an error if graduationDate has invalid format", async () => {
+  it("throws an error if graduationYear has invalid format", async () => {
     expect(
       () =>
         new Volunteer({
           dni: "12345678",
           name: "John",
           surname: "Doe",
-          mail: "john@gmail.com",
+          email: "john@gmail.com",
           linkedin: "John Doe",
-          celular: "1165287676",
+          phoneNumber: "1165287676",
           telegram: "@JohnD",
-          entryDate: "2016",
-          graduationDate: "20A6",
+          admissionYear: "2016",
+          graduationYear: "20A6",
           country: "Argentina"
         })
     ).toThrow(InvalidAttributeFormatError);
   });
 
-  it("throws an error if graduationDate has invalid format", async () => {
+  it("throws an error if graduationYear has invalid format", async () => {
     expect(
       () =>
         new Volunteer({
           dni: "12345678",
           name: "John",
           surname: "Doe",
-          mail: "john@gmail.com",
+          email: "john@gmail.com",
           linkedin: "John Doe",
-          celular: "1165287676",
+          phoneNumber: "1165287676",
           telegram: "@JohnD",
-          entryDate: "2016",
-          graduationDate: "201226",
+          admissionYear: "2016",
+          graduationYear: "201226",
           country: "Argentina"
         })
     ).toThrow(InvalidAttributeFormatError);
   });
 
-  it("throws an error if entryDate has invalid format", async () => {
+  it("throws an error if admissionYear has invalid format", async () => {
     expect(
       () =>
         new Volunteer({
           dni: "12345678",
           name: "John",
           surname: "Doe",
-          mail: "john@gmail.com",
+          email: "john@gmail.com",
           linkedin: "John Doe",
-          celular: "1165287676",
+          phoneNumber: "1165287676",
           telegram: "@JohnD",
-          entryDate: "201226",
-          graduationDate: "2010",
+          admissionYear: "201226",
+          graduationYear: "2010",
           country: "Argentina"
         })
     ).toThrow(InvalidAttributeFormatError);
@@ -213,12 +213,12 @@ describe("Volunteer", () => {
           dni: "12345678",
           name: "John",
           surname: "Doe",
-          mail: "johndoe@gmail.com",
+          email: "johndoe@gmail.com",
           linkedin: "John Doe",
-          celular: "1165287676",
+          phoneNumber: "1165287676",
           telegram: "@JohnD",
-          entryDate: "2016",
-          graduationDate: "2016",
+          admissionYear: "2016",
+          graduationYear: "2016",
           country: "Argentina"
         })
     ).toThrow(AttributeNotDefinedError);
@@ -232,12 +232,12 @@ describe("Volunteer", () => {
           dni: "12345678",
           name: "John",
           surname: "Doe",
-          mail: "johndoe@gmail.com",
+          email: "johndoe@gmail.com",
           linkedin: "John Doe",
-          celular: "1165287676",
+          phoneNumber: "1165287676",
           telegram: "@JohnD",
-          entryDate: "2016",
-          graduationDate: "2016",
+          admissionYear: "2016",
+          graduationYear: "2016",
           country: "Argentina"
         })
     ).toThrow(InvalidAttributeFormatError);

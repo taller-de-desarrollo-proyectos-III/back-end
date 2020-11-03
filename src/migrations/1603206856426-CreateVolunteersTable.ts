@@ -28,7 +28,7 @@ export class CreateVolunteersTable1603206856426 implements MigrationInterface {
             isNullable: false
           },
           {
-            name: "mail",
+            name: "email",
             type: "varchar",
             isNullable: false
           },
@@ -38,7 +38,7 @@ export class CreateVolunteersTable1603206856426 implements MigrationInterface {
             isNullable: true
           },
           {
-            name: "celular",
+            name: "phoneNumber",
             type: "varchar",
             isNullable: false
           },
@@ -48,12 +48,12 @@ export class CreateVolunteersTable1603206856426 implements MigrationInterface {
             isNullable: true
           },
           {
-            name: "entryDate",
+            name: "admissionYear",
             type: "varchar",
             isNullable: true
           },
           {
-            name: "graduationDate",
+            name: "graduationYear",
             type: "varchar",
             isNullable: true
           },

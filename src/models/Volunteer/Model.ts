@@ -11,12 +11,12 @@ export class Volunteer {
     dni,
     name,
     surname,
-    mail,
+    email,
     linkedin,
-    celular,
+    phoneNumber,
     telegram,
-    entryDate,
-    graduationDate,
+    admissionYear,
+    graduationYear,
     country,
     commissions
   }: IVolunteerAttributes) {
@@ -24,12 +24,12 @@ export class Volunteer {
     this.dni = dni;
     this.name = name;
     this.surname = surname;
-    this.mail = mail;
+    this.email = email;
     this.linkedin = linkedin;
-    this.celular = celular;
+    this.phoneNumber = phoneNumber;
     this.telegram = telegram;
-    this.entryDate = entryDate;
-    this.graduationDate = graduationDate;
+    this.admissionYear = admissionYear;
+    this.graduationYear = graduationYear;
     this.country = country;
     this.commissions = commissions || [];
     this.validate();
@@ -48,25 +48,25 @@ export class Volunteer {
   public surname: string;
 
   @Column()
-  public mail: string;
+  public email: string;
 
   @Column()
-  public linkedin: string;
+  public linkedin?: string;
 
   @Column()
-  public celular: string;
+  public phoneNumber: string;
 
   @Column()
-  public telegram: string;
+  public telegram?: string;
 
   @Column()
-  public entryDate: string;
+  public admissionYear?: string;
 
   @Column()
-  public graduationDate: string;
+  public graduationYear?: string;
 
   @Column()
-  public country: string;
+  public country?: string;
 
   @ManyToMany(() => Commission)
   public commissions: Commission[];
@@ -76,21 +76,21 @@ export class Volunteer {
     if (!isDefined(this.dni)) throw new AttributeNotDefinedError("dni");
     if (!isDefined(this.name)) throw new AttributeNotDefinedError("name");
     if (!isDefined(this.surname)) throw new AttributeNotDefinedError("surname");
-    if (!isDefined(this.mail)) throw new AttributeNotDefinedError("mail");
-    if (!isDefined(this.celular)) throw new AttributeNotDefinedError("celular");
+    if (!isDefined(this.email)) throw new AttributeNotDefinedError("mail");
+    if (!isDefined(this.phoneNumber)) throw new AttributeNotDefinedError("phoneNumber");
     if (!isUUID(this.uuid)) throw new InvalidAttributeFormatError("uuid");
-    if (!isEmail(this.mail)) throw new InvalidAttributeFormatError("mail");
-    if (isDefined(this.entryDate) && !isNumberString(this.entryDate)) {
-      throw new InvalidAttributeFormatError("entryDate");
+    if (!isEmail(this.email)) throw new InvalidAttributeFormatError("mail");
+    if (isDefined(this.admissionYear) && !isNumberString(this.admissionYear)) {
+      throw new InvalidAttributeFormatError("admissionYear");
     }
-    if (isDefined(this.graduationDate) && !isNumberString(this.graduationDate)) {
-      throw new InvalidAttributeFormatError("graduationDate");
+    if (isDefined(this.graduationYear) && !isNumberString(this.graduationYear)) {
+      throw new InvalidAttributeFormatError("graduationYear");
     }
-    if (isDefined(this.entryDate) && !length(this.entryDate, 4, 4)) {
-      throw new InvalidAttributeFormatError("entryDate");
+    if (isDefined(this.admissionYear) && !length(this.admissionYear, 4, 4)) {
+      throw new InvalidAttributeFormatError("admissionYear");
     }
-    if (isDefined(this.graduationDate) && !length(this.graduationDate, 4, 4)) {
-      throw new InvalidAttributeFormatError("graduationDate");
+    if (isDefined(this.graduationYear) && !length(this.graduationYear, 4, 4)) {
+      throw new InvalidAttributeFormatError("graduationYear");
     }
   }
 }
@@ -99,12 +99,12 @@ interface IVolunteerAttributes {
   dni: string;
   name: string;
   surname: string;
-  mail: string;
-  linkedin: string;
-  celular: string;
-  telegram: string;
-  entryDate: string;
-  graduationDate: string;
-  country: string;
+  email: string;
+  linkedin?: string;
+  phoneNumber: string;
+  telegram?: string;
+  admissionYear?: string;
+  graduationYear?: string;
+  country?: string;
   commissions?: Commission[];
 }

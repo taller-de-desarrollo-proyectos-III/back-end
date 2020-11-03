@@ -16,12 +16,12 @@ describe("VolunteersController", () => {
     dni: "12345678",
     name: "John",
     surname: "Doe",
-    mail: "johndoe@gmail.com",
+    email: "johndoe@gmail.com",
     linkedin: "John Doe",
-    celular: "1165287676",
+    phoneNumber: "1165287676",
     telegram: "@JohnD",
-    entryDate: "2016",
-    graduationDate: "2016",
+    admissionYear: "2016",
+    graduationYear: "2016",
     country: "Argentina",
     commissions: [firstCommission]
   });
@@ -29,12 +29,12 @@ describe("VolunteersController", () => {
     dni: "1234556",
     name: "Eric",
     surname: "Clapton",
-    mail: "ericclapton@gmail.com",
+    email: "ericclapton@gmail.com",
     linkedin: "Eric Clapton",
-    celular: "1165342313",
+    phoneNumber: "1165342313",
     telegram: "@Eric",
-    entryDate: "2019",
-    graduationDate: "2020",
+    admissionYear: "2019",
+    graduationYear: "2020",
     country: "Argentina",
     commissions: [secondCommission]
   });
@@ -99,12 +99,12 @@ describe("VolunteersController", () => {
         dni: "12345678",
         name: "John",
         surname: "Doe",
-        mail: "johndoe@",
+        email: "johndoe@",
         linkedin: "John Doe",
-        celular: "1165287676",
+        phoneNumber: "1165287676",
         telegram: "@JohnD",
-        entryDate: "2016",
-        graduationDate: "2016",
+        admissionYear: "2016",
+        graduationYear: "2016",
         country: "Argentina"
       };
       delete attributes[attribute];
@@ -121,12 +121,12 @@ describe("VolunteersController", () => {
         dni: "12345678",
         name: "John",
         surname: "Doe",
-        mail: "johndoe@gmail.com",
+        email: "johndoe@gmail.com",
         linkedin: "John Doe",
-        celular: "1165287676",
+        phoneNumber: "1165287676",
         telegram: "@JohnD",
-        entryDate: "2016",
-        graduationDate: "2016",
+        admissionYear: "2016",
+        graduationYear: "2016",
         country: "Argentina"
       };
       const response = await testClient.post(VolunteersRoutes.path).send(attributes);
@@ -143,12 +143,12 @@ describe("VolunteersController", () => {
         dni: "12345678",
         name: "John",
         surname: "Doe",
-        mail: "johndoe@gmail.com",
+        email: "johndoe@gmail.com",
         linkedin: "John Doe",
-        celular: "1165287676",
+        phoneNumber: "1165287676",
         telegram: "@JohnD",
-        entryDate: "2016",
-        graduationDate: "2016",
+        admissionYear: "2016",
+        graduationYear: "2016",
         country: "Argentina"
       };
       const response = await testClient.post(VolunteersRoutes.path).send({
@@ -160,6 +160,23 @@ describe("VolunteersController", () => {
         uuid: expect.stringMatching(UUID_REGEX),
         ...attributes,
         commissions: expect.arrayContaining(commissions)
+      });
+    });
+
+    it("creates a new volunteer with only obligatory attributes", async () => {
+      const attributes = {
+        dni: "12345678",
+        name: "John",
+        surname: "Doe",
+        email: "johndoe@gmail.com",
+        phoneNumber: "1165287676"
+      };
+      const response = await testClient.post(VolunteersRoutes.path).send(attributes);
+      expect(response.status).toEqual(StatusCodes.CREATED);
+      expect(response.body).toEqual({
+        uuid: expect.stringMatching(UUID_REGEX),
+        ...attributes,
+        commissions: []
       });
     });
 
@@ -184,17 +201,17 @@ describe("VolunteersController", () => {
       });
     });
 
-    it("returns bad request if mail is not defined", async () => {
+    it("returns bad request if email is not defined", async () => {
       await expectToReturnBadRequestOnUndefinedAttribute({
-        attribute: "mail",
+        attribute: "email",
         message: AttributeNotDefinedError.buildMessage("mail")
       });
     });
 
-    it("returns bad request if celular is not defined", async () => {
+    it("returns bad request if phoneNumber is not defined", async () => {
       await expectToReturnBadRequestOnUndefinedAttribute({
-        attribute: "celular",
-        message: AttributeNotDefinedError.buildMessage("celular")
+        attribute: "phoneNumber",
+        message: AttributeNotDefinedError.buildMessage("phoneNumber")
       });
     });
 
@@ -223,12 +240,12 @@ describe("VolunteersController", () => {
         dni: "12345678",
         name: "John",
         surname: "Doe",
-        mail: "johndoe@gmail.com",
+        email: "johndoe@gmail.com",
         linkedin: "John Doe",
-        celular: "1165287676",
+        phoneNumber: "1165287676",
         telegram: "@JohnD",
-        entryDate: "2016",
-        graduationDate: "2016",
+        admissionYear: "2016",
+        graduationYear: "2016",
         country: "Argentina"
       };
       const firstResponse = await testClient.post(VolunteersRoutes.path).send(attributes);

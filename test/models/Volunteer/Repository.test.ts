@@ -9,12 +9,12 @@ describe("VolunteerRepository", () => {
     dni: "12345678",
     name: "John",
     surname: "Doe",
-    mail: "johndoe@gmail.com",
+    email: "johndoe@gmail.com",
     linkedin: "John Doe",
-    celular: "1165287676",
+    phoneNumber: "1165287676",
     telegram: "@JohnD",
-    entryDate: "2016",
-    graduationDate: "2016",
+    admissionYear: "2016",
+    graduationYear: "2016",
     country: "Argentina"
   };
 
