@@ -3,6 +3,7 @@ import { commissionRepository } from "../../../src/models/Commission";
 import { Commission, Volunteer } from "../../../src/models";
 import { QueryFailedError } from "typeorm";
 import { VolunteerNotFoundError } from "../../../src/models/Volunteer/Errors";
+import { AttributeNotDefinedError } from "../../../src/models/Errors";
 
 describe("VolunteerRepository", () => {
   const attributes = {
@@ -65,6 +66,12 @@ describe("VolunteerRepository", () => {
     const volunteer = new Volunteer(attributes);
     await expect(volunteerRepository().findByUuid(volunteer.uuid)).rejects.toThrow(
       VolunteerNotFoundError
+    );
+  });
+
+  it("throws an error if the uuid is undefined", async () => {
+    await expect(volunteerRepository().findByUuid(undefined as any)).rejects.toThrow(
+      AttributeNotDefinedError
     );
   });
 

@@ -4,6 +4,7 @@ import { VolunteerCommissionRepository } from "../VolunteerCommission";
 import { volunteerCommissionRepository } from "../VolunteerCommission";
 import { commissionRepository } from "../Commission";
 import { VolunteerNotFoundError } from "./Errors/VolunteerNotFoundError";
+import { AttributeNotDefinedError } from "../Errors";
 
 @EntityRepository(Volunteer)
 export class VolunteerRepository extends AbstractRepository<Volunteer> {
@@ -38,6 +39,8 @@ export class VolunteerRepository extends AbstractRepository<Volunteer> {
   }
 
   public async findByUuid(uuid: string) {
+    if (!uuid) throw new AttributeNotDefinedError("uuid");
+
     const volunteer = await this.repository.findOne({ uuid });
     if (!volunteer) throw new VolunteerNotFoundError();
 

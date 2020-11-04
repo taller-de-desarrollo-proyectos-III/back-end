@@ -7,6 +7,7 @@ import { VolunteersRoutes } from "../../../src/routes/VolunteersRoutes";
 import { Commission, Volunteer } from "../../../src/models";
 import { UUID_REGEX } from "../../models";
 import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../../src/models/Errors";
+import { VolunteerNotFoundError } from "../../../src/models/Volunteer/Errors";
 
 describe("VolunteersController", () => {
   const firstCommission = new Commission({ name: "Commission A" });
@@ -254,6 +255,29 @@ describe("VolunteersController", () => {
       const secondResponse = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(secondResponse.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(secondResponse.body).toContain("duplicate key value violates unique constraint");
+    });
+  });
+
+  describe("GET /volunteers/:uuid", () => {
+    it("returns a volunteer by uuid", async () => {
+      const uuid = firstVolunteer.uuid;
+      const response = await testClient.get(`${VolunteersRoutes.path}/${uuid}`);
+      expect(response.status).toEqual(StatusCodes.OK);
+      expect(response.body).toEqual(firstVolunteer);
+    });
+
+    it("returns a bad request if the volunteer does not exist", async () => {
+      const uuid = UuidGenerator.generate();
+      const response = await testClient.get(`${VolunteersRoutes.path}/${uuid}`);
+      expect(response.status).toEqual(StatusCodes.BAD_REQUEST);
+      expect(response.body).toEqual(VolunteerNotFoundError.buildMessage());
+    });
+
+    it("returns an internal server error if the uuid has invalid format", async () => {
+      const uuid = undefined;
+      const response = await testClient.get(`${VolunteersRoutes.path}/${uuid}`);
+      expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(response.body).toEqual('invalid input syntax for type uuid: "undefined"');
     });
   });
 });

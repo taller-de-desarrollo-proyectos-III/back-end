@@ -6,6 +6,7 @@ export const VolunteersRoutes = {
   initialize: () => {
     const router = Router();
     router.get(VolunteersRoutes.path, VolunteersController.get);
+    router.get(`${VolunteersRoutes.path}/:uuid`, VolunteersController.getByUuid);
     router.post(VolunteersRoutes.path, VolunteersController.create);
     return router;
   }

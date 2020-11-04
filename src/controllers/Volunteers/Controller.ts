@@ -7,6 +7,7 @@ import { commissionRepository } from "../../models/Commission";
 import { Volunteer } from "../../models";
 import { ICreateProps } from "./Interfaces";
 import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../models/Errors";
+import { VolunteerNotFoundError } from "../../models/Volunteer/Errors";
 
 export const VolunteersController = {
   create: async (request: IPostRequest<ICreateProps>, response: Response) => {
@@ -34,6 +35,18 @@ export const VolunteersController = {
       response.status(StatusCodes.OK).json(volunteers);
     } catch (error) {
       response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
+    }
+  },
+  getByUuid: async (request: IFetchRequest<{ uuid: string }>, response: Response) => {
+    try {
+      const { uuid } = request.params;
+      const volunteer = await volunteerRepository().findByUuid(uuid);
+      return response.status(StatusCodes.OK).json(volunteer);
+    } catch (error) {
+      if (error instanceof VolunteerNotFoundError) {
+        return response.status(StatusCodes.BAD_REQUEST).json(error.message);
+      }
+      return response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
     }
   }
 };
