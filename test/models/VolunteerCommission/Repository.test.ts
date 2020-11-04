@@ -13,7 +13,18 @@ describe("VolunteerCommissionRepository", () => {
   });
 
   const createVolunteer = async () => {
-    const volunteer = new Volunteer({ dni: "12345678", name: "John", surname: "Doe" });
+    const volunteer = new Volunteer({
+      dni: "12345678",
+      name: "John",
+      surname: "Doe",
+      email: "johndoe@gmail.com",
+      linkedin: "John Doe",
+      phoneNumber: "1165287676",
+      telegram: "@JohnD",
+      admissionYear: "2016",
+      graduationYear: "2016",
+      country: "Argentina"
+    });
     await volunteerRepository().create(volunteer);
     return volunteer;
   };

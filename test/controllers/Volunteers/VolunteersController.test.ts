@@ -16,12 +16,26 @@ describe("VolunteersController", () => {
     dni: "12345678",
     name: "John",
     surname: "Doe",
+    email: "johndoe@gmail.com",
+    linkedin: "John Doe",
+    phoneNumber: "1165287676",
+    telegram: "@JohnD",
+    admissionYear: "2016",
+    graduationYear: "2016",
+    country: "Argentina",
     commissions: [firstCommission]
   });
   const secondVolunteer = new Volunteer({
     dni: "1234556",
     name: "Eric",
     surname: "Clapton",
+    email: "ericclapton@gmail.com",
+    linkedin: "Eric Clapton",
+    phoneNumber: "1165342313",
+    telegram: "@Eric",
+    admissionYear: "2019",
+    graduationYear: "2020",
+    country: "Argentina",
     commissions: [secondCommission]
   });
 
@@ -81,7 +95,18 @@ describe("VolunteersController", () => {
       attribute: string;
       message: string;
     }) => {
-      const attributes = { dni: "12345678", name: "John", surname: "Doe" };
+      const attributes = {
+        dni: "12345678",
+        name: "John",
+        surname: "Doe",
+        email: "johndoe@",
+        linkedin: "John Doe",
+        phoneNumber: "1165287676",
+        telegram: "@JohnD",
+        admissionYear: "2016",
+        graduationYear: "2016",
+        country: "Argentina"
+      };
       delete attributes[attribute];
       const response = await testClient.post(VolunteersRoutes.path).send({
         ...attributes,
@@ -92,7 +117,18 @@ describe("VolunteersController", () => {
     };
 
     it("creates a new volunteer with no commissions", async () => {
-      const attributes = { dni: "12345678", name: "John", surname: "Doe" };
+      const attributes = {
+        dni: "12345678",
+        name: "John",
+        surname: "Doe",
+        email: "johndoe@gmail.com",
+        linkedin: "John Doe",
+        phoneNumber: "1165287676",
+        telegram: "@JohnD",
+        admissionYear: "2016",
+        graduationYear: "2016",
+        country: "Argentina"
+      };
       const response = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(response.status).toEqual(StatusCodes.CREATED);
       expect(response.body).toEqual({
@@ -103,7 +139,18 @@ describe("VolunteersController", () => {
     });
 
     it("creates a new volunteer with commissions", async () => {
-      const attributes = { dni: "12345678", name: "John", surname: "Doe" };
+      const attributes = {
+        dni: "12345678",
+        name: "John",
+        surname: "Doe",
+        email: "johndoe@gmail.com",
+        linkedin: "John Doe",
+        phoneNumber: "1165287676",
+        telegram: "@JohnD",
+        admissionYear: "2016",
+        graduationYear: "2016",
+        country: "Argentina"
+      };
       const response = await testClient.post(VolunteersRoutes.path).send({
         ...attributes,
         commissionUuids
@@ -113,6 +160,23 @@ describe("VolunteersController", () => {
         uuid: expect.stringMatching(UUID_REGEX),
         ...attributes,
         commissions: expect.arrayContaining(commissions)
+      });
+    });
+
+    it("creates a new volunteer with only obligatory attributes", async () => {
+      const attributes = {
+        dni: "12345678",
+        name: "John",
+        surname: "Doe",
+        email: "johndoe@gmail.com",
+        phoneNumber: "1165287676"
+      };
+      const response = await testClient.post(VolunteersRoutes.path).send(attributes);
+      expect(response.status).toEqual(StatusCodes.CREATED);
+      expect(response.body).toEqual({
+        uuid: expect.stringMatching(UUID_REGEX),
+        ...attributes,
+        commissions: []
       });
     });
 
@@ -137,6 +201,20 @@ describe("VolunteersController", () => {
       });
     });
 
+    it("returns bad request if email is not defined", async () => {
+      await expectToReturnBadRequestOnUndefinedAttribute({
+        attribute: "email",
+        message: AttributeNotDefinedError.buildMessage("mail")
+      });
+    });
+
+    it("returns bad request if phoneNumber is not defined", async () => {
+      await expectToReturnBadRequestOnUndefinedAttribute({
+        attribute: "phoneNumber",
+        message: AttributeNotDefinedError.buildMessage("phoneNumber")
+      });
+    });
+
     it("returns bad request the uuid generates an undefined value", async () => {
       jest.spyOn(UuidGenerator, "generate").mockImplementation(() => undefined as any);
       await expectToReturnBadRequestOnUndefinedAttribute({
@@ -158,7 +236,18 @@ describe("VolunteersController", () => {
         .spyOn(UuidGenerator, "generate")
         .mockImplementation(() => "4c925fdc-8fd4-47ed-9a24-fa81ed5cc9da");
 
-      const attributes = { dni: "12345678", name: "John", surname: "Doe" };
+      const attributes = {
+        dni: "12345678",
+        name: "John",
+        surname: "Doe",
+        email: "johndoe@gmail.com",
+        linkedin: "John Doe",
+        phoneNumber: "1165287676",
+        telegram: "@JohnD",
+        admissionYear: "2016",
+        graduationYear: "2016",
+        country: "Argentina"
+      };
       const firstResponse = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(firstResponse.status).toEqual(StatusCodes.CREATED);
 

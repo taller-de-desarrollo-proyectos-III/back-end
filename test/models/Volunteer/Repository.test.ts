@@ -8,7 +8,14 @@ describe("VolunteerRepository", () => {
   const attributes = {
     dni: "12345678",
     name: "John",
-    surname: "Doe"
+    surname: "Doe",
+    email: "johndoe@gmail.com",
+    linkedin: "John Doe",
+    phoneNumber: "1165287676",
+    telegram: "@JohnD",
+    admissionYear: "2016",
+    graduationYear: "2016",
+    country: "Argentina"
   };
 
   const commissionA = new Commission({ name: "Commission A" });
