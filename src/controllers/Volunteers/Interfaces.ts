@@ -1,3 +1,7 @@
+export interface IGetProps {
+  commissionUuids: string[];
+}
+
 export interface ICreateProps {
   dni: string;
   name: string;

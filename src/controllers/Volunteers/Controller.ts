@@ -5,7 +5,7 @@ import { IFetchRequest, IPostRequest } from "../Request";
 import { volunteerRepository } from "../../models/Volunteer";
 import { commissionRepository } from "../../models/Commission";
 import { Volunteer } from "../../models";
-import { ICreateProps } from "./Interfaces";
+import { ICreateProps, IGetProps } from "./Interfaces";
 import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../models/Errors";
 import { VolunteerNotFoundError } from "../../models/Volunteer/Errors";
 
@@ -50,7 +50,3 @@ export const VolunteersController = {
     }
   }
 };
-
-interface IGetProps {
-  commissionUuids: string[];
-}
