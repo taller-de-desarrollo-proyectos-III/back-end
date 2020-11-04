@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToMany } from "typeorm";
+import { Entity, Column } from "typeorm";
 import { UuidGenerator } from "../UuidGenerator";
 import { isDefined, isUUID, isEmail, length, isNumberString } from "class-validator";
 import { AttributeNotDefinedError } from "../Errors/AttributeNotDefinedError";
@@ -68,7 +68,6 @@ export class Volunteer {
   @Column()
   public country?: string;
 
-  @ManyToMany(() => Commission)
   public commissions: Commission[];
 
   public validate() {

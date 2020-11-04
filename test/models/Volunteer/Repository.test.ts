@@ -43,6 +43,57 @@ describe("VolunteerRepository", () => {
     expect(commissions).toEqual(expect.arrayContaining([commissionA, commissionB]));
   });
 
+  describe("update", () => {
+    const expectToUpdateAttribute = async (attributeName: string, value: string | number) => {
+      const volunteer = new Volunteer(attributes);
+      await volunteerRepository().create(volunteer);
+      volunteer[attributeName] = value;
+      await volunteerRepository().save(volunteer);
+      const updatedVolunteer = await volunteerRepository().findByUuid(volunteer.uuid);
+      expect(updatedVolunteer[attributeName]).toEqual(value);
+    };
+
+    it("updates volunteer name", async () => {
+      await expectToUpdateAttribute("name", "newName");
+    });
+
+    it("updates volunteer surname", async () => {
+      await expectToUpdateAttribute("surname", "newSurname");
+    });
+
+    it("updates volunteer dni", async () => {
+      await expectToUpdateAttribute("dni", "123456");
+    });
+
+    it("updates volunteer email", async () => {
+      await expectToUpdateAttribute("email", "newEmail@gmail.com");
+    });
+
+    it("updates volunteer linkedin", async () => {
+      await expectToUpdateAttribute("linkedin", "newLinkedin");
+    });
+
+    it("updates volunteer phoneNumber", async () => {
+      await expectToUpdateAttribute("phoneNumber", "43000000");
+    });
+
+    it("updates volunteer telegram", async () => {
+      await expectToUpdateAttribute("telegram", "newTelegram");
+    });
+
+    it("updates volunteer admissionYear", async () => {
+      await expectToUpdateAttribute("admissionYear", "2050");
+    });
+
+    it("updates volunteer graduationYear", async () => {
+      await expectToUpdateAttribute("graduationYear", "2001");
+    });
+
+    it("updates volunteer country", async () => {
+      await expectToUpdateAttribute("country", "Croatia");
+    });
+  });
+
   describe("findByCommissions", () => {
     it("returns empty list if no commission is passed", async () => {
       const commissions = [commissionA, commissionB];
