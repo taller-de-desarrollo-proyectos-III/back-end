@@ -25,6 +25,22 @@ describe("Volunteer", () => {
     });
   });
 
+  it("creates a valid volunteer model with only mandatory attributes", async () => {
+    const attributes = {
+      dni: "12345678",
+      name: "John",
+      surname: "Doe",
+      email: "johndoe@gmail.com",
+      phoneNumber: "1165287676"
+    };
+    const volunteer = new Volunteer(attributes);
+    expect(volunteer).toEqual({
+      uuid: expect.stringMatching(UUID_REGEX),
+      commissions: [],
+      ...attributes
+    });
+  });
+
   it("throws an error if no dni is provided", async () => {
     expect(
       () =>
@@ -89,6 +105,24 @@ describe("Volunteer", () => {
           email: undefined as any,
           linkedin: "John Doe",
           phoneNumber: "1165287676",
+          telegram: "@JohnD",
+          admissionYear: "2016",
+          graduationYear: "2016",
+          country: "Argentina"
+        })
+    ).toThrow(AttributeNotDefinedError);
+  });
+
+  it("throws an error if phone number is not defined", async () => {
+    expect(
+      () =>
+        new Volunteer({
+          dni: "12345678",
+          name: "John",
+          surname: "Doe",
+          email: "johndoe@gmail.com",
+          linkedin: "John Doe",
+          phoneNumber: undefined as any,
           telegram: "@JohnD",
           admissionYear: "2016",
           graduationYear: "2016",
