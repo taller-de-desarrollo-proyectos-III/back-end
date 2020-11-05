@@ -4,24 +4,23 @@ import { VolunteerCommissionRepository } from "../VolunteerCommission";
 import { volunteerCommissionRepository } from "../VolunteerCommission";
 import { commissionRepository } from "../Commission";
 import { VolunteerNotFoundError } from "./Errors/VolunteerNotFoundError";
+import { AttributeNotDefinedError } from "../Errors";
 
 @EntityRepository(Volunteer)
 export class VolunteerRepository extends AbstractRepository<Volunteer> {
   public create(volunteer: Volunteer) {
     return this.manager.transaction(async manager => {
       await manager.insert(Volunteer, volunteer);
-      const volunteerCommissions = volunteer.commissions.map(
-        commission =>
-          new VolunteerCommission({
-            volunteerUuid: volunteer.uuid,
-            commissionUuid: commission.uuid
-          })
-      );
+      const volunteerCommissions = this.getVolunteerCommissions(volunteer);
       await manager
         .getCustomRepository(VolunteerCommissionRepository)
         .bulkCreate(volunteerCommissions);
       return volunteer;
     });
+  }
+
+  public async save(volunteer: Volunteer) {
+    return this.repository.save(volunteer);
   }
 
   public async findByCommissions(commissions: Commission[]) {
@@ -38,6 +37,8 @@ export class VolunteerRepository extends AbstractRepository<Volunteer> {
   }
 
   public async findByUuid(uuid: string) {
+    if (!uuid) throw new AttributeNotDefinedError("uuid");
+
     const volunteer = await this.repository.findOne({ uuid });
     if (!volunteer) throw new VolunteerNotFoundError();
 
@@ -52,6 +53,12 @@ export class VolunteerRepository extends AbstractRepository<Volunteer> {
 
   public truncate() {
     return this.repository.delete({});
+  }
+
+  private getVolunteerCommissions({ uuid: volunteerUuid, commissions }: Volunteer) {
+    return commissions.map(
+      ({ uuid: commissionUuid }) => new VolunteerCommission({ volunteerUuid, commissionUuid })
+    );
   }
 
   private static setEmptyCommission(volunteers: Volunteer[]) {

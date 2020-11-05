@@ -9,6 +9,11 @@ export class VolunteerCommissionRepository extends AbstractRepository<VolunteerC
     return this.repository.insert(volunteerCommissions);
   }
 
+  public async update(volunteerCommissions: VolunteerCommission[], volunteer: Volunteer) {
+    await this.repository.delete({ volunteerUuid: volunteer.uuid });
+    return this.bulkCreate(volunteerCommissions);
+  }
+
   public findByVolunteer(volunteer: Volunteer) {
     return this.repository.find({ where: { volunteerUuid: volunteer.uuid } });
   }

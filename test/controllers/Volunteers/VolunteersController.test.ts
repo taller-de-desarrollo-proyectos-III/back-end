@@ -7,6 +7,9 @@ import { VolunteersRoutes } from "../../../src/routes/VolunteersRoutes";
 import { Commission, Volunteer } from "../../../src/models";
 import { UUID_REGEX } from "../../models";
 import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../../src/models/Errors";
+import { VolunteerNotFoundError } from "../../../src/models/Volunteer/Errors";
+import { VolunteerGenerator } from "../../Generators/Volunteer";
+import { omit } from "lodash";
 
 describe("VolunteersController", () => {
   const firstCommission = new Commission({ name: "Commission A" });
@@ -39,7 +42,7 @@ describe("VolunteersController", () => {
     commissions: [secondCommission]
   });
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     await volunteerRepository().truncate();
     await commissionRepository().truncate();
 
@@ -204,7 +207,7 @@ describe("VolunteersController", () => {
     it("returns bad request if email is not defined", async () => {
       await expectToReturnBadRequestOnUndefinedAttribute({
         attribute: "email",
-        message: AttributeNotDefinedError.buildMessage("mail")
+        message: AttributeNotDefinedError.buildMessage("email")
       });
     });
 
@@ -254,6 +257,129 @@ describe("VolunteersController", () => {
       const secondResponse = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(secondResponse.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(secondResponse.body).toContain("duplicate key value violates unique constraint");
+    });
+  });
+
+  describe("GET /volunteers/:uuid", () => {
+    it("returns a volunteer by uuid", async () => {
+      const uuid = firstVolunteer.uuid;
+      const response = await testClient.get(`${VolunteersRoutes.path}/${uuid}`);
+      expect(response.status).toEqual(StatusCodes.OK);
+      expect(response.body).toEqual(firstVolunteer);
+    });
+
+    it("returns a bad request if the volunteer does not exist", async () => {
+      const uuid = UuidGenerator.generate();
+      const response = await testClient.get(`${VolunteersRoutes.path}/${uuid}`);
+      expect(response.status).toEqual(StatusCodes.BAD_REQUEST);
+      expect(response.body).toEqual(VolunteerNotFoundError.buildMessage());
+    });
+
+    it("returns an internal server error if the uuid has invalid format", async () => {
+      const uuid = undefined;
+      const response = await testClient.get(`${VolunteersRoutes.path}/${uuid}`);
+      expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(response.body).toEqual('invalid input syntax for type uuid: "undefined"');
+    });
+  });
+
+  describe("PUT /volunteers", () => {
+    const expectAttributeNotDefinedError = async (attributeName: string) => {
+      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const response = await testClient.put(VolunteersRoutes.path).send(
+        omit(
+          {
+            ...volunteer,
+            commissionUuids: [...volunteer.commissions, secondCommission].map(({ uuid }) => uuid)
+          },
+          attributeName
+        )
+      );
+      expect(response.status).toEqual(StatusCodes.BAD_REQUEST);
+      expect(response.body).toEqual(AttributeNotDefinedError.buildMessage(attributeName));
+    };
+
+    const expectToUpdateAttribute = async (attributeName: string, value: string | number) => {
+      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const response = await testClient.put(VolunteersRoutes.path).send({
+        ...volunteer,
+        [attributeName]: value,
+        commissionUuids: volunteer.commissions.map(({ uuid }) => uuid)
+      });
+      expect(response.status).toEqual(StatusCodes.CREATED);
+      expect(response.body[attributeName]).toEqual(value);
+    };
+
+    it("adds a new commission to the volunteer", async () => {
+      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const response = await testClient.put(VolunteersRoutes.path).send({
+        ...volunteer,
+        commissionUuids: [...volunteer.commissions, secondCommission].map(({ uuid }) => uuid)
+      });
+      expect(response.status).toEqual(StatusCodes.CREATED);
+      expect(response.body.commissions).toEqual(
+        expect.arrayContaining([firstCommission, secondCommission])
+      );
+    });
+
+    it("updates volunteers' dni", async () => {
+      await expectToUpdateAttribute("dni", "999999999");
+    });
+
+    it("updates volunteers' name", async () => {
+      await expectToUpdateAttribute("name", "newName");
+    });
+
+    it("updates volunteers' surname", async () => {
+      await expectToUpdateAttribute("surname", "newSurname");
+    });
+
+    it("updates volunteers' email", async () => {
+      await expectToUpdateAttribute("email", "newMail@gmail.com");
+    });
+
+    it("updates volunteers' linkedin", async () => {
+      await expectToUpdateAttribute("linkedin", "newLinkedin");
+    });
+
+    it("updates volunteers' phoneNumber", async () => {
+      await expectToUpdateAttribute("phoneNumber", "9292929292");
+    });
+
+    it("updates volunteers' telegram", async () => {
+      await expectToUpdateAttribute("telegram", "newTelegram");
+    });
+
+    it("updates volunteers' admissionYear", async () => {
+      await expectToUpdateAttribute("admissionYear", "3000");
+    });
+
+    it("updates volunteers' graduationYear", async () => {
+      await expectToUpdateAttribute("graduationYear", "5000");
+    });
+
+    it("updates volunteers' country", async () => {
+      await expectToUpdateAttribute("country", "Japan");
+    });
+
+    it("returns an error if no name is provided", async () => {
+      await expectAttributeNotDefinedError("name");
+    });
+
+    it("returns an error if no surname is provided", async () => {
+      await expectAttributeNotDefinedError("surname");
+    });
+
+    it("returns an error if no dni is provided", async () => {
+      await expectAttributeNotDefinedError("dni");
+    });
+
+    it("returns an error if no email is provided", async () => {
+      await expectAttributeNotDefinedError("email");
+    });
+
+    it("returns an error if no phoneNumber is provided", async () => {
+      await expectAttributeNotDefinedError("phoneNumber");
     });
   });
 });

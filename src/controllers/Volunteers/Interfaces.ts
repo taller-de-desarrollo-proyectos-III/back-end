@@ -1,3 +1,7 @@
+export interface IGetProps {
+  commissionUuids: string[];
+}
+
 export interface ICreateProps {
   dni: string;
   name: string;
@@ -10,4 +14,8 @@ export interface ICreateProps {
   graduationYear?: string;
   country?: string;
   commissionUuids?: string[];
+}
+
+export interface IUpdateProps extends ICreateProps {
+  uuid: string;
 }

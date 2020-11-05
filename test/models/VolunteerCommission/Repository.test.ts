@@ -5,32 +5,17 @@ import { volunteerRepository } from "../../../src/models/Volunteer";
 import { commissionRepository } from "../../../src/models/Commission";
 import { Commission, Volunteer, VolunteerCommission } from "../../../src/models";
 import { CommissionGenerator } from "../../Generators/Commission";
+import { VolunteerGenerator } from "../../Generators/Volunteer";
+import { VolunteerCommissionGenerator } from "../../Generators/VolunteerCommission";
 
 describe("VolunteerCommissionRepository", () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await volunteerRepository().truncate();
     await commissionRepository().truncate();
   });
 
-  const createVolunteer = async () => {
-    const volunteer = new Volunteer({
-      dni: "12345678",
-      name: "John",
-      surname: "Doe",
-      email: "johndoe@gmail.com",
-      linkedin: "John Doe",
-      phoneNumber: "1165287676",
-      telegram: "@JohnD",
-      admissionYear: "2016",
-      graduationYear: "2016",
-      country: "Argentina"
-    });
-    await volunteerRepository().create(volunteer);
-    return volunteer;
-  };
-
   it("saves volunteer commissions on the database", async () => {
-    const volunteer = await createVolunteer();
+    const volunteer = await VolunteerGenerator.instance.withNoCommissions();
     const commissionA = await CommissionGenerator.instance();
     const commissionB = await CommissionGenerator.instance();
     const volunteerCommissionA = new VolunteerCommission({
@@ -53,6 +38,35 @@ describe("VolunteerCommissionRepository", () => {
     expect(volunteerCommissions).toEqual([]);
   });
 
+  describe("update", () => {
+    const createVolunteerCommission = (volunteerUuid: string, commissionUuid: string) =>
+      new VolunteerCommission({ volunteerUuid, commissionUuid });
+
+    it("deletes all volunteerCommissions if given an empty array", async () => {
+      const volunteerCommission = await VolunteerCommissionGenerator.instance();
+      const volunteer = await volunteerRepository().findByUuid(volunteerCommission.volunteerUuid);
+
+      expect(await volunteerCommissionRepository().findAll()).toHaveLength(1);
+      await volunteerCommissionRepository().update([], volunteer);
+      expect(await volunteerCommissionRepository().findAll()).toHaveLength(0);
+    });
+
+    it("updates volunteer commissions", async () => {
+      const repository = volunteerCommissionRepository();
+      const volunteer = await VolunteerGenerator.instance.withNoCommissions();
+      const volunteerUuid = volunteer.uuid;
+      const commissionA = await CommissionGenerator.instance();
+      const commissionB = await CommissionGenerator.instance();
+      const volunteerCommissionA = createVolunteerCommission(volunteerUuid, commissionA.uuid);
+      await repository.bulkCreate([volunteerCommissionA]);
+
+      expect(await repository.findByVolunteer(volunteer)).toEqual([volunteerCommissionA]);
+      const volunteerCommissionB = createVolunteerCommission(volunteerUuid, commissionB.uuid);
+      await repository.update([volunteerCommissionB], volunteer);
+      expect(await repository.findByVolunteer(volunteer)).toEqual([volunteerCommissionB]);
+    });
+  });
+
   describe("findByCommissions", () => {
     let firstVolunteer: Volunteer;
     let secondVolunteer: Volunteer;
@@ -64,9 +78,9 @@ describe("VolunteerCommissionRepository", () => {
     let fourthVolunteerCommission: VolunteerCommission;
     let allVolunteerCommissions: VolunteerCommission[];
 
-    beforeAll(async () => {
-      firstVolunteer = await createVolunteer();
-      secondVolunteer = await createVolunteer();
+    beforeEach(async () => {
+      firstVolunteer = await VolunteerGenerator.instance.withNoCommissions();
+      secondVolunteer = await VolunteerGenerator.instance.withNoCommissions();
       firstCommission = await CommissionGenerator.instance();
       secondCommission = await CommissionGenerator.instance();
 
@@ -114,7 +128,7 @@ describe("VolunteerCommissionRepository", () => {
   });
 
   it("throws an error if the volunteer commission is duplicated", async () => {
-    const volunteer = await createVolunteer();
+    const volunteer = await VolunteerGenerator.instance.withNoCommissions();
     const commission = await CommissionGenerator.instance();
     const volunteerCommission = new VolunteerCommission({
       volunteerUuid: volunteer.uuid,
@@ -137,7 +151,7 @@ describe("VolunteerCommissionRepository", () => {
   });
 
   it("throws an error if the commission does not exist", async () => {
-    const volunteer = await createVolunteer();
+    const volunteer = await VolunteerGenerator.instance.withNoCommissions();
     const volunteerCommission = new VolunteerCommission({
       volunteerUuid: volunteer.uuid,
       commissionUuid: UuidGenerator.generate()
@@ -149,7 +163,7 @@ describe("VolunteerCommissionRepository", () => {
 
   describe("Delete cascade", () => {
     const expectToDeleteAlEntries = async (truncate: () => Promise<DeleteResult>) => {
-      const volunteer = await createVolunteer();
+      const volunteer = await VolunteerGenerator.instance.withNoCommissions();
       const commission = await CommissionGenerator.instance();
       const volunteerCommission = new VolunteerCommission({
         volunteerUuid: volunteer.uuid,
