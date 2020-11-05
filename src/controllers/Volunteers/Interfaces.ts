@@ -15,3 +15,7 @@ export interface ICreateProps {
   country?: string;
   commissionUuids?: string[];
 }
+
+export interface IUpdateProps extends ICreateProps {
+  uuid: string;
+}

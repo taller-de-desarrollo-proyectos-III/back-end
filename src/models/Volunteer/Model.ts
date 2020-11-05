@@ -8,6 +8,7 @@ import { Commission } from "..";
 @Entity({ name: "Volunteers" })
 export class Volunteer {
   constructor({
+    uuid,
     dni,
     name,
     surname,
@@ -20,7 +21,7 @@ export class Volunteer {
     country,
     commissions
   }: IVolunteerAttributes) {
-    this.uuid = UuidGenerator.generate();
+    this.uuid = uuid || UuidGenerator.generate();
     this.dni = dni;
     this.name = name;
     this.surname = surname;
@@ -75,10 +76,10 @@ export class Volunteer {
     if (!isDefined(this.dni)) throw new AttributeNotDefinedError("dni");
     if (!isDefined(this.name)) throw new AttributeNotDefinedError("name");
     if (!isDefined(this.surname)) throw new AttributeNotDefinedError("surname");
-    if (!isDefined(this.email)) throw new AttributeNotDefinedError("mail");
+    if (!isDefined(this.email)) throw new AttributeNotDefinedError("email");
     if (!isDefined(this.phoneNumber)) throw new AttributeNotDefinedError("phoneNumber");
     if (!isUUID(this.uuid)) throw new InvalidAttributeFormatError("uuid");
-    if (!isEmail(this.email)) throw new InvalidAttributeFormatError("mail");
+    if (!isEmail(this.email)) throw new InvalidAttributeFormatError("email");
     if (isDefined(this.admissionYear) && !isNumberString(this.admissionYear)) {
       throw new InvalidAttributeFormatError("admissionYear");
     }
@@ -95,6 +96,7 @@ export class Volunteer {
 }
 
 interface IVolunteerAttributes {
+  uuid?: string;
   dni: string;
   name: string;
   surname: string;

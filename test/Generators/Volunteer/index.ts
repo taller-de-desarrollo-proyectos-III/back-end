@@ -1,5 +1,5 @@
 import { volunteerRepository } from "../../../src/models/Volunteer";
-import { Volunteer } from "../../../src/models";
+import { Commission, Volunteer } from "../../../src/models";
 
 export const VolunteerGenerator = {
   index: 0,
@@ -8,7 +8,8 @@ export const VolunteerGenerator = {
     return VolunteerGenerator.index;
   },
   instance: {
-    withNoCommissions: async () => {
+    withNoCommissions: async () => VolunteerGenerator.instance.withCommissions([]),
+    withCommissions: async (commissions?: Commission[]) => {
       const index = VolunteerGenerator.getIndex();
       const volunteer = new Volunteer({
         dni: `${index}`,
@@ -20,7 +21,8 @@ export const VolunteerGenerator = {
         telegram: "@JohnD${index}",
         admissionYear: "2016",
         graduationYear: "2016",
-        country: "Argentina"
+        country: "Argentina",
+        commissions
       });
       await volunteerRepository().create(volunteer);
       return volunteer;
