@@ -14,6 +14,8 @@ do
   name=${names[$RANDOM % ${#names[@]} ]}
   surname=${surnames[$RANDOM % ${#surnames[@]} ]}
   dni=$((10000000 + RANDOM))
+  email="${name}${surname}@test.com"
+  phoneNumber=$((42380000 + RANDOM))
 
   curl --request POST \
     --url http://localhost:5000/volunteers \
@@ -25,7 +27,9 @@ do
       ],
       "name": "'"$name"'",
       "surname": "'"$surname"'",
-      "dni": "'"$dni"'"
+      "dni": "'"$dni"'",
+      "email": "'"$email"'",
+      "phoneNumber": "'"$phoneNumber"'"
   }'
 
 done
