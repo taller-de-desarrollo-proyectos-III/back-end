@@ -4,6 +4,7 @@ import { Commission, Volunteer } from "../../../src/models";
 import { QueryFailedError } from "typeorm";
 import { VolunteerNotFoundError } from "../../../src/models/Volunteer/Errors";
 import { AttributeNotDefinedError } from "../../../src/models/Errors";
+import { VolunteerGenerator } from "../../Generators/Volunteer";
 
 describe("VolunteerRepository", () => {
   const attributes = {
@@ -31,22 +32,14 @@ describe("VolunteerRepository", () => {
 
   it("saves a volunteer model on the database", async () => {
     const volunteer = new Volunteer(attributes);
-    await volunteerRepository().create(volunteer);
+    await volunteerRepository().insert(volunteer);
     expect(await volunteerRepository().findByUuid(volunteer.uuid)).toEqual(volunteer);
-  });
-
-  it("saves a volunteer with commissions", async () => {
-    const volunteer = new Volunteer({ commissions: [commissionA, commissionB], ...attributes });
-    await volunteerRepository().create(volunteer);
-    await volunteerRepository().findByUuid(volunteer.uuid);
-    const commissions = (await volunteerRepository().findByUuid(volunteer.uuid)).commissions;
-    expect(commissions).toEqual(expect.arrayContaining([commissionA, commissionB]));
   });
 
   describe("update", () => {
     const expectToUpdateAttribute = async (attributeName: string, value: string | number) => {
       const volunteer = new Volunteer(attributes);
-      await volunteerRepository().create(volunteer);
+      await volunteerRepository().insert(volunteer);
       volunteer[attributeName] = value;
       await volunteerRepository().save(volunteer);
       const updatedVolunteer = await volunteerRepository().findByUuid(volunteer.uuid);
@@ -98,15 +91,13 @@ describe("VolunteerRepository", () => {
     it("returns empty list if no commission is passed", async () => {
       const commissions = [commissionA, commissionB];
       const volunteer = new Volunteer({ commissions, ...attributes });
-      await volunteerRepository().create(volunteer);
+      await volunteerRepository().insert(volunteer);
       expect(await volunteerRepository().findByCommissions([])).toHaveLength(0);
     });
 
     it("returns all the volunteers by commissions", async () => {
-      const volunteerA = new Volunteer({ commissions: [commissionA], ...attributes });
-      const volunteerB = new Volunteer({ commissions: [commissionB], ...attributes });
-      await volunteerRepository().create(volunteerA);
-      await volunteerRepository().create(volunteerB);
+      const volunteerA = await VolunteerGenerator.instance.withCommissions([commissionA]);
+      const volunteerB = await VolunteerGenerator.instance.withCommissions([commissionA]);
       expect(await volunteerRepository().findByCommissions([commissionA, commissionB])).toEqual(
         expect.arrayContaining([volunteerA, volunteerB])
       );
@@ -128,15 +119,15 @@ describe("VolunteerRepository", () => {
 
   it("throws an error when trying to insert a duplicated volunteer", async () => {
     const volunteer = new Volunteer(attributes);
-    await volunteerRepository().create(volunteer);
-    await expect(volunteerRepository().create(volunteer)).rejects.toThrow(QueryFailedError);
+    await volunteerRepository().insert(volunteer);
+    await expect(volunteerRepository().insert(volunteer)).rejects.toThrow(QueryFailedError);
   });
 
   it("removes all entries from Volunteers table", async () => {
     const firstVolunteer = new Volunteer(attributes);
     const secondVolunteer = new Volunteer(attributes);
-    await volunteerRepository().create(firstVolunteer);
-    await volunteerRepository().create(secondVolunteer);
+    await volunteerRepository().insert(firstVolunteer);
+    await volunteerRepository().insert(secondVolunteer);
 
     expect(await volunteerRepository().findAll()).toEqual(
       expect.arrayContaining([firstVolunteer, secondVolunteer])

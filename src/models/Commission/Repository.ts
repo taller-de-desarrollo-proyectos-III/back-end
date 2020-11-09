@@ -1,9 +1,15 @@
-import { EntityRepository, AbstractRepository, getCustomRepository, Any } from "typeorm";
-import { Commission } from "./Model";
+import { EntityRepository, getManager, Any, Repository, EntityManager } from "typeorm";
+import { Commission } from "..";
 import { CommissionNotFoundError } from "./Errors/CommissionNotFoundError";
 
 @EntityRepository(Commission)
-export class CommissionRepository extends AbstractRepository<Commission> {
+export class CommissionRepository {
+  private readonly repository: Repository<Commission>;
+
+  constructor(manager: EntityManager) {
+    this.repository = manager.getRepository(Commission);
+  }
+
   public create(commission: Commission) {
     return this.repository.insert(commission);
   }
@@ -28,4 +34,4 @@ export class CommissionRepository extends AbstractRepository<Commission> {
   }
 }
 
-export const commissionRepository = () => getCustomRepository(CommissionRepository);
+export const commissionRepository = () => new CommissionRepository(getManager());

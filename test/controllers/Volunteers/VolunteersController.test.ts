@@ -2,6 +2,7 @@ import { testClient } from "../TestClient";
 import { StatusCodes } from "http-status-codes";
 import { volunteerRepository } from "../../../src/models/Volunteer";
 import { commissionRepository } from "../../../src/models/Commission";
+import { VolunteerCommissionRepository } from "../../../src/models/VolunteerCommission";
 import { UuidGenerator } from "../../../src/models/UuidGenerator";
 import { VolunteersRoutes } from "../../../src/routes/VolunteersRoutes";
 import { Commission, Volunteer } from "../../../src/models";
@@ -15,32 +16,8 @@ describe("VolunteersController", () => {
   const firstCommission = new Commission({ name: "Commission A" });
   const secondCommission = new Commission({ name: "Commission B" });
   const commissions = [firstCommission, secondCommission];
-  const firstVolunteer = new Volunteer({
-    dni: "12345678",
-    name: "John",
-    surname: "Doe",
-    email: "johndoe@gmail.com",
-    linkedin: "John Doe",
-    phoneNumber: "1165287676",
-    telegram: "@JohnD",
-    admissionYear: "2016",
-    graduationYear: "2016",
-    country: "Argentina",
-    commissions: [firstCommission]
-  });
-  const secondVolunteer = new Volunteer({
-    dni: "1234556",
-    name: "Eric",
-    surname: "Clapton",
-    email: "ericclapton@gmail.com",
-    linkedin: "Eric Clapton",
-    phoneNumber: "1165342313",
-    telegram: "@Eric",
-    admissionYear: "2019",
-    graduationYear: "2020",
-    country: "Argentina",
-    commissions: [secondCommission]
-  });
+  let firstVolunteer: Volunteer;
+  let secondVolunteer: Volunteer;
 
   beforeEach(async () => {
     await volunteerRepository().truncate();
@@ -48,8 +25,8 @@ describe("VolunteersController", () => {
 
     await commissionRepository().create(firstCommission);
     await commissionRepository().create(secondCommission);
-    await volunteerRepository().create(firstVolunteer);
-    await volunteerRepository().create(secondVolunteer);
+    firstVolunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+    secondVolunteer = await VolunteerGenerator.instance.withCommissions([secondCommission]);
   });
 
   describe("GET /volunteers", () => {
@@ -322,6 +299,16 @@ describe("VolunteersController", () => {
       );
     });
 
+    it("removes all volunteers commission if no one is provided", async () => {
+      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const response = await testClient.put(VolunteersRoutes.path).send({
+        ...volunteer,
+        commissionUuids: []
+      });
+      expect(response.status).toEqual(StatusCodes.CREATED);
+      expect(response.body.commissions).toEqual([]);
+    });
+
     it("updates volunteers' dni", async () => {
       await expectToUpdateAttribute("dni", "999999999");
     });
@@ -380,6 +367,27 @@ describe("VolunteersController", () => {
 
     it("returns an error if no phoneNumber is provided", async () => {
       await expectAttributeNotDefinedError("phoneNumber");
+    });
+
+    it("does not update the volunteer if the commissions update fails", async () => {
+      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const errorMessage = "unexpected error";
+      VolunteerCommissionRepository.prototype.update = jest.fn(() => {
+        throw new Error(errorMessage);
+      });
+
+      const response = await testClient.put(VolunteersRoutes.path).send({
+        ...volunteer,
+        name: "newName",
+        commissionUuids: [...volunteer.commissions, secondCommission].map(({ uuid }) => uuid)
+      });
+
+      const persistedVolunteer = await volunteerRepository().findByUuid(volunteer.uuid);
+      expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(response.body).toEqual(errorMessage);
+      expect(persistedVolunteer.name).toEqual(volunteer.name);
+      expect(persistedVolunteer.name).not.toEqual("newName");
+      expect(persistedVolunteer.commissions).toEqual([firstCommission]);
     });
   });
 });

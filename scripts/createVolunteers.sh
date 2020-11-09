@@ -3,7 +3,9 @@ commissions=$(curl --request GET \
   --header 'content-type: application/json' \
   --cookie _session_id=2777ff79d5e1e5d8bb389b2e45230a66)
 
-commissionUuids=( $(echo "$commissions" | jq -r '.[].uuid' /dev/stdin) )
+# Maybe you need to install jq: sudo apt-get install jq
+
+commissionUuids=($(echo "$commissions" | jq -r '.[].uuid' /dev/stdin))
 
 names=("Juan" "Pedro" "Pablo" "Jorge" "Juana" "Marta" "Celia" "Sofía" "Romina" "Candela" "Horacio" "Tadeo" "Camilo")
 surnames=("García" "Martinez" "Pérez" "Rodriguez" "Gutiérrez" "Solari")
