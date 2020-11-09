@@ -369,7 +369,7 @@ describe("VolunteersController", () => {
       await expectAttributeNotDefinedError("phoneNumber");
     });
 
-    it("does not update the volunteer if the commission update fails", async () => {
+    it("does not update the volunteer if the commissions update fails", async () => {
       const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
       const errorMessage = "unexpected error";
       VolunteerCommissionRepository.prototype.update = jest.fn(() => {
