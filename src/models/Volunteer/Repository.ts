@@ -1,4 +1,4 @@
-import { EntityRepository, AbstractRepository, getCustomRepository, Any } from "typeorm";
+import { EntityRepository, getManager, Any, EntityManager, Repository } from "typeorm";
 import { Commission, Volunteer, VolunteerCommission } from "..";
 import { VolunteerCommissionRepository } from "../VolunteerCommission";
 import { volunteerCommissionRepository } from "../VolunteerCommission";
@@ -7,14 +7,20 @@ import { VolunteerNotFoundError } from "./Errors/VolunteerNotFoundError";
 import { AttributeNotDefinedError } from "../Errors";
 
 @EntityRepository(Volunteer)
-export class VolunteerRepository extends AbstractRepository<Volunteer> {
+export class VolunteerRepository {
+  private readonly repository: Repository<Volunteer>;
+  private readonly manager: EntityManager;
+
+  constructor(manager: EntityManager) {
+    this.manager = manager;
+    this.repository = manager.getRepository(Volunteer);
+  }
+
   public create(volunteer: Volunteer) {
     return this.manager.transaction(async manager => {
       await manager.insert(Volunteer, volunteer);
       const volunteerCommissions = this.getVolunteerCommissions(volunteer);
-      await manager
-        .getCustomRepository(VolunteerCommissionRepository)
-        .bulkCreate(volunteerCommissions);
+      await new VolunteerCommissionRepository(manager).bulkCreate(volunteerCommissions);
       return volunteer;
     });
   }
@@ -24,7 +30,7 @@ export class VolunteerRepository extends AbstractRepository<Volunteer> {
   }
 
   public async findByCommissions(commissions: Commission[]) {
-    const repository = volunteerCommissionRepository();
+    const repository = new VolunteerCommissionRepository(getManager());
     const volunteerCommission = await repository.findByCommissions(commissions);
     const uuids = volunteerCommission.map(({ volunteerUuid }) => volunteerUuid);
     const volunteers = await this.repository.find({ where: { uuid: Any(uuids) } });
@@ -75,4 +81,4 @@ export class VolunteerRepository extends AbstractRepository<Volunteer> {
   }
 }
 
-export const volunteerRepository = () => getCustomRepository(VolunteerRepository);
+export const volunteerRepository = () => new VolunteerRepository(getManager());
