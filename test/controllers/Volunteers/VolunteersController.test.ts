@@ -2,6 +2,7 @@ import { testClient } from "../TestClient";
 import { StatusCodes } from "http-status-codes";
 import { volunteerRepository } from "../../../src/models/Volunteer";
 import { commissionRepository } from "../../../src/models/Commission";
+import { VolunteerCommissionRepository } from "../../../src/models/VolunteerCommission";
 import { UuidGenerator } from "../../../src/models/UuidGenerator";
 import { VolunteersRoutes } from "../../../src/routes/VolunteersRoutes";
 import { Commission, Volunteer } from "../../../src/models";
@@ -298,6 +299,16 @@ describe("VolunteersController", () => {
       );
     });
 
+    it("removes all volunteers commission if no one is provided", async () => {
+      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const response = await testClient.put(VolunteersRoutes.path).send({
+        ...volunteer,
+        commissionUuids: []
+      });
+      expect(response.status).toEqual(StatusCodes.CREATED);
+      expect(response.body.commissions).toEqual([]);
+    });
+
     it("updates volunteers' dni", async () => {
       await expectToUpdateAttribute("dni", "999999999");
     });
@@ -356,6 +367,26 @@ describe("VolunteersController", () => {
 
     it("returns an error if no phoneNumber is provided", async () => {
       await expectAttributeNotDefinedError("phoneNumber");
+    });
+
+    it("does not update the volunteer if the commission update fails", async () => {
+      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const errorMessage = "unexpected error";
+      VolunteerCommissionRepository.prototype.update = jest.fn(() => {
+        throw new Error(errorMessage);
+      });
+
+      const response = await testClient.put(VolunteersRoutes.path).send({
+        ...volunteer,
+        name: "newName",
+        commissionUuids: [UuidGenerator.generate()]
+      });
+
+      const persistedVolunteer = await volunteerRepository().findByUuid(volunteer.uuid);
+      expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(response.body).toEqual(errorMessage);
+      expect(persistedVolunteer.name).toEqual(volunteer.name);
+      expect(persistedVolunteer.name).not.toEqual("newName");
     });
   });
 });
