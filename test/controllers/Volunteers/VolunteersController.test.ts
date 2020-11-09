@@ -379,7 +379,7 @@ describe("VolunteersController", () => {
       const response = await testClient.put(VolunteersRoutes.path).send({
         ...volunteer,
         name: "newName",
-        commissionUuids: [UuidGenerator.generate()]
+        commissionUuids: [...volunteer.commissions, secondCommission].map(({ uuid }) => uuid)
       });
 
       const persistedVolunteer = await volunteerRepository().findByUuid(volunteer.uuid);
@@ -387,6 +387,7 @@ describe("VolunteersController", () => {
       expect(response.body).toEqual(errorMessage);
       expect(persistedVolunteer.name).toEqual(volunteer.name);
       expect(persistedVolunteer.name).not.toEqual("newName");
+      expect(persistedVolunteer.commissions).toEqual([firstCommission]);
     });
   });
 });
