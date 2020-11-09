@@ -15,32 +15,8 @@ describe("VolunteersController", () => {
   const firstCommission = new Commission({ name: "Commission A" });
   const secondCommission = new Commission({ name: "Commission B" });
   const commissions = [firstCommission, secondCommission];
-  const firstVolunteer = new Volunteer({
-    dni: "12345678",
-    name: "John",
-    surname: "Doe",
-    email: "johndoe@gmail.com",
-    linkedin: "John Doe",
-    phoneNumber: "1165287676",
-    telegram: "@JohnD",
-    admissionYear: "2016",
-    graduationYear: "2016",
-    country: "Argentina",
-    commissions: [firstCommission]
-  });
-  const secondVolunteer = new Volunteer({
-    dni: "1234556",
-    name: "Eric",
-    surname: "Clapton",
-    email: "ericclapton@gmail.com",
-    linkedin: "Eric Clapton",
-    phoneNumber: "1165342313",
-    telegram: "@Eric",
-    admissionYear: "2019",
-    graduationYear: "2020",
-    country: "Argentina",
-    commissions: [secondCommission]
-  });
+  let firstVolunteer: Volunteer;
+  let secondVolunteer: Volunteer;
 
   beforeEach(async () => {
     await volunteerRepository().truncate();
@@ -48,8 +24,8 @@ describe("VolunteersController", () => {
 
     await commissionRepository().create(firstCommission);
     await commissionRepository().create(secondCommission);
-    await volunteerRepository().create(firstVolunteer);
-    await volunteerRepository().create(secondVolunteer);
+    firstVolunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+    secondVolunteer = await VolunteerGenerator.instance.withCommissions([secondCommission]);
   });
 
   describe("GET /volunteers", () => {

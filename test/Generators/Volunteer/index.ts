@@ -1,5 +1,7 @@
 import { volunteerRepository } from "../../../src/models/Volunteer";
-import { Commission, Volunteer } from "../../../src/models";
+import { Commission, Volunteer, VolunteerCommission } from "../../../src/models";
+import { VolunteerCommissionRepository } from "../../../src/models/VolunteerCommission";
+import { getManager } from "typeorm";
 
 export const VolunteerGenerator = {
   index: 0,
@@ -9,7 +11,7 @@ export const VolunteerGenerator = {
   },
   instance: {
     withNoCommissions: async () => VolunteerGenerator.instance.withCommissions([]),
-    withCommissions: async (commissions?: Commission[]) => {
+    withCommissions: async (commissions: Commission[] = []) => {
       const index = VolunteerGenerator.getIndex();
       const volunteer = new Volunteer({
         dni: `${index}`,
@@ -24,8 +26,15 @@ export const VolunteerGenerator = {
         country: "Argentina",
         commissions
       });
-      await volunteerRepository().create(volunteer);
-      return volunteer;
+      return getManager().transaction(async manager => {
+        await volunteerRepository().insert(volunteer);
+        const volunteerCommissions = commissions.map(
+          ({ uuid: commissionUuid }) =>
+            new VolunteerCommission({ commissionUuid, volunteerUuid: volunteer.uuid })
+        );
+        await new VolunteerCommissionRepository(manager).bulkCreate(volunteerCommissions);
+        return volunteer;
+      });
     }
   }
 };

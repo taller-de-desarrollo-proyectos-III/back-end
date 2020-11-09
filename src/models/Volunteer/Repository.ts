@@ -1,5 +1,5 @@
 import { EntityRepository, getManager, Any, EntityManager, Repository } from "typeorm";
-import { Commission, Volunteer, VolunteerCommission } from "..";
+import { Commission, Volunteer } from "..";
 import { VolunteerCommissionRepository } from "../VolunteerCommission";
 import { volunteerCommissionRepository } from "../VolunteerCommission";
 import { commissionRepository } from "../Commission";
@@ -16,16 +16,11 @@ export class VolunteerRepository {
     this.repository = manager.getRepository(Volunteer);
   }
 
-  public create(volunteer: Volunteer) {
-    return this.manager.transaction(async manager => {
-      await manager.insert(Volunteer, volunteer);
-      const volunteerCommissions = this.getVolunteerCommissions(volunteer);
-      await new VolunteerCommissionRepository(manager).bulkCreate(volunteerCommissions);
-      return volunteer;
-    });
+  public insert(volunteer: Volunteer) {
+    return this.manager.insert(Volunteer, volunteer);
   }
 
-  public async save(volunteer: Volunteer) {
+  public save(volunteer: Volunteer) {
     return this.repository.save(volunteer);
   }
 
@@ -59,12 +54,6 @@ export class VolunteerRepository {
 
   public truncate() {
     return this.repository.delete({});
-  }
-
-  private getVolunteerCommissions({ uuid: volunteerUuid, commissions }: Volunteer) {
-    return commissions.map(
-      ({ uuid: commissionUuid }) => new VolunteerCommission({ volunteerUuid, commissionUuid })
-    );
   }
 
   private static setEmptyCommission(volunteers: Volunteer[]) {

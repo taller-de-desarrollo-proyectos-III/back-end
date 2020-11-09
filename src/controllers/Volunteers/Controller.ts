@@ -17,7 +17,14 @@ export const VolunteersController = {
       const { commissionUuids, ...attributes } = request.body;
       const commissions = await commissionRepository().findByUuids(commissionUuids || []);
       const volunteer = new Volunteer({ ...attributes, commissions });
-      await volunteerRepository().create(volunteer);
+      await getManager().transaction(async manager => {
+        await new VolunteerRepository(manager).insert(volunteer);
+        const volunteerCommissions = commissions.map(
+          ({ uuid: commissionUuid }) =>
+            new VolunteerCommission({ commissionUuid, volunteerUuid: volunteer.uuid })
+        );
+        await new VolunteerCommissionRepository(manager).bulkCreate(volunteerCommissions);
+      });
       return response.status(StatusCodes.CREATED).json(volunteer);
     } catch (error) {
       if (error instanceof AttributeNotDefinedError) {
