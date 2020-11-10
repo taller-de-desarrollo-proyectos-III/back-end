@@ -126,35 +126,25 @@ describe("CommissionsController", () => {
   });
 
   describe("PUT /commissions", () => {
-    const expectAttributeNotDefinedError = async (attributeName: string) => {
-      const commission = await CommissionGenerator.instance;
-      const response = await testClient.put(CommissionsRoutes.path).send(
-        omit(
-          {
-            ...commission
-          },
-          attributeName
-        )
-      );
-      expect(response.status).toEqual(StatusCodes.BAD_REQUEST);
-      expect(response.body).toEqual(AttributeNotDefinedError.buildMessage(attributeName));
-    };
-
-    const expectToUpdateAttribute = async (attributeName: string, value: string | number) => {
+    it("updates commission' name", async () => {
       const commission = await CommissionGenerator.instance();
+      const value = "newName";
+      const name = "name";
       const response = await testClient.put(CommissionsRoutes.path).send({
         ...commission,
-        [attributeName]: value
+        name: value
       });
       expect(response.status).toEqual(StatusCodes.CREATED);
-      expect(response.body[attributeName]).toEqual(value);
-    };
-    it("updates commission' name", async () => {
-      await expectToUpdateAttribute("name", "newName");
+      expect(response.body[name]).toEqual(value);
     });
 
     it("returns an error if no name is provided", async () => {
-      await expectAttributeNotDefinedError("name");
+      const commission = await CommissionGenerator.instance;
+      const response = await testClient
+        .put(CommissionsRoutes.path)
+        .send(omit({ ...commission }, "name"));
+      expect(response.status).toEqual(StatusCodes.BAD_REQUEST);
+      expect(response.body).toEqual(AttributeNotDefinedError.buildMessage("name"));
     });
   });
 });

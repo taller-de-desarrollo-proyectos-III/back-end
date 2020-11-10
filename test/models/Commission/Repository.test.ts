@@ -63,17 +63,15 @@ describe("CommissionRepository", () => {
   });
 
   describe("update", () => {
-    const expectToUpdateAttribute = async (attributeName: string, value: string | number) => {
+    it("updates commission name", async () => {
       const commission = new Commission({ name: "Communication" });
+      const attributeName = "name";
+      const value = "newName";
       await commissionRepository().create(commission);
       commission[attributeName] = value;
       await commissionRepository().save(commission);
       const updatedCommission = await commissionRepository().findByUuid(commission.uuid);
       expect(updatedCommission[attributeName]).toEqual(value);
-    };
-
-    it("updates commission name", async () => {
-      await expectToUpdateAttribute("name", "newName");
     });
   });
 });

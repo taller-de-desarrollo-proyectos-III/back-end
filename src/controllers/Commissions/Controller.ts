@@ -1,12 +1,10 @@
 import { Request, Response } from "express";
 import { IPostRequest } from "../Request";
-import { ICreateProps } from "./Interfaces";
+import { ICreateProps, IUpdateProps } from "./Interfaces";
 import { Commission } from "../../models";
 import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../models/Errors";
 import { StatusCodes } from "http-status-codes";
-import { CommissionRepository, commissionRepository } from "../../models/Commission";
-import { IUpdateProps } from "../Volunteers/Interfaces";
-import { getManager } from "typeorm";
+import { commissionRepository } from "../../models/Commission";
 
 export const CommissionsController = {
   create: async (request: IPostRequest<ICreateProps>, response: Response) => {
@@ -35,11 +33,9 @@ export const CommissionsController = {
   },
   update: async (request: IPostRequest<IUpdateProps>, response: Response) => {
     try {
-      const { uuid, ...attributes } = request.body;
-      const commission = new Commission({ uuid, ...attributes });
-      await getManager().transaction(async manager => {
-        await new CommissionRepository(manager).save(commission);
-      });
+      const { uuid, name } = request.body;
+      const commission = new Commission({ uuid, name });
+      await commissionRepository().save(commission);
       return response.status(StatusCodes.CREATED).json(commission);
     } catch (error) {
       if (error instanceof AttributeNotDefinedError) {
