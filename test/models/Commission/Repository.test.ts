@@ -61,4 +61,19 @@ describe("CommissionRepository", () => {
     await commissionRepository().truncate();
     expect(await commissionRepository().findAll()).toHaveLength(0);
   });
+
+  describe("update", () => {
+    const expectToUpdateAttribute = async (attributeName: string, value: string | number) => {
+      const commission = new Commission({ name: "Communication" });
+      await commissionRepository().create(commission);
+      commission[attributeName] = value;
+      await commissionRepository().save(commission);
+      const updatedCommission = await commissionRepository().findByUuid(commission.uuid);
+      expect(updatedCommission[attributeName]).toEqual(value);
+    };
+
+    it("updates commission name", async () => {
+      await expectToUpdateAttribute("name", "newName");
+    });
+  });
 });

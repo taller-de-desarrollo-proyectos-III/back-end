@@ -14,6 +14,10 @@ export class CommissionRepository {
     return this.repository.insert(commission);
   }
 
+  public save(commission: Commission) {
+    return this.repository.save(commission);
+  }
+
   public async findByUuid(uuid: string) {
     const commission = await this.repository.findOne({ uuid });
     if (!commission) throw new CommissionNotFoundError();

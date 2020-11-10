@@ -7,6 +7,8 @@ import { commissionRepository } from "../../../src/models/Commission";
 import { UuidGenerator } from "../../../src/models/UuidGenerator";
 import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../../src/models/Errors";
 import { UUID_REGEX } from "../../models";
+import { CommissionGenerator } from "../../Generators/Commission";
+import { omit } from "lodash";
 
 describe("CommissionsController", () => {
   const firstCommission = new Commission({ name: "Commission A" });
@@ -120,6 +122,39 @@ describe("CommissionsController", () => {
       const commissionUuids = actualCommissions.map(({ uuid }) => uuid);
       const expectedCommissions = await commissionRepository().findByUuids(commissionUuids);
       expect(expectedCommissions).toEqual(expect.arrayContaining(actualCommissions));
+    });
+  });
+
+  describe("PUT /commissions", () => {
+    const expectAttributeNotDefinedError = async (attributeName: string) => {
+      const commission = await CommissionGenerator.instance;
+      const response = await testClient.put(CommissionsRoutes.path).send(
+        omit(
+          {
+            ...commission
+          },
+          attributeName
+        )
+      );
+      expect(response.status).toEqual(StatusCodes.BAD_REQUEST);
+      expect(response.body).toEqual(AttributeNotDefinedError.buildMessage(attributeName));
+    };
+
+    const expectToUpdateAttribute = async (attributeName: string, value: string | number) => {
+      const commission = await CommissionGenerator.instance();
+      const response = await testClient.put(CommissionsRoutes.path).send({
+        ...commission,
+        [attributeName]: value
+      });
+      expect(response.status).toEqual(StatusCodes.CREATED);
+      expect(response.body[attributeName]).toEqual(value);
+    };
+    it("updates commission' name", async () => {
+      await expectToUpdateAttribute("name", "newName");
+    });
+
+    it("returns an error if no name is provided", async () => {
+      await expectAttributeNotDefinedError("name");
     });
   });
 });
