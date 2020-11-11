@@ -140,9 +140,7 @@ describe("CommissionsController", () => {
 
     it("returns an error if no name is provided", async () => {
       const commission = await CommissionGenerator.instance;
-      const response = await testClient
-        .put(CommissionsRoutes.path)
-        .send(omit({ ...commission }, "name"));
+      const response = await testClient.put(CommissionsRoutes.path).send(omit(commission, "name"));
       expect(response.status).toEqual(StatusCodes.BAD_REQUEST);
       expect(response.body).toEqual(AttributeNotDefinedError.buildMessage("name"));
     });
