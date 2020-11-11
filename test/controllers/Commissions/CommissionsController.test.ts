@@ -7,6 +7,8 @@ import { commissionRepository } from "../../../src/models/Commission";
 import { UuidGenerator } from "../../../src/models/UuidGenerator";
 import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../../src/models/Errors";
 import { UUID_REGEX } from "../../models";
+import { CommissionGenerator } from "../../Generators/Commission";
+import { omit } from "lodash";
 
 describe("CommissionsController", () => {
   const firstCommission = new Commission({ name: "Commission A" });
@@ -120,6 +122,27 @@ describe("CommissionsController", () => {
       const commissionUuids = actualCommissions.map(({ uuid }) => uuid);
       const expectedCommissions = await commissionRepository().findByUuids(commissionUuids);
       expect(expectedCommissions).toEqual(expect.arrayContaining(actualCommissions));
+    });
+  });
+
+  describe("PUT /commissions", () => {
+    it("updates commission' name", async () => {
+      const commission = await CommissionGenerator.instance();
+      const value = "newName";
+      const name = "name";
+      const response = await testClient.put(CommissionsRoutes.path).send({
+        ...commission,
+        name: value
+      });
+      expect(response.status).toEqual(StatusCodes.CREATED);
+      expect(response.body[name]).toEqual(value);
+    });
+
+    it("returns an error if no name is provided", async () => {
+      const commission = await CommissionGenerator.instance;
+      const response = await testClient.put(CommissionsRoutes.path).send(omit(commission, "name"));
+      expect(response.status).toEqual(StatusCodes.BAD_REQUEST);
+      expect(response.body).toEqual(AttributeNotDefinedError.buildMessage("name"));
     });
   });
 });

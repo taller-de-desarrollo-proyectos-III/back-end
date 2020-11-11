@@ -6,8 +6,8 @@ import { InvalidAttributeFormatError } from "../Errors/InvalidAttributeFormatErr
 
 @Entity({ name: "Commissions" })
 export class Commission {
-  constructor({ name }: ICommissionAttributes) {
-    this.uuid = UuidGenerator.generate();
+  constructor({ uuid, name }: ICommissionAttributes) {
+    this.uuid = uuid || UuidGenerator.generate();
     this.name = name;
     this.validate();
   }
@@ -26,5 +26,6 @@ export class Commission {
 }
 
 interface ICommissionAttributes {
+  uuid?: string;
   name: string;
 }

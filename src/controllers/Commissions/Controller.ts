@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IPostRequest } from "../Request";
-import { ICreateProps } from "./Interfaces";
+import { ICreateProps, IUpdateProps } from "./Interfaces";
 import { Commission } from "../../models";
 import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../models/Errors";
 import { StatusCodes } from "http-status-codes";
@@ -29,6 +29,22 @@ export const CommissionsController = {
       response.status(StatusCodes.OK).json(commissions);
     } catch (error) {
       response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
+    }
+  },
+  update: async (request: IPostRequest<IUpdateProps>, response: Response) => {
+    try {
+      const { uuid, name } = request.body;
+      const commission = new Commission({ uuid, name });
+      await commissionRepository().save(commission);
+      return response.status(StatusCodes.CREATED).json(commission);
+    } catch (error) {
+      if (error instanceof AttributeNotDefinedError) {
+        return response.status(StatusCodes.BAD_REQUEST).json(error.message);
+      }
+      if (error instanceof InvalidAttributeFormatError) {
+        return response.status(StatusCodes.BAD_REQUEST).json(error.message);
+      }
+      return response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
     }
   }
 };
