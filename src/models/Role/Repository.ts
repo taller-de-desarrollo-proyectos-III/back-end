@@ -10,7 +10,7 @@ export class RoleRepository {
     this.repository = manager.getRepository(Role);
   }
 
-  public create(role: Role) {
+  public insert(role: Role) {
     return this.repository.insert(role);
   }
 

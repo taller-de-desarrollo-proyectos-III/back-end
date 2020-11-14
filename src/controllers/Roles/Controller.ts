@@ -11,7 +11,7 @@ export const RolesController = {
     try {
       const { name } = request.body;
       const role = new Role({ name });
-      await roleRepository().create(role);
+      await roleRepository().insert(role);
       return response.status(StatusCodes.CREATED).json(role);
     } catch (error) {
       if (error instanceof AttributeNotDefinedError) {

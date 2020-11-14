@@ -19,15 +19,14 @@ describe("RolesController", () => {
 
   describe("GET /roles", () => {
     it("get all existing roles", async () => {
-      await roleRepository().create(firstRole);
-      await roleRepository().create(secondRole);
+      await roleRepository().insert(firstRole);
+      await roleRepository().insert(secondRole);
       const response = await testClient.get(RolesRoutes.path);
       expect(response.status).toEqual(StatusCodes.OK);
       expect(response.body).toEqual(expect.arrayContaining(roles));
     });
 
-    it("return an empty array if no role exist", async () => {
-      await roleRepository().truncate();
+    it("returns an empty array if no role exist", async () => {
       const response = await testClient.get(RolesRoutes.path);
       expect(response.status).toEqual(StatusCodes.OK);
       expect(response.body).toEqual([]);
