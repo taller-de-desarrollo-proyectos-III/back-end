@@ -1,10 +1,12 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
 export class CreateRolesTable1605240329001 implements MigrationInterface {
+  private readonly tableName = "Roles";
+
   public async up(queryRunner: QueryRunner) {
     return queryRunner.createTable(
       new Table({
-        name: "Roles",
+        name: this.tableName,
         columns: [
           {
             name: "uuid",
