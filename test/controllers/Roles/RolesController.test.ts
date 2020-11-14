@@ -18,7 +18,7 @@ describe("RolesController", () => {
   beforeEach(async () => roleRepository().truncate());
 
   describe("GET /roles", () => {
-    it("get all existing roles", async () => {
+    it("gets all existing roles", async () => {
       await roleRepository().insert(firstRole);
       await roleRepository().insert(secondRole);
       const response = await testClient.get(RolesRoutes.path);
