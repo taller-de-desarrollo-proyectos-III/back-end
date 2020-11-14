@@ -26,6 +26,6 @@ export class CreateRolesTable1605240329001 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner) {
-    return queryRunner.dropTable("Roles");
+    return queryRunner.dropTable(this.tableName);
   }
 }
