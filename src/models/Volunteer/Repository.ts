@@ -1,6 +1,6 @@
-import { EntityRepository, getManager, Any, EntityManager, Repository } from "typeorm";
+import { EntityRepository, getManager, EntityManager, Repository } from "typeorm";
 import { Commission, Volunteer } from "..";
-import { VolunteerCommissionRepository } from "../VolunteerCommission";
+import { IVolunteerAttributes } from "../Volunteer/Model";
 import { volunteerCommissionRepository } from "../VolunteerCommission";
 import { commissionRepository } from "../Commission";
 import { VolunteerNotFoundError } from "./Errors/VolunteerNotFoundError";
@@ -25,16 +25,20 @@ export class VolunteerRepository {
   }
 
   public async findByCommissions(commissions: Commission[]) {
-    const repository = new VolunteerCommissionRepository(getManager());
-    const volunteerCommission = await repository.findByCommissions(commissions);
-    const uuids = volunteerCommission.map(({ volunteerUuid }) => volunteerUuid);
-    const volunteers = await this.repository.find({ where: { uuid: Any(uuids) } });
-    return Promise.all(
-      volunteers.map(async volunteer => {
-        volunteer.commissions = await VolunteerRepository.loadCommissions(volunteer);
-        return volunteer;
-      })
-    );
+    if (commissions.length === 0) return [];
+
+    const commissionUuids = commissions.map(({ uuid }) => `'${uuid}'`).join(",");
+    const results: IVolunteerAttributes[] = await this.repository.query(`
+      SELECT *
+      FROM "Volunteers" JOIN "VolunteerCommissions"
+      ON "VolunteerCommissions"."volunteerUuid" = "Volunteers"."uuid"
+      WHERE "VolunteerCommissions"."commissionUuid" IN (${commissionUuids})
+    `);
+    return results.map(result => {
+      const volunteer = new Volunteer(result);
+      volunteer.commissions = undefined as any;
+      return volunteer;
+    });
   }
 
   public async findByUuid(uuid: string) {
@@ -49,18 +53,12 @@ export class VolunteerRepository {
 
   public async findAll() {
     const volunteers = await this.repository.find();
-    return VolunteerRepository.setEmptyCommission(volunteers);
+    volunteers.forEach(volunteer => (volunteer.commissions = []));
+    return volunteers;
   }
 
   public truncate() {
     return this.repository.delete({});
-  }
-
-  private static setEmptyCommission(volunteers: Volunteer[]) {
-    return volunteers.map(volunteer => {
-      volunteer.commissions = [];
-      return volunteer;
-    });
   }
 
   private static async loadCommissions(volunteer: Volunteer) {

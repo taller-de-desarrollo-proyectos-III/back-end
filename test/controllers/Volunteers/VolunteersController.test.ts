@@ -34,14 +34,19 @@ describe("VolunteersController", () => {
       const commissionUuids = commissions.map(({ uuid }) => uuid);
       const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
       expect(response.status).toEqual(StatusCodes.OK);
-      expect(response.body).toEqual(expect.arrayContaining([firstVolunteer, secondVolunteer]));
+      expect(response.body).toEqual(
+        expect.arrayContaining([
+          omit(firstVolunteer, "commissions"),
+          omit(secondVolunteer, "commissions")
+        ])
+      );
     });
 
     it("get all volunteers that belong the provided commission uuid", async () => {
       const commissionUuids = [firstCommission.uuid];
       const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
       expect(response.status).toEqual(StatusCodes.OK);
-      expect(response.body).toEqual(expect.arrayContaining([firstVolunteer]));
+      expect(response.body).toEqual([omit(firstVolunteer, "commissions")]);
     });
 
     it("returns no volunteers if given an empty array", async () => {

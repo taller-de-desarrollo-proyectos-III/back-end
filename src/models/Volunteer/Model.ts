@@ -95,7 +95,7 @@ export class Volunteer {
   }
 }
 
-interface IVolunteerAttributes {
+export interface IVolunteerAttributes {
   uuid?: string;
   dni: string;
   name: string;

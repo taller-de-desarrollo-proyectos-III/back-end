@@ -5,6 +5,7 @@ import { QueryFailedError } from "typeorm";
 import { VolunteerNotFoundError } from "../../../src/models/Volunteer/Errors";
 import { AttributeNotDefinedError } from "../../../src/models/Errors";
 import { VolunteerGenerator } from "../../Generators/Volunteer";
+import { omit } from "lodash";
 
 describe("VolunteerRepository", () => {
   const attributes = {
@@ -99,7 +100,7 @@ describe("VolunteerRepository", () => {
       const volunteerA = await VolunteerGenerator.instance.withCommissions([commissionA]);
       const volunteerB = await VolunteerGenerator.instance.withCommissions([commissionA]);
       expect(await volunteerRepository().findByCommissions([commissionA, commissionB])).toEqual(
-        expect.arrayContaining([volunteerA, volunteerB])
+        expect.arrayContaining([omit(volunteerA, "commissions"), omit(volunteerB, "commissions")])
       );
     });
   });
