@@ -27,7 +27,7 @@ export class VolunteerRepository {
 
     const commissionUuids = commissions.map(({ uuid }) => `'${uuid}'`).join(",");
     const results: IVolunteerAttributes[] = await this.repository.query(`
-      SELECT *
+      SELECT DISTINCT "Volunteers".uuid as uuid, "Volunteers".*
       FROM "Volunteers" JOIN "VolunteerCommissions"
       ON "VolunteerCommissions"."volunteerUuid" = "Volunteers"."uuid"
       WHERE "VolunteerCommissions"."commissionUuid" IN (${commissionUuids})
