@@ -1,6 +1,7 @@
 import { EntityRepository, getManager, Any, Repository, EntityManager } from "typeorm";
-import { Commission } from "..";
+import { Commission, Volunteer } from "..";
 import { CommissionNotFoundError } from "./Errors/CommissionNotFoundError";
+import { volunteerCommissionRepository } from "../VolunteerCommission";
 
 @EntityRepository(Commission)
 export class CommissionRepository {
@@ -16,6 +17,12 @@ export class CommissionRepository {
 
   public save(commission: Commission) {
     return this.repository.save(commission);
+  }
+
+  public async findByVolunteer(volunteer: Volunteer) {
+    const volunteerCommissions = await volunteerCommissionRepository().findByVolunteer(volunteer);
+    const commissionUuids = volunteerCommissions.map(({ commissionUuid }) => commissionUuid);
+    return commissionRepository().findByUuids(commissionUuids);
   }
 
   public async findByUuid(uuid: string) {

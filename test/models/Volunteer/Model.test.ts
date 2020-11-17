@@ -20,7 +20,6 @@ describe("Volunteer", () => {
     const volunteer = new Volunteer(attributes);
     expect(volunteer).toEqual({
       uuid: expect.stringMatching(UUID_REGEX),
-      commissions: [],
       ...attributes
     });
   });
@@ -36,7 +35,6 @@ describe("Volunteer", () => {
     const volunteer = new Volunteer(attributes);
     expect(volunteer).toEqual({
       uuid: expect.stringMatching(UUID_REGEX),
-      commissions: [],
       ...attributes
     });
   });
@@ -149,7 +147,7 @@ describe("Volunteer", () => {
     ).toThrow(InvalidAttributeFormatError);
   });
 
-  it("throws an error if admissionYear has invalid caracters", async () => {
+  it("throws an error if admissionYear has invalid characters", async () => {
     expect(
       () =>
         new Volunteer({
@@ -167,7 +165,7 @@ describe("Volunteer", () => {
     ).toThrow(InvalidAttributeFormatError);
   });
 
-  it("throws an error if graduationYear has invalid caracters", async () => {
+  it("throws an error if graduationYear has invalid characters", async () => {
     expect(
       () =>
         new Volunteer({
@@ -185,7 +183,7 @@ describe("Volunteer", () => {
     ).toThrow(InvalidAttributeFormatError);
   });
 
-  it("throws an error if graduationYear has more than four caracters", async () => {
+  it("throws an error if graduationYear has more than four characters", async () => {
     expect(
       () =>
         new Volunteer({
@@ -203,7 +201,7 @@ describe("Volunteer", () => {
     ).toThrow(InvalidAttributeFormatError);
   });
 
-  it("throws an error if admissionYear has more than four caracters", async () => {
+  it("throws an error if admissionYear has more than four characters", async () => {
     expect(
       () =>
         new Volunteer({

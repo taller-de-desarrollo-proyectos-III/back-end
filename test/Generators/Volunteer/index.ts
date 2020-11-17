@@ -23,8 +23,7 @@ export const VolunteerGenerator = {
         telegram: "@JohnD${index}",
         admissionYear: "2016",
         graduationYear: "2016",
-        country: "Argentina",
-        commissions
+        country: "Argentina"
       });
       return getManager().transaction(async manager => {
         await volunteerRepository().insert(volunteer);

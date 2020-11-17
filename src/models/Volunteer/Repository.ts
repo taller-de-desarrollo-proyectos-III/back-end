@@ -1,8 +1,6 @@
 import { EntityRepository, getManager, EntityManager, Repository } from "typeorm";
 import { Commission, Volunteer } from "..";
 import { IVolunteerAttributes } from "../Volunteer/Model";
-import { volunteerCommissionRepository } from "../VolunteerCommission";
-import { commissionRepository } from "../Commission";
 import { VolunteerNotFoundError } from "./Errors/VolunteerNotFoundError";
 import { AttributeNotDefinedError } from "../Errors";
 
@@ -34,11 +32,7 @@ export class VolunteerRepository {
       ON "VolunteerCommissions"."volunteerUuid" = "Volunteers"."uuid"
       WHERE "VolunteerCommissions"."commissionUuid" IN (${commissionUuids})
     `);
-    return results.map(result => {
-      const volunteer = new Volunteer(result);
-      volunteer.commissions = undefined as any;
-      return volunteer;
-    });
+    return results.map(result => new Volunteer(result));
   }
 
   public async findByUuid(uuid: string) {
@@ -47,24 +41,15 @@ export class VolunteerRepository {
     const volunteer = await this.repository.findOne({ uuid });
     if (!volunteer) throw new VolunteerNotFoundError();
 
-    volunteer.commissions = await VolunteerRepository.loadCommissions(volunteer);
     return volunteer;
   }
 
   public async findAll() {
-    const volunteers = await this.repository.find();
-    volunteers.forEach(volunteer => (volunteer.commissions = []));
-    return volunteers;
+    return this.repository.find();
   }
 
   public truncate() {
     return this.repository.delete({});
-  }
-
-  private static async loadCommissions(volunteer: Volunteer) {
-    const volunteerCommissions = await volunteerCommissionRepository().findByVolunteer(volunteer);
-    const commissionUuids = volunteerCommissions.map(({ commissionUuid }) => commissionUuid);
-    return commissionRepository().findByUuids(commissionUuids);
   }
 }
 

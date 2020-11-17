@@ -90,8 +90,7 @@ describe("VolunteerRepository", () => {
 
   describe("findByCommissions", () => {
     it("returns empty list if no commission is passed", async () => {
-      const commissions = [commissionA, commissionB];
-      const volunteer = new Volunteer({ commissions, ...attributes });
+      const volunteer = new Volunteer(attributes);
       await volunteerRepository().insert(volunteer);
       expect(await volunteerRepository().findByCommissions([])).toHaveLength(0);
     });
