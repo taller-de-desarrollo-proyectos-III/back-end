@@ -79,7 +79,7 @@ describe("CommissionRepository", () => {
       expect(foundCommissions).toEqual(expect.arrayContaining(commissions));
     });
 
-    it("returns an empty array if the volunteer hs no commissions", async () => {
+    it("returns an empty array if the volunteer has no commissions", async () => {
       const volunteer = await VolunteerGenerator.instance.withNoCommissions();
       const foundCommissions = await commissionRepository().findByVolunteer(volunteer);
       expect(foundCommissions).toEqual([]);
