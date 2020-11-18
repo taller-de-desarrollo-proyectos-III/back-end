@@ -1,8 +1,6 @@
-import { EntityRepository, getManager, Any, EntityManager, Repository } from "typeorm";
+import { EntityRepository, getManager, EntityManager, Repository } from "typeorm";
 import { Commission, Volunteer } from "..";
-import { VolunteerCommissionRepository } from "../VolunteerCommission";
-import { volunteerCommissionRepository } from "../VolunteerCommission";
-import { commissionRepository } from "../Commission";
+import { IVolunteerAttributes } from "../Volunteer/Model";
 import { VolunteerNotFoundError } from "./Errors/VolunteerNotFoundError";
 import { AttributeNotDefinedError } from "../Errors";
 
@@ -25,16 +23,16 @@ export class VolunteerRepository {
   }
 
   public async findByCommissions(commissions: Commission[]) {
-    const repository = new VolunteerCommissionRepository(getManager());
-    const volunteerCommission = await repository.findByCommissions(commissions);
-    const uuids = volunteerCommission.map(({ volunteerUuid }) => volunteerUuid);
-    const volunteers = await this.repository.find({ where: { uuid: Any(uuids) } });
-    return Promise.all(
-      volunteers.map(async volunteer => {
-        volunteer.commissions = await VolunteerRepository.loadCommissions(volunteer);
-        return volunteer;
-      })
-    );
+    if (commissions.length === 0) return [];
+
+    const commissionUuids = commissions.map(({ uuid }) => `'${uuid}'`).join(",");
+    const results: IVolunteerAttributes[] = await this.repository.query(`
+      SELECT DISTINCT "Volunteers".uuid as uuid, "Volunteers".*
+      FROM "Volunteers" JOIN "VolunteerCommissions"
+      ON "VolunteerCommissions"."volunteerUuid" = "Volunteers"."uuid"
+      WHERE "VolunteerCommissions"."commissionUuid" IN (${commissionUuids})
+    `);
+    return results.map(result => new Volunteer(result));
   }
 
   public async findByUuid(uuid: string) {
@@ -43,30 +41,15 @@ export class VolunteerRepository {
     const volunteer = await this.repository.findOne({ uuid });
     if (!volunteer) throw new VolunteerNotFoundError();
 
-    volunteer.commissions = await VolunteerRepository.loadCommissions(volunteer);
     return volunteer;
   }
 
   public async findAll() {
-    const volunteers = await this.repository.find();
-    return VolunteerRepository.setEmptyCommission(volunteers);
+    return this.repository.find();
   }
 
   public truncate() {
     return this.repository.delete({});
-  }
-
-  private static setEmptyCommission(volunteers: Volunteer[]) {
-    return volunteers.map(volunteer => {
-      volunteer.commissions = [];
-      return volunteer;
-    });
-  }
-
-  private static async loadCommissions(volunteer: Volunteer) {
-    const volunteerCommissions = await volunteerCommissionRepository().findByVolunteer(volunteer);
-    const commissionUuids = volunteerCommissions.map(({ commissionUuid }) => commissionUuid);
-    return commissionRepository().findByUuids(commissionUuids);
   }
 }
 

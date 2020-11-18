@@ -34,14 +34,15 @@ describe("VolunteersController", () => {
       const commissionUuids = commissions.map(({ uuid }) => uuid);
       const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
       expect(response.status).toEqual(StatusCodes.OK);
+      expect(response.body).toHaveLength(2);
       expect(response.body).toEqual(expect.arrayContaining([firstVolunteer, secondVolunteer]));
     });
 
-    it("get all volunteers that belong the provided commission uuid", async () => {
+    it("returns all volunteers that belong the provided commission uuid", async () => {
       const commissionUuids = [firstCommission.uuid];
       const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
       expect(response.status).toEqual(StatusCodes.OK);
-      expect(response.body).toEqual(expect.arrayContaining([firstVolunteer]));
+      expect(response.body).toEqual([firstVolunteer]);
     });
 
     it("returns no volunteers if given an empty array", async () => {
@@ -242,7 +243,7 @@ describe("VolunteersController", () => {
       const uuid = firstVolunteer.uuid;
       const response = await testClient.get(`${VolunteersRoutes.path}/${uuid}`);
       expect(response.status).toEqual(StatusCodes.OK);
-      expect(response.body).toEqual(firstVolunteer);
+      expect(response.body).toEqual({ ...firstVolunteer, commissions: [firstCommission] });
     });
 
     it("returns a bad request if the volunteer does not exist", async () => {
@@ -267,7 +268,7 @@ describe("VolunteersController", () => {
         omit(
           {
             ...volunteer,
-            commissionUuids: [...volunteer.commissions, secondCommission].map(({ uuid }) => uuid)
+            commissionUuids: [firstCommission.uuid, secondCommission.uuid]
           },
           attributeName
         )
@@ -281,7 +282,7 @@ describe("VolunteersController", () => {
       const response = await testClient.put(VolunteersRoutes.path).send({
         ...volunteer,
         [attributeName]: value,
-        commissionUuids: volunteer.commissions.map(({ uuid }) => uuid)
+        commissionUuids: [firstCommission.uuid]
       });
       expect(response.status).toEqual(StatusCodes.CREATED);
       expect(response.body[attributeName]).toEqual(value);
@@ -291,7 +292,7 @@ describe("VolunteersController", () => {
       const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
       const response = await testClient.put(VolunteersRoutes.path).send({
         ...volunteer,
-        commissionUuids: [...volunteer.commissions, secondCommission].map(({ uuid }) => uuid)
+        commissionUuids: [firstCommission.uuid, secondCommission.uuid]
       });
       expect(response.status).toEqual(StatusCodes.CREATED);
       expect(response.body.commissions).toEqual(
@@ -379,15 +380,16 @@ describe("VolunteersController", () => {
       const response = await testClient.put(VolunteersRoutes.path).send({
         ...volunteer,
         name: "newName",
-        commissionUuids: [...volunteer.commissions, secondCommission].map(({ uuid }) => uuid)
+        commissionUuids: [firstCommission.uuid, secondCommission.uuid]
       });
 
       const persistedVolunteer = await volunteerRepository().findByUuid(volunteer.uuid);
+      const volunteerCommissions = await commissionRepository().findByVolunteer(volunteer);
       expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(response.body).toEqual(errorMessage);
       expect(persistedVolunteer.name).toEqual(volunteer.name);
       expect(persistedVolunteer.name).not.toEqual("newName");
-      expect(persistedVolunteer.commissions).toEqual([firstCommission]);
+      expect(volunteerCommissions).toEqual([firstCommission]);
     });
   });
 });

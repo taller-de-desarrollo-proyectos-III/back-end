@@ -3,7 +3,6 @@ import { UuidGenerator } from "../UuidGenerator";
 import { isDefined, isUUID, isEmail, length, isNumberString } from "class-validator";
 import { AttributeNotDefinedError } from "../Errors/AttributeNotDefinedError";
 import { InvalidAttributeFormatError } from "../Errors/InvalidAttributeFormatError";
-import { Commission } from "..";
 
 @Entity({ name: "Volunteers" })
 export class Volunteer {
@@ -18,8 +17,7 @@ export class Volunteer {
     telegram,
     admissionYear,
     graduationYear,
-    country,
-    commissions
+    country
   }: IVolunteerAttributes) {
     this.uuid = uuid || UuidGenerator.generate();
     this.dni = dni;
@@ -32,7 +30,6 @@ export class Volunteer {
     this.admissionYear = admissionYear;
     this.graduationYear = graduationYear;
     this.country = country;
-    this.commissions = commissions || [];
     this.validate();
   }
 
@@ -69,8 +66,6 @@ export class Volunteer {
   @Column()
   public country?: string;
 
-  public commissions: Commission[];
-
   public validate() {
     if (!isDefined(this.uuid)) throw new AttributeNotDefinedError("uuid");
     if (!isDefined(this.dni)) throw new AttributeNotDefinedError("dni");
@@ -95,7 +90,7 @@ export class Volunteer {
   }
 }
 
-interface IVolunteerAttributes {
+export interface IVolunteerAttributes {
   uuid?: string;
   dni: string;
   name: string;
@@ -107,5 +102,4 @@ interface IVolunteerAttributes {
   admissionYear?: string;
   graduationYear?: string;
   country?: string;
-  commissions?: Commission[];
 }

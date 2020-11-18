@@ -1,10 +1,15 @@
 import { commissionRepository } from "../../../src/models/Commission";
-import { Commission } from "../../../src/models";
+import { volunteerRepository } from "../../../src/models/Volunteer";
+import { Commission, Volunteer } from "../../../src/models";
 import { QueryFailedError } from "typeorm";
 import { CommissionNotFoundError } from "../../../src/models/Commission/Errors";
+import { VolunteerGenerator } from "../../Generators/Volunteer";
 
 describe("CommissionRepository", () => {
-  beforeEach(() => commissionRepository().truncate());
+  beforeEach(async () => {
+    await commissionRepository().truncate();
+    await volunteerRepository().truncate();
+  });
 
   it("saves a commission model on the database", async () => {
     const commission = new Commission({ name: "Commission A" });
@@ -60,6 +65,37 @@ describe("CommissionRepository", () => {
 
     await commissionRepository().truncate();
     expect(await commissionRepository().findAll()).toHaveLength(0);
+  });
+
+  describe("findByVolunteer", () => {
+    it("finds all commission from the given volunteer", async () => {
+      const firstCommission = new Commission({ name: "first" });
+      const secondCommission = new Commission({ name: "second" });
+      await commissionRepository().create(firstCommission);
+      await commissionRepository().create(secondCommission);
+      const commissions = [firstCommission, secondCommission];
+      const volunteer = await VolunteerGenerator.instance.withCommissions(commissions);
+      const foundCommissions = await commissionRepository().findByVolunteer(volunteer);
+      expect(foundCommissions).toEqual(expect.arrayContaining(commissions));
+    });
+
+    it("returns an empty array if the volunteer has no commissions", async () => {
+      const volunteer = await VolunteerGenerator.instance.withNoCommissions();
+      const foundCommissions = await commissionRepository().findByVolunteer(volunteer);
+      expect(foundCommissions).toEqual([]);
+    });
+
+    it("returns an empty array if the volunteer is not persisted", async () => {
+      const volunteer = new Volunteer({
+        dni: "1234",
+        name: "name",
+        surname: "surname",
+        email: "email@gamil.com",
+        phoneNumber: "1234"
+      });
+      const foundCommissions = await commissionRepository().findByVolunteer(volunteer);
+      expect(foundCommissions).toEqual([]);
+    });
   });
 
   describe("update", () => {
