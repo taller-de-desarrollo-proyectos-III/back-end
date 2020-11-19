@@ -3,10 +3,11 @@ const variablesKeys = {
   DATABASE_URL: "DATABASE_URL"
 };
 
-type Env = "production" | "development" | "test" | "travis";
+type Env = "production" | "staging" | "development" | "test" | "travis";
 
 export const Environment = {
   PRODUCTION: "production" as Env,
+  STAGING: "production" as Env,
   DEVELOPMENT: "development" as Env,
   TEST: "test" as Env,
   TRAVIS: "travis" as Env,
