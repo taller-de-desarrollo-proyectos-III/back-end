@@ -59,7 +59,7 @@
     "start": "node build/src/index.js",
     "dev": "nodemon src/index.ts",
     "build": "rm -rf build && tsc --project .",
-    "build:production": "rm -rf build && tsc --project ./tsconfig.production.json",
+    "build:src": "rm -rf build && tsc --project ./tsconfig.src.json",
     "test": "jest --runInBand --coverage --colors --config ./test/jest.config.js",
     "coverage": "cat coverage/lcov.info | coveralls",
     "format:all": "yarn prettier --write .",

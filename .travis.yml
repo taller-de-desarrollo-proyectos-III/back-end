@@ -31,4 +31,4 @@ deploy:
     branch: main
     repo: taller-de-desarrollo-proyectos-III/back-end
   run:
-    - "yarn install && yarn build:production && yarn db:migrate"
+    - "yarn install && yarn build:src && yarn db:migrate"
