@@ -6,6 +6,11 @@ export const CorsConfig = {
     credentials: true,
     optionsSuccessStatus: 200
   },
+  staging: {
+    origin: "https://tdp3-frontend.herokuapp.com",
+    credentials: true,
+    optionsSuccessStatus: 200
+  },
   development: {
     origin: "http://localhost:3001",
     credentials: true,

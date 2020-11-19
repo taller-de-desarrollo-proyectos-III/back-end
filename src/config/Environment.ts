@@ -7,7 +7,7 @@ type Env = "production" | "staging" | "development" | "test" | "travis";
 
 export const Environment = {
   PRODUCTION: "production" as Env,
-  STAGING: "production" as Env,
+  STAGING: "staging" as Env,
   DEVELOPMENT: "development" as Env,
   TEST: "test" as Env,
   TRAVIS: "travis" as Env,
