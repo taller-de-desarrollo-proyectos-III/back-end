@@ -1,5 +1,5 @@
 import { EntityRepository, getManager, EntityManager, Repository } from "typeorm";
-import { Commission, Volunteer } from "..";
+import { Commission, Role, Volunteer } from "..";
 import { IVolunteerAttributes } from "../Volunteer/Model";
 import { VolunteerNotFoundError } from "./Errors/VolunteerNotFoundError";
 import { AttributeNotDefinedError } from "../Errors";
@@ -31,6 +31,19 @@ export class VolunteerRepository {
       FROM "Volunteers" JOIN "VolunteerCommissions"
       ON "VolunteerCommissions"."volunteerUuid" = "Volunteers"."uuid"
       WHERE "VolunteerCommissions"."commissionUuid" IN (${commissionUuids})
+    `);
+    return results.map(result => new Volunteer(result));
+  }
+
+  public async findByRoles(roles: Role[]) {
+    if (roles.length === 0) return [];
+
+    const roleUuids = roles.map(({ uuid }) => `'${uuid}'`).join(",");
+    const results: IVolunteerAttributes[] = await this.repository.query(`
+      SELECT DISTINCT "Volunteers".uuid as uuid, "Volunteers".*
+      FROM "Volunteers" JOIN "VolunteerRoles"
+      ON "VolunteerRoles"."volunteerUuid" = "Volunteers"."uuid"
+      WHERE "VolunteerRoles"."roleUuid" IN (${roleUuids})
     `);
     return results.map(result => new Volunteer(result));
   }
