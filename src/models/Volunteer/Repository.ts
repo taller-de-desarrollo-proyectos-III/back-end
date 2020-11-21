@@ -1,8 +1,9 @@
-import { EntityRepository, getManager, EntityManager, Repository } from "typeorm";
+import { EntityManager, EntityRepository, getManager, In, Repository } from "typeorm";
 import { Commission, Role, Volunteer } from "..";
-import { IVolunteerAttributes } from "../Volunteer/Model";
-import { VolunteerNotFoundError } from "./Errors/VolunteerNotFoundError";
+import { VolunteerNotFoundError } from "./Errors";
 import { AttributeNotDefinedError } from "../Errors";
+import { volunteerRoleRepository } from "../VolunteerRole";
+import { volunteerCommissionRepository } from "../VolunteerCommission";
 
 @EntityRepository(Volunteer)
 export class VolunteerRepository {
@@ -25,27 +26,21 @@ export class VolunteerRepository {
   public async findByCommissions(commissions: Commission[]) {
     if (commissions.length === 0) return [];
 
-    const commissionUuids = commissions.map(({ uuid }) => `'${uuid}'`).join(",");
-    const results: IVolunteerAttributes[] = await this.repository.query(`
-      SELECT DISTINCT "Volunteers".uuid as uuid, "Volunteers".*
-      FROM "Volunteers" JOIN "VolunteerCommissions"
-      ON "VolunteerCommissions"."volunteerUuid" = "Volunteers"."uuid"
-      WHERE "VolunteerCommissions"."commissionUuid" IN (${commissionUuids})
-    `);
-    return results.map(result => new Volunteer(result));
+    const volunteerCommissions = await volunteerCommissionRepository().findByCommissions(
+      commissions
+    );
+    return volunteerRepository().findByUuids(
+      volunteerCommissions.map(volunteerCommission => volunteerCommission.volunteerUuid)
+    );
   }
 
   public async findByRoles(roles: Role[]) {
     if (roles.length === 0) return [];
 
-    const roleUuids = roles.map(({ uuid }) => `'${uuid}'`).join(",");
-    const results: IVolunteerAttributes[] = await this.repository.query(`
-      SELECT DISTINCT "Volunteers".uuid as uuid, "Volunteers".*
-      FROM "Volunteers" JOIN "VolunteerRoles"
-      ON "VolunteerRoles"."volunteerUuid" = "Volunteers"."uuid"
-      WHERE "VolunteerRoles"."roleUuid" IN (${roleUuids})
-    `);
-    return results.map(result => new Volunteer(result));
+    const volunteerRoles = await volunteerRoleRepository().findByRoles(roles);
+    return volunteerRepository().findByUuids(
+      volunteerRoles.map(volunteerRole => volunteerRole.volunteerUuid)
+    );
   }
 
   public async findByUuid(uuid: string) {
@@ -55,6 +50,14 @@ export class VolunteerRepository {
     if (!volunteer) throw new VolunteerNotFoundError();
 
     return volunteer;
+  }
+
+  public async findByUuids(uuids: string[]) {
+    if (uuids.length === 0) return [];
+
+    return await this.repository.find({
+      uuid: In(uuids)
+    });
   }
 
   public async findAll() {
