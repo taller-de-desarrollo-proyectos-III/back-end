@@ -7,7 +7,7 @@
 
 ## Staging
 
-- Website: https://tdp3-backend.herokuapp.com (currently disabled)
+- Website: https://tdp3-backend.herokuapp.com
 
 ## Install Tools
 
