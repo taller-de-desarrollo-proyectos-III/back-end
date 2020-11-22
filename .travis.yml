@@ -22,13 +22,23 @@ notifications:
       - sebastian.leo.perez@gmail.com
       - lautarodelosheros@gmail.com
 deploy:
-  provider: heroku
-  skip_cleanup: true
-  api_key:
-    secure: c4h3gK2fQ0H0OZmrylwmifgN18Me8hT661IYu2JFvFrO7AybEkS+SNjBiUCaXvnWsD27cHg/1J7YYGIZ8sT1VbbxPE4NSJAOZy7ZRrk58NltFfqQvnW8e/pWsU9gmxZuKhkOuW2mVx0tGRNh6kUZ5KGIqY4gYi8ESFRlDcivhNZU34NenACO+gLZeAECP5NmEGK6r2urfaLJy30rqX/E0BYrjtC2G6Dws00jZU11kB7/24qCyXnLn9sh2peJSsQkciKCCloFwy+cSliynfEuNVIamPsTVeZI3jWWJBKkt76o4upocoIN8CVGEdBdQd4qMk5fi3hWW2XM5ECJdvGRiYyASwEpRyg9IWZyIEuLMsr3rGiX/gd11XUh0mmX1kMaBzSQVTe9Z2Q1DMm/JKgQkaeULr7ee6PtXBtanwAL2pmTkmVteAaI+iaZDl3zXK25mcxU/0gTMtvCdBvUQbzOKVD0sF+nr17br/tS/XPYrkF0M85Z4bb26/afIMxBFHUXGgUyHxLnfyXc0M1XvIb9QZG1q3aOTfkhRwkzeNBKdU9JR+gFAgvm40dqT2dtadNmjcQFG/CpNOQlmPcruUf0havDqdt78RJ9trNSPaUrNVN8tUYgEQzFOTkIvK4jQ1eO/7ZTvAFG5hj1gpGriOzm56R2C5EX//WkWdBYE9xAsHc=
-  app: tdp3-backend
-  on:
-    branch: main
-    repo: taller-de-desarrollo-proyectos-III/back-end
-  run:
-    - "yarn install && yarn build:src && yarn db:migrate"
+  - provider: heroku
+    skip_cleanup: true
+    api_key:
+      secure: c4h3gK2fQ0H0OZmrylwmifgN18Me8hT661IYu2JFvFrO7AybEkS+SNjBiUCaXvnWsD27cHg/1J7YYGIZ8sT1VbbxPE4NSJAOZy7ZRrk58NltFfqQvnW8e/pWsU9gmxZuKhkOuW2mVx0tGRNh6kUZ5KGIqY4gYi8ESFRlDcivhNZU34NenACO+gLZeAECP5NmEGK6r2urfaLJy30rqX/E0BYrjtC2G6Dws00jZU11kB7/24qCyXnLn9sh2peJSsQkciKCCloFwy+cSliynfEuNVIamPsTVeZI3jWWJBKkt76o4upocoIN8CVGEdBdQd4qMk5fi3hWW2XM5ECJdvGRiYyASwEpRyg9IWZyIEuLMsr3rGiX/gd11XUh0mmX1kMaBzSQVTe9Z2Q1DMm/JKgQkaeULr7ee6PtXBtanwAL2pmTkmVteAaI+iaZDl3zXK25mcxU/0gTMtvCdBvUQbzOKVD0sF+nr17br/tS/XPYrkF0M85Z4bb26/afIMxBFHUXGgUyHxLnfyXc0M1XvIb9QZG1q3aOTfkhRwkzeNBKdU9JR+gFAgvm40dqT2dtadNmjcQFG/CpNOQlmPcruUf0havDqdt78RJ9trNSPaUrNVN8tUYgEQzFOTkIvK4jQ1eO/7ZTvAFG5hj1gpGriOzm56R2C5EX//WkWdBYE9xAsHc=
+    app: tdp3-backend
+    on:
+      branch: main
+      repo: taller-de-desarrollo-proyectos-III/back-end
+    run:
+      - "yarn install && yarn build:src && yarn db:migrate"
+  - provider: heroku
+    skip_cleanup: true
+    api_key:
+      secure: c4h3gK2fQ0H0OZmrylwmifgN18Me8hT661IYu2JFvFrO7AybEkS+SNjBiUCaXvnWsD27cHg/1J7YYGIZ8sT1VbbxPE4NSJAOZy7ZRrk58NltFfqQvnW8e/pWsU9gmxZuKhkOuW2mVx0tGRNh6kUZ5KGIqY4gYi8ESFRlDcivhNZU34NenACO+gLZeAECP5NmEGK6r2urfaLJy30rqX/E0BYrjtC2G6Dws00jZU11kB7/24qCyXnLn9sh2peJSsQkciKCCloFwy+cSliynfEuNVIamPsTVeZI3jWWJBKkt76o4upocoIN8CVGEdBdQd4qMk5fi3hWW2XM5ECJdvGRiYyASwEpRyg9IWZyIEuLMsr3rGiX/gd11XUh0mmX1kMaBzSQVTe9Z2Q1DMm/JKgQkaeULr7ee6PtXBtanwAL2pmTkmVteAaI+iaZDl3zXK25mcxU/0gTMtvCdBvUQbzOKVD0sF+nr17br/tS/XPYrkF0M85Z4bb26/afIMxBFHUXGgUyHxLnfyXc0M1XvIb9QZG1q3aOTfkhRwkzeNBKdU9JR+gFAgvm40dqT2dtadNmjcQFG/CpNOQlmPcruUf0havDqdt78RJ9trNSPaUrNVN8tUYgEQzFOTkIvK4jQ1eO/7ZTvAFG5hj1gpGriOzm56R2C5EX//WkWdBYE9xAsHc=
+    app: nahual-datos-voluntaries
+    on:
+      branch: main
+      repo: taller-de-desarrollo-proyectos-III/back-end
+    run:
+      - "yarn install && yarn build:src && yarn db:migrate"
