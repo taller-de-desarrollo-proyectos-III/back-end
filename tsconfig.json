@@ -25,5 +25,5 @@
     "allowUnreachableCode": false,
     "strict": true
   },
-  "exclude": ["node_modules", "build"]
+  "exclude": ["node_modules", "build", "coverage"]
 }

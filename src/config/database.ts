@@ -7,6 +7,10 @@ export const DatabaseConfig = {
     type: "postgres" as "postgres",
     url: "DATABASE_URL"
   },
+  staging: {
+    type: "postgres" as "postgres",
+    url: "DATABASE_URL"
+  },
   development: {
     url: "postgres://postgres:postgres@localhost:5433/development",
     type: "postgres" as "postgres",
