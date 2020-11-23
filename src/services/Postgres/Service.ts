@@ -3,7 +3,7 @@ import { createDatabase, dropDatabase } from "pg-god";
 import { parsePostgresUrl } from "pg-god/lib/utils";
 import { Environment } from "../../config";
 import { Logger } from "../../libs";
-import { Volunteer, Commission, VolunteerCommission, Role } from "../../models";
+import { Volunteer, Commission, VolunteerCommission, Role, VolunteerRole } from "../../models";
 import { IDatabaseConfig } from "./Interfaces";
 import "reflect-metadata";
 
@@ -71,6 +71,6 @@ export class PostgresService {
   }
 
   private static entities() {
-    return [Volunteer, Commission, VolunteerCommission, Role];
+    return [Volunteer, Commission, VolunteerCommission, Role, VolunteerRole];
   }
 }

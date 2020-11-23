@@ -1,10 +1,11 @@
 import { volunteerRepository } from "../../../src/models/Volunteer";
 import { commissionRepository } from "../../../src/models/Commission";
-import { Commission, Volunteer } from "../../../src/models";
+import { Commission, Role, Volunteer } from "../../../src/models";
 import { QueryFailedError } from "typeorm";
 import { VolunteerNotFoundError } from "../../../src/models/Volunteer/Errors";
 import { AttributeNotDefinedError } from "../../../src/models/Errors";
 import { VolunteerGenerator } from "../../Generators/Volunteer";
+import { roleRepository } from "../../../src/models/Role";
 
 describe("VolunteerRepository", () => {
   const attributes = {
@@ -23,11 +24,17 @@ describe("VolunteerRepository", () => {
   const commissionA = new Commission({ name: "Commission A" });
   const commissionB = new Commission({ name: "Commission B" });
 
+  const roleA = new Role({ name: "Role A" });
+  const roleB = new Role({ name: "Role B" });
+
   beforeEach(async () => {
     await volunteerRepository().truncate();
     await commissionRepository().truncate();
     await commissionRepository().create(commissionA);
     await commissionRepository().create(commissionB);
+    await roleRepository().truncate();
+    await roleRepository().insert(roleA);
+    await roleRepository().insert(roleB);
   });
 
   it("saves a volunteer model on the database", async () => {
@@ -125,6 +132,49 @@ describe("VolunteerRepository", () => {
       const volunteerA = await VolunteerGenerator.instance.withCommissions(commissions);
       const volunteerB = await VolunteerGenerator.instance.withCommissions(commissions);
       const foundVolunteers = await volunteerRepository().findByCommissions(commissions);
+      expect(foundVolunteers).toHaveLength(2);
+      expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
+    });
+  });
+
+  describe("findByRoles", () => {
+    it("returns an empty list if no role is passed", async () => {
+      const volunteer = new Volunteer(attributes);
+      await volunteerRepository().insert(volunteer);
+      expect(await volunteerRepository().findByRoles([])).toHaveLength(0);
+    });
+
+    it("returns all the volunteers by roles", async () => {
+      const roles = [roleA, roleB];
+      const volunteerA = await VolunteerGenerator.instance.withRoles(roles);
+      const volunteerB = await VolunteerGenerator.instance.withRoles(roles);
+      const foundVolunteers = await volunteerRepository().findByRoles(roles);
+      expect(foundVolunteers).toHaveLength(2);
+      expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
+    });
+
+    it("returns volunteers even if additional non-matching roles are given", async () => {
+      const roleC = new Role({ name: "Role C" });
+      const roleD = new Role({ name: "Role D" });
+      await roleRepository().insert(roleC);
+      await roleRepository().insert(roleD);
+      const roles = [roleA, roleB, roleC, roleD];
+      const volunteerA = await VolunteerGenerator.instance.withRoles([roleA]);
+      const volunteerB = await VolunteerGenerator.instance.withRoles([roleB]);
+      const foundVolunteers = await volunteerRepository().findByRoles(roles);
+      expect(foundVolunteers).toHaveLength(2);
+      expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
+    });
+
+    it("returns all the volunteers by roles with more than one role", async () => {
+      const roleC = new Role({ name: "Role C" });
+      const roleD = new Role({ name: "Role D" });
+      await roleRepository().insert(roleC);
+      await roleRepository().insert(roleD);
+      const roles = [roleA, roleB, roleC, roleD];
+      const volunteerA = await VolunteerGenerator.instance.withRoles(roles);
+      const volunteerB = await VolunteerGenerator.instance.withRoles(roles);
+      const foundVolunteers = await volunteerRepository().findByRoles(roles);
       expect(foundVolunteers).toHaveLength(2);
       expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
     });
