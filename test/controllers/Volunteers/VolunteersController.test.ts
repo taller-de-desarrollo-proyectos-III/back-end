@@ -115,7 +115,8 @@ describe("VolunteersController", () => {
       expect(response.body).toEqual({
         uuid: expect.stringMatching(UUID_REGEX),
         ...attributes,
-        commissions: []
+        commissions: [],
+        roles: []
       });
     });
 
@@ -140,7 +141,8 @@ describe("VolunteersController", () => {
       expect(response.body).toEqual({
         uuid: expect.stringMatching(UUID_REGEX),
         ...attributes,
-        commissions: expect.arrayContaining(commissions)
+        commissions: expect.arrayContaining(commissions),
+        roles: []
       });
     });
 
@@ -157,7 +159,8 @@ describe("VolunteersController", () => {
       expect(response.body).toEqual({
         uuid: expect.stringMatching(UUID_REGEX),
         ...attributes,
-        commissions: []
+        commissions: [],
+        roles: []
       });
     });
 
@@ -243,7 +246,12 @@ describe("VolunteersController", () => {
       const uuid = firstVolunteer.uuid;
       const response = await testClient.get(`${VolunteersRoutes.path}/${uuid}`);
       expect(response.status).toEqual(StatusCodes.OK);
-      expect(response.body).toEqual({ ...firstVolunteer, commissions: [firstCommission] });
+      // tslint:disable-next-line:max-line-length
+      expect(response.body).toEqual({
+        ...firstVolunteer,
+        commissions: [firstCommission],
+        roles: []
+      });
     });
 
     it("returns a bad request if the volunteer does not exist", async () => {
