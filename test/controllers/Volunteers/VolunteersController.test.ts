@@ -281,7 +281,6 @@ describe("VolunteersController", () => {
       const uuid = firstVolunteer.uuid;
       const response = await testClient.get(`${VolunteersRoutes.path}/${uuid}`);
       expect(response.status).toEqual(StatusCodes.OK);
-      // tslint:disable-next-line:max-line-length
       expect(response.body).toEqual({
         ...firstVolunteer,
         commissions: [firstCommission],
@@ -293,7 +292,6 @@ describe("VolunteersController", () => {
       const uuid = thirdVolunteer.uuid;
       const response = await testClient.get(`${VolunteersRoutes.path}/${uuid}`);
       expect(response.status).toEqual(StatusCodes.OK);
-      // tslint:disable-next-line:max-line-length
       expect(response.body).toEqual({
         ...thirdVolunteer,
         commissions: [],
