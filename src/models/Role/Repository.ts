@@ -1,6 +1,7 @@
 import { EntityRepository, getManager, Any, Repository, EntityManager } from "typeorm";
-import { Role } from "..";
+import { Role, Volunteer } from "..";
 import { RoleNotFoundError } from "./Errors/RoleNotFoundError";
+import { volunteerRoleRepository } from "../VolunteerRole";
 
 @EntityRepository(Role)
 export class RoleRepository {
@@ -23,6 +24,12 @@ export class RoleRepository {
     if (!role) throw new RoleNotFoundError();
 
     return role;
+  }
+
+  public async findByVolunteer(volunteer: Volunteer) {
+    const volunteerRoles = await volunteerRoleRepository().findByVolunteer(volunteer);
+    const roleUuids = volunteerRoles.map(({ roleUuid }) => roleUuid);
+    return roleRepository().findByUuids(roleUuids);
   }
 
   public findByUuids(uuids: string[]) {

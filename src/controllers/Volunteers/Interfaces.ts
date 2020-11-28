@@ -1,5 +1,6 @@
 export interface IGetProps {
   commissionUuids: string[];
+  roleUuids: string[];
 }
 
 export interface ICreateProps {
@@ -14,6 +15,7 @@ export interface ICreateProps {
   graduationYear?: string;
   country?: string;
   commissionUuids?: string[];
+  roleUuids?: string[];
 }
 
 export interface IUpdateProps extends ICreateProps {
