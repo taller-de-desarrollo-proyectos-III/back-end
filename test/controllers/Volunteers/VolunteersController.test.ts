@@ -33,9 +33,9 @@ describe("VolunteersController", () => {
     await commissionRepository().create(secondCommission);
     await roleRepository().insert(firstRole);
     await roleRepository().insert(secondRole);
-    firstVolunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
-    secondVolunteer = await VolunteerGenerator.instance.withCommissions([secondCommission]);
-    thirdVolunteer = await VolunteerGenerator.instance.withRoles(roles);
+    firstVolunteer = await VolunteerGenerator.instance.with({ commissions: [firstCommission] });
+    secondVolunteer = await VolunteerGenerator.instance.with({ commissions: [secondCommission] });
+    thirdVolunteer = await VolunteerGenerator.instance.with({ roles });
   });
 
   describe("GET /volunteers", () => {
@@ -335,7 +335,7 @@ describe("VolunteersController", () => {
 
   describe("PUT /volunteers", () => {
     const expectAttributeNotDefinedError = async (attributeName: string) => {
-      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const volunteer = await VolunteerGenerator.instance.with({ commissions: [firstCommission] });
       const response = await testClient.put(VolunteersRoutes.path).send(
         omit(
           {
@@ -350,7 +350,7 @@ describe("VolunteersController", () => {
     };
 
     const expectToUpdateAttribute = async (attributeName: string, value: string | number) => {
-      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const volunteer = await VolunteerGenerator.instance.with({ commissions: [firstCommission] });
       const response = await testClient.put(VolunteersRoutes.path).send({
         ...volunteer,
         [attributeName]: value,
@@ -361,7 +361,7 @@ describe("VolunteersController", () => {
     };
 
     it("adds a new commission to the volunteer", async () => {
-      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const volunteer = await VolunteerGenerator.instance.with({ commissions: [firstCommission] });
       const response = await testClient.put(VolunteersRoutes.path).send({
         ...volunteer,
         commissionUuids: [firstCommission.uuid, secondCommission.uuid]
@@ -373,7 +373,7 @@ describe("VolunteersController", () => {
     });
 
     it("adds role to the volunteer", async () => {
-      const volunteer = await VolunteerGenerator.instance.withRoles([firstRole]);
+      const volunteer = await VolunteerGenerator.instance.with({ roles: [firstRole] });
       const response = await testClient.put(VolunteersRoutes.path).send({
         ...volunteer,
         roleUuids: [firstRole.uuid]
@@ -383,7 +383,7 @@ describe("VolunteersController", () => {
     });
 
     it("removes all volunteers commission if no one is provided", async () => {
-      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const volunteer = await VolunteerGenerator.instance.with({ commissions: [firstCommission] });
       const response = await testClient.put(VolunteersRoutes.path).send({
         ...volunteer,
         commissionUuids: []
@@ -453,7 +453,7 @@ describe("VolunteersController", () => {
     });
 
     it("does not update the volunteer if the commissions update fails", async () => {
-      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const volunteer = await VolunteerGenerator.instance.with({ commissions: [firstCommission] });
       const errorMessage = "unexpected error";
       VolunteerCommissionRepository.prototype.update = jest.fn(() => {
         throw new Error(errorMessage);

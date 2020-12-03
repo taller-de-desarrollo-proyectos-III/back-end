@@ -15,7 +15,7 @@ describe("VolunteerCommissionRepository", () => {
   });
 
   it("saves volunteer commissions on the database", async () => {
-    const volunteer = await VolunteerGenerator.instance.withNoCommissions();
+    const volunteer = await VolunteerGenerator.instance.with();
     const commissionA = await CommissionGenerator.instance();
     const commissionB = await CommissionGenerator.instance();
     const volunteerCommissionA = new VolunteerCommission({
@@ -53,7 +53,7 @@ describe("VolunteerCommissionRepository", () => {
 
     it("updates volunteer commissions", async () => {
       const repository = volunteerCommissionRepository();
-      const volunteer = await VolunteerGenerator.instance.withNoCommissions();
+      const volunteer = await VolunteerGenerator.instance.with();
       const volunteerUuid = volunteer.uuid;
       const commissionA = await CommissionGenerator.instance();
       const commissionB = await CommissionGenerator.instance();
@@ -79,8 +79,8 @@ describe("VolunteerCommissionRepository", () => {
     let allVolunteerCommissions: VolunteerCommission[];
 
     beforeEach(async () => {
-      firstVolunteer = await VolunteerGenerator.instance.withNoCommissions();
-      secondVolunteer = await VolunteerGenerator.instance.withNoCommissions();
+      firstVolunteer = await VolunteerGenerator.instance.with();
+      secondVolunteer = await VolunteerGenerator.instance.with();
       firstCommission = await CommissionGenerator.instance();
       secondCommission = await CommissionGenerator.instance();
 
@@ -128,7 +128,7 @@ describe("VolunteerCommissionRepository", () => {
   });
 
   it("throws an error if the volunteer commission is duplicated", async () => {
-    const volunteer = await VolunteerGenerator.instance.withNoCommissions();
+    const volunteer = await VolunteerGenerator.instance.with();
     const commission = await CommissionGenerator.instance();
     const volunteerCommission = new VolunteerCommission({
       volunteerUuid: volunteer.uuid,
@@ -151,7 +151,7 @@ describe("VolunteerCommissionRepository", () => {
   });
 
   it("throws an error if the commission does not exist", async () => {
-    const volunteer = await VolunteerGenerator.instance.withNoCommissions();
+    const volunteer = await VolunteerGenerator.instance.with();
     const volunteerCommission = new VolunteerCommission({
       volunteerUuid: volunteer.uuid,
       commissionUuid: UuidGenerator.generate()
@@ -163,7 +163,7 @@ describe("VolunteerCommissionRepository", () => {
 
   describe("Delete cascade", () => {
     const expectToDeleteAlEntries = async (truncate: () => Promise<DeleteResult>) => {
-      const volunteer = await VolunteerGenerator.instance.withNoCommissions();
+      const volunteer = await VolunteerGenerator.instance.with();
       const commission = await CommissionGenerator.instance();
       const volunteerCommission = new VolunteerCommission({
         volunteerUuid: volunteer.uuid,

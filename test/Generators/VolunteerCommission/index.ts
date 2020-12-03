@@ -5,7 +5,7 @@ import { CommissionGenerator } from "../Commission";
 
 export const VolunteerCommissionGenerator = {
   instance: async () => {
-    const volunteer = await VolunteerGenerator.instance.withNoCommissions();
+    const volunteer = await VolunteerGenerator.instance.with();
     const firstCommission = await CommissionGenerator.instance();
     const volunteerCommission = new VolunteerCommission({
       volunteerUuid: volunteer.uuid,

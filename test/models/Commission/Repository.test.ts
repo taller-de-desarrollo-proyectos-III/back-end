@@ -74,13 +74,13 @@ describe("CommissionRepository", () => {
       await commissionRepository().create(firstCommission);
       await commissionRepository().create(secondCommission);
       const commissions = [firstCommission, secondCommission];
-      const volunteer = await VolunteerGenerator.instance.withCommissions(commissions);
+      const volunteer = await VolunteerGenerator.instance.with({ commissions });
       const foundCommissions = await commissionRepository().findByVolunteer(volunteer);
       expect(foundCommissions).toEqual(expect.arrayContaining(commissions));
     });
 
     it("returns an empty array if the volunteer has no commissions", async () => {
-      const volunteer = await VolunteerGenerator.instance.withNoCommissions();
+      const volunteer = await VolunteerGenerator.instance.with();
       const foundCommissions = await commissionRepository().findByVolunteer(volunteer);
       expect(foundCommissions).toEqual([]);
     });

@@ -103,8 +103,8 @@ describe("VolunteerRepository", () => {
 
     it("returns all the volunteers by commissions", async () => {
       const commissions = [commissionA, commissionB];
-      const volunteerA = await VolunteerGenerator.instance.withCommissions(commissions);
-      const volunteerB = await VolunteerGenerator.instance.withCommissions(commissions);
+      const volunteerA = await VolunteerGenerator.instance.with({ commissions });
+      const volunteerB = await VolunteerGenerator.instance.with({ commissions });
       const foundVolunteers = await volunteerRepository().findByCommissions(commissions);
       expect(foundVolunteers).toHaveLength(2);
       expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
@@ -116,8 +116,8 @@ describe("VolunteerRepository", () => {
       await commissionRepository().create(commissionC);
       await commissionRepository().create(commissionD);
       const commissions = [commissionA, commissionB, commissionC, commissionD];
-      const volunteerA = await VolunteerGenerator.instance.withCommissions([commissionA]);
-      const volunteerB = await VolunteerGenerator.instance.withCommissions([commissionA]);
+      const volunteerA = await VolunteerGenerator.instance.with({ commissions: [commissionA] });
+      const volunteerB = await VolunteerGenerator.instance.with({ commissions: [commissionA] });
       const foundVolunteers = await volunteerRepository().findByCommissions(commissions);
       expect(foundVolunteers).toHaveLength(2);
       expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
@@ -129,8 +129,8 @@ describe("VolunteerRepository", () => {
       await commissionRepository().create(commissionC);
       await commissionRepository().create(commissionD);
       const commissions = [commissionA, commissionB, commissionC, commissionD];
-      const volunteerA = await VolunteerGenerator.instance.withCommissions(commissions);
-      const volunteerB = await VolunteerGenerator.instance.withCommissions(commissions);
+      const volunteerA = await VolunteerGenerator.instance.with({ commissions });
+      const volunteerB = await VolunteerGenerator.instance.with({ commissions });
       const foundVolunteers = await volunteerRepository().findByCommissions(commissions);
       expect(foundVolunteers).toHaveLength(2);
       expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
@@ -146,8 +146,8 @@ describe("VolunteerRepository", () => {
 
     it("returns all the volunteers by roles", async () => {
       const roles = [roleA, roleB];
-      const volunteerA = await VolunteerGenerator.instance.withRoles(roles);
-      const volunteerB = await VolunteerGenerator.instance.withRoles(roles);
+      const volunteerA = await VolunteerGenerator.instance.with({ roles });
+      const volunteerB = await VolunteerGenerator.instance.with({ roles });
       const foundVolunteers = await volunteerRepository().findByRoles(roles);
       expect(foundVolunteers).toHaveLength(2);
       expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
@@ -159,8 +159,8 @@ describe("VolunteerRepository", () => {
       await roleRepository().insert(roleC);
       await roleRepository().insert(roleD);
       const roles = [roleA, roleB, roleC, roleD];
-      const volunteerA = await VolunteerGenerator.instance.withRoles([roleA]);
-      const volunteerB = await VolunteerGenerator.instance.withRoles([roleB]);
+      const volunteerA = await VolunteerGenerator.instance.with({ roles: [roleA] });
+      const volunteerB = await VolunteerGenerator.instance.with({ roles: [roleB] });
       const foundVolunteers = await volunteerRepository().findByRoles(roles);
       expect(foundVolunteers).toHaveLength(2);
       expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
@@ -172,8 +172,8 @@ describe("VolunteerRepository", () => {
       await roleRepository().insert(roleC);
       await roleRepository().insert(roleD);
       const roles = [roleA, roleB, roleC, roleD];
-      const volunteerA = await VolunteerGenerator.instance.withRoles(roles);
-      const volunteerB = await VolunteerGenerator.instance.withRoles(roles);
+      const volunteerA = await VolunteerGenerator.instance.with({ roles });
+      const volunteerB = await VolunteerGenerator.instance.with({ roles });
       const foundVolunteers = await volunteerRepository().findByRoles(roles);
       expect(foundVolunteers).toHaveLength(2);
       expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));

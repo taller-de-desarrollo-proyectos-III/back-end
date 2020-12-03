@@ -15,7 +15,7 @@ describe("VolunteerRoleRepository", () => {
   });
 
   it("saves volunteer roles on the database", async () => {
-    const volunteer = await VolunteerGenerator.instance.withNoCommissions();
+    const volunteer = await VolunteerGenerator.instance.with();
     const roleA = await RoleGenerator.instance();
     const roleB = await RoleGenerator.instance();
     const volunteerRoleA = new VolunteerRole({
@@ -51,7 +51,7 @@ describe("VolunteerRoleRepository", () => {
 
     it("updates volunteer roles", async () => {
       const repository = volunteerRoleRepository();
-      const volunteer = await VolunteerGenerator.instance.withNoCommissions();
+      const volunteer = await VolunteerGenerator.instance.with();
       const volunteerUuid = volunteer.uuid;
       const roleA = await RoleGenerator.instance();
       const roleB = await RoleGenerator.instance();
@@ -77,8 +77,8 @@ describe("VolunteerRoleRepository", () => {
     let allVolunteerRoles: VolunteerRole[];
 
     beforeEach(async () => {
-      volunteerA = await VolunteerGenerator.instance.withNoCommissions();
-      volunteerB = await VolunteerGenerator.instance.withNoCommissions();
+      volunteerA = await VolunteerGenerator.instance.with();
+      volunteerB = await VolunteerGenerator.instance.with();
       roleA = await RoleGenerator.instance();
       roleB = await RoleGenerator.instance();
 
@@ -114,7 +114,7 @@ describe("VolunteerRoleRepository", () => {
   });
 
   it("throws an error if the volunteer role is duplicated", async () => {
-    const volunteer = await VolunteerGenerator.instance.withNoCommissions();
+    const volunteer = await VolunteerGenerator.instance.with();
     const role = await RoleGenerator.instance();
     const volunteerRole = new VolunteerRole({
       volunteerUuid: volunteer.uuid,
@@ -137,7 +137,7 @@ describe("VolunteerRoleRepository", () => {
   });
 
   it("throws an error if the role does not exist", async () => {
-    const volunteer = await VolunteerGenerator.instance.withNoCommissions();
+    const volunteer = await VolunteerGenerator.instance.with();
     const volunteerRole = new VolunteerRole({
       volunteerUuid: volunteer.uuid,
       roleUuid: UuidGenerator.generate()
@@ -149,7 +149,7 @@ describe("VolunteerRoleRepository", () => {
 
   describe("Delete cascade", () => {
     const expectToDeleteAlEntries = async (truncate: () => Promise<DeleteResult>) => {
-      const volunteer = await VolunteerGenerator.instance.withNoCommissions();
+      const volunteer = await VolunteerGenerator.instance.with();
       const role = await RoleGenerator.instance();
       const volunteerRole = new VolunteerRole({
         volunteerUuid: volunteer.uuid,
