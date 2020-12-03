@@ -46,9 +46,18 @@ export const VolunteersController = {
   get: async (request: IFetchRequest<IGetProps>, response: Response) => {
     try {
       const { commissionUuids } = request.query;
-      const commissions = await commissionRepository().findByUuids(flatten([commissionUuids]));
-      const volunteers = await volunteerRepository().findByCommissions(commissions);
-      response.status(StatusCodes.OK).json(volunteers);
+      const commissionsToFilter = await commissionRepository().findByUuids(
+        flatten([commissionUuids])
+      );
+      const volunteers = await volunteerRepository().findByCommissions(commissionsToFilter);
+      const jsonResponse = await Promise.all(
+        volunteers.map(async volunteer => {
+          const commissions = await commissionRepository().findByVolunteer(volunteer);
+          const roles = await roleRepository().findByVolunteer(volunteer);
+          return { ...volunteer, commissions, roles };
+        })
+      );
+      response.status(StatusCodes.OK).json(jsonResponse);
     } catch (error) {
       response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
     }
