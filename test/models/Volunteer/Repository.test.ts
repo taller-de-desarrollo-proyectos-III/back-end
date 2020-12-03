@@ -95,17 +95,18 @@ describe("VolunteerRepository", () => {
   });
 
   describe("findByCommissions", () => {
-    it("returns empty list if no commission is passed", async () => {
+    it("returns empty list if no filter is passed", async () => {
       const volunteer = new Volunteer(attributes);
       await volunteerRepository().insert(volunteer);
-      expect(await volunteerRepository().findByCommissions([])).toHaveLength(0);
+      expect(await volunteerRepository().find()).toHaveLength(0);
     });
 
     it("returns all the volunteers by commissions", async () => {
       const commissions = [commissionA, commissionB];
+      const commissionUuids = commissions.map(({ uuid }) => uuid);
       const volunteerA = await VolunteerGenerator.instance.with({ commissions });
       const volunteerB = await VolunteerGenerator.instance.with({ commissions });
-      const foundVolunteers = await volunteerRepository().findByCommissions(commissions);
+      const foundVolunteers = await volunteerRepository().find({ commissionUuids });
       expect(foundVolunteers).toHaveLength(2);
       expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
     });
@@ -116,9 +117,10 @@ describe("VolunteerRepository", () => {
       await commissionRepository().create(commissionC);
       await commissionRepository().create(commissionD);
       const commissions = [commissionA, commissionB, commissionC, commissionD];
+      const commissionUuids = commissions.map(({ uuid }) => uuid);
       const volunteerA = await VolunteerGenerator.instance.with({ commissions: [commissionA] });
       const volunteerB = await VolunteerGenerator.instance.with({ commissions: [commissionA] });
-      const foundVolunteers = await volunteerRepository().findByCommissions(commissions);
+      const foundVolunteers = await volunteerRepository().find({ commissionUuids });
       expect(foundVolunteers).toHaveLength(2);
       expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
     });
@@ -129,9 +131,10 @@ describe("VolunteerRepository", () => {
       await commissionRepository().create(commissionC);
       await commissionRepository().create(commissionD);
       const commissions = [commissionA, commissionB, commissionC, commissionD];
+      const commissionUuids = commissions.map(({ uuid }) => uuid);
       const volunteerA = await VolunteerGenerator.instance.with({ commissions });
       const volunteerB = await VolunteerGenerator.instance.with({ commissions });
-      const foundVolunteers = await volunteerRepository().findByCommissions(commissions);
+      const foundVolunteers = await volunteerRepository().find({ commissionUuids });
       expect(foundVolunteers).toHaveLength(2);
       expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
     });

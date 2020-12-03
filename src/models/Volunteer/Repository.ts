@@ -1,5 +1,5 @@
 import { EntityRepository, getManager, EntityManager, Repository } from "typeorm";
-import { Commission, Role, Volunteer } from "..";
+import { Role, Volunteer } from "..";
 import { IVolunteerAttributes } from "../Volunteer/Model";
 import { VolunteerNotFoundError } from "./Errors/VolunteerNotFoundError";
 import { AttributeNotDefinedError } from "../Errors";
@@ -22,15 +22,15 @@ export class VolunteerRepository {
     return this.repository.save(volunteer);
   }
 
-  public async findByCommissions(commissions: Commission[]) {
-    if (commissions.length === 0) return [];
+  public async find({ commissionUuids = [] }: IFindOptions = defaultFindOptions) {
+    if (commissionUuids.length === 0) return [];
 
-    const commissionUuids = commissions.map(({ uuid }) => `'${uuid}'`).join(",");
+    const formattedCommissionUuids = commissionUuids.map(uuid => `'${uuid}'`).join(",");
     const results: IVolunteerAttributes[] = await this.repository.query(`
       SELECT DISTINCT "Volunteers".uuid as uuid, "Volunteers".*
       FROM "Volunteers" JOIN "VolunteerCommissions"
       ON "VolunteerCommissions"."volunteerUuid" = "Volunteers"."uuid"
-      WHERE "VolunteerCommissions"."commissionUuid" IN (${commissionUuids})
+      WHERE "VolunteerCommissions"."commissionUuid" IN (${formattedCommissionUuids})
     `);
     return results.map(result => new Volunteer(result));
   }
@@ -64,6 +64,13 @@ export class VolunteerRepository {
   public truncate() {
     return this.repository.delete({});
   }
+}
+
+const defaultFindOptions = { commissionUuids: [], roleUuids: [] };
+
+interface IFindOptions {
+  commissionUuids?: string[];
+  roleUuids?: string[];
 }
 
 export const volunteerRepository = () => new VolunteerRepository(getManager());

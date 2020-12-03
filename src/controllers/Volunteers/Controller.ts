@@ -45,11 +45,10 @@ export const VolunteersController = {
   },
   get: async (request: IFetchRequest<IGetProps>, response: Response) => {
     try {
-      const { commissionUuids } = request.query;
-      const commissionsToFilter = await commissionRepository().findByUuids(
-        flatten([commissionUuids])
-      );
-      const volunteers = await volunteerRepository().findByCommissions(commissionsToFilter);
+      const { commissionUuids = [] } = request.query;
+      const volunteers = await volunteerRepository().find({
+        commissionUuids: flatten([commissionUuids])
+      });
       const jsonResponse = await Promise.all(
         volunteers.map(async volunteer => {
           const commissions = await commissionRepository().findByVolunteer(volunteer);
