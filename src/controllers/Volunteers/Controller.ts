@@ -17,8 +17,8 @@ export const VolunteersController = {
   create: async (request: IPostRequest<ICreateProps>, response: Response) => {
     try {
       const { commissionUuids, roleUuids, ...attributes } = request.body;
-      const commissions = await commissionRepository().findByUuids(commissionUuids || []);
-      const roles = await roleRepository().findByUuids(roleUuids || []);
+      const commissions = await FilterParser.parseCommissions(commissionUuids);
+      const roles = await FilterParser.parseRoles(roleUuids);
       const volunteer = new Volunteer({ ...attributes });
       await getManager().transaction(async manager => {
         await new VolunteerRepository(manager).insert(volunteer);
@@ -76,8 +76,8 @@ export const VolunteersController = {
   update: async (request: IPostRequest<IUpdateProps>, response: Response) => {
     try {
       const { uuid, commissionUuids, roleUuids, ...attributes } = request.body;
-      const commissions = await commissionRepository().findByUuids(commissionUuids || []);
-      const roles = await roleRepository().findByUuids(roleUuids || []);
+      const commissions = await FilterParser.parseCommissions(commissionUuids);
+      const roles = await FilterParser.parseRoles(roleUuids);
       const volunteer = new Volunteer({ uuid, ...attributes });
       await getManager().transaction(async manager => {
         await new VolunteerRepository(manager).save(volunteer);

@@ -17,8 +17,8 @@ export interface ICreateProps {
   admissionYear?: string;
   graduationYear?: string;
   country?: string;
-  commissionUuids?: string[];
-  roleUuids?: string[];
+  commissionUuids?: TCommissionUuids;
+  roleUuids?: TRoleUuids;
 }
 
 export interface IUpdateProps extends ICreateProps {
