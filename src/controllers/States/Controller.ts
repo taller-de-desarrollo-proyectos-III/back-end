@@ -34,7 +34,8 @@ export const StatesController = {
   update: async (request: IPostRequest<IUpdateProps>, response: Response) => {
     try {
       const { uuid, name } = request.body;
-      const state = new State({ uuid, name });
+      const state = await stateRepository().findByUuid(uuid);
+      state.validateName(name);
       await stateRepository().save(state);
       return response.status(StatusCodes.CREATED).json(state);
     } catch (error) {

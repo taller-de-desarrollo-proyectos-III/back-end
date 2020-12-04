@@ -1,7 +1,6 @@
 import { EntityRepository, getManager, Any, Repository, EntityManager } from "typeorm";
-import { State, Volunteer } from "..";
+import { State } from "..";
 import { StateNotFoundError } from "./Errors/StateNotFoundError";
-import { volunteerStateRepository } from "../VolunteerState";
 
 @EntityRepository(State)
 export class StateRepository {
@@ -24,12 +23,6 @@ export class StateRepository {
     if (!state) throw new StateNotFoundError();
 
     return state;
-  }
-
-  public async findByVolunteer(volunteer: Volunteer) {
-    const volunteerStates = await volunteerStateRepository().findByVolunteer(volunteer);
-    const stateUuids = volunteerStates.map(({ stateUuid }) => stateUuid);
-    return stateRepository().findByUuids(stateUuids);
   }
 
   public findByUuids(uuids: string[]) {

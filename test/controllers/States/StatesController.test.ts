@@ -8,7 +8,6 @@ import { UuidGenerator } from "../../../src/models/UuidGenerator";
 import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../../src/models/Errors";
 import { UUID_REGEX } from "../../models";
 import { StateGenerator } from "../../Generators/State";
-import { omit } from "lodash";
 
 describe("StatesController", () => {
   const firstState = new State({ name: "State A" });
@@ -135,13 +134,6 @@ describe("StatesController", () => {
       });
       expect(response.status).toEqual(StatusCodes.CREATED);
       expect(response.body[name]).toEqual(value);
-    });
-
-    it("returns an error if no name is provided", async () => {
-      const state = await StateGenerator.instance;
-      const response = await testClient.put(StatesRoutes.path).send(omit(state, "name"));
-      expect(response.status).toEqual(StatusCodes.BAD_REQUEST);
-      expect(response.body).toEqual(AttributeNotDefinedError.buildMessage("name"));
     });
   });
 });
