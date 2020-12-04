@@ -43,6 +43,23 @@ describe("VolunteersController", () => {
   });
 
   describe("GET /volunteers", () => {
+    it("filters by all commissions and all roles", async () => {
+      const response = await testClient
+        .get(VolunteersRoutes.path)
+        .query({ commissionUuids: "ALL", roleUuids: "ALL" });
+      expect(response.status).toEqual(StatusCodes.OK);
+      expect(response.body).toHaveLength(1);
+      expect(response.body).toEqual(
+        expect.arrayContaining([
+          {
+            ...thirdVolunteer,
+            commissions: expect.arrayContaining(commissions),
+            roles: expect.arrayContaining(roles)
+          }
+        ])
+      );
+    });
+
     it("returns volunteers that belong to the given commissions and have no roles", async () => {
       const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
       expect(response.status).toEqual(StatusCodes.OK);

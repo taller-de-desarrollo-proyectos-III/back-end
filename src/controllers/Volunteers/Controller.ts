@@ -1,5 +1,4 @@
 import { Response } from "express";
-import { flatten } from "lodash";
 import { StatusCodes } from "http-status-codes";
 import { IFetchRequest, IPostRequest } from "../Request";
 import { volunteerRepository, VolunteerRepository } from "../../models/Volunteer";
@@ -12,6 +11,7 @@ import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../mod
 import { VolunteerNotFoundError } from "../../models/Volunteer/Errors";
 import { getManager } from "typeorm";
 import { roleRepository } from "../../models/Role";
+import { FilterParser } from "./FilterParser";
 
 export const VolunteersController = {
   create: async (request: IPostRequest<ICreateProps>, response: Response) => {
@@ -45,11 +45,8 @@ export const VolunteersController = {
   },
   get: async (request: IFetchRequest<IGetProps>, response: Response) => {
     try {
-      const { commissionUuids = [], roleUuids = [] } = request.query;
-      const volunteers = await volunteerRepository().find({
-        commissionUuids: flatten([commissionUuids]),
-        roleUuids: flatten([roleUuids])
-      });
+      const filter = request.query;
+      const volunteers = await volunteerRepository().find(await FilterParser.parse(filter));
       const jsonResponse = await Promise.all(
         volunteers.map(async volunteer => {
           const commissions = await commissionRepository().findByVolunteer(volunteer);
