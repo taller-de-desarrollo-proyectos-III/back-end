@@ -45,9 +45,10 @@ export const VolunteersController = {
   },
   get: async (request: IFetchRequest<IGetProps>, response: Response) => {
     try {
-      const { commissionUuids = [] } = request.query;
+      const { commissionUuids = [], roleUuids = [] } = request.query;
       const volunteers = await volunteerRepository().find({
-        commissionUuids: flatten([commissionUuids])
+        commissionUuids: flatten([commissionUuids]),
+        roleUuids: flatten([roleUuids])
       });
       const jsonResponse = await Promise.all(
         volunteers.map(async volunteer => {
