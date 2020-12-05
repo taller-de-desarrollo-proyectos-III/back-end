@@ -35,7 +35,7 @@ export const StatesController = {
     try {
       const { uuid, name } = request.body;
       const state = await stateRepository().findByUuid(uuid);
-      state.validateName(name);
+      state.setName(name);
       await stateRepository().save(state);
       return response.status(StatusCodes.CREATED).json(state);
     } catch (error) {
