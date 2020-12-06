@@ -26,4 +26,10 @@ describe("State", () => {
     jest.spyOn(UuidGenerator, "generate").mockReturnValueOnce("invalidUuidFormat");
     expect(() => new State({ name: "State C" })).toThrow(InvalidAttributeFormatError);
   });
+
+  it("throws an error if name is an empty string", async () => {
+    const state = new State({ name: "State D" });
+    const newName = "";
+    expect(() => state.setName(newName)).toThrow(AttributeNotDefinedError);
+  });
 });

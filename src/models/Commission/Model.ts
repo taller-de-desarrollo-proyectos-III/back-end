@@ -1,6 +1,6 @@
 import { Entity, Column } from "typeorm";
 import { UuidGenerator } from "../UuidGenerator";
-import { isDefined, isUUID } from "class-validator";
+import { isDefined, isEmpty, isUUID } from "class-validator";
 import { AttributeNotDefinedError } from "../Errors/AttributeNotDefinedError";
 import { InvalidAttributeFormatError } from "../Errors/InvalidAttributeFormatError";
 
@@ -22,6 +22,7 @@ export class Commission {
     if (!isDefined(this.uuid)) throw new AttributeNotDefinedError("uuid");
     if (!isDefined(this.name)) throw new AttributeNotDefinedError("name");
     if (!isUUID(this.uuid)) throw new InvalidAttributeFormatError("uuid");
+    if (isEmpty(this.name)) throw new AttributeNotDefinedError("name");
   }
 }
 
