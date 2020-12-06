@@ -28,7 +28,8 @@ export const VolunteerGenerator = {
       telegram: "@JohnD${index}",
       admissionYear: "2016",
       graduationYear: "2016",
-      country: "Argentina"
+      country: "Argentina",
+      notes: "Notes"
     });
   },
   instance: {

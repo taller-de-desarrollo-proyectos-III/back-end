@@ -143,7 +143,8 @@ describe("VolunteersController", () => {
         telegram: "@JohnD",
         admissionYear: "2016",
         graduationYear: "2016",
-        country: "Argentina"
+        country: "Argentina",
+        notes: "Notes"
       };
       delete attributes[attribute];
       const response = await testClient.post(VolunteersRoutes.path).send({
@@ -165,7 +166,8 @@ describe("VolunteersController", () => {
         telegram: "@JohnD",
         admissionYear: "2016",
         graduationYear: "2016",
-        country: "Argentina"
+        country: "Argentina",
+        notes: "Notes"
       };
       const response = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(response.status).toEqual(StatusCodes.CREATED);
@@ -188,7 +190,8 @@ describe("VolunteersController", () => {
         telegram: "@JohnD",
         admissionYear: "2016",
         graduationYear: "2016",
-        country: "Argentina"
+        country: "Argentina",
+        notes: "Notes"
       };
       const response = await testClient.post(VolunteersRoutes.path).send({
         ...attributes,
@@ -214,7 +217,8 @@ describe("VolunteersController", () => {
         telegram: "@JohnD",
         admissionYear: "2016",
         graduationYear: "2016",
-        country: "Argentina"
+        country: "Argentina",
+        notes: "Notes"
       };
       const response = await testClient.post(VolunteersRoutes.path).send({
         ...attributes,
@@ -313,7 +317,8 @@ describe("VolunteersController", () => {
         telegram: "@JohnD",
         admissionYear: "2016",
         graduationYear: "2016",
-        country: "Argentina"
+        country: "Argentina",
+        notes: "Notes"
       };
       const firstResponse = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(firstResponse.status).toEqual(StatusCodes.CREATED);
@@ -470,6 +475,10 @@ describe("VolunteersController", () => {
 
     it("updates volunteers' country", async () => {
       await expectToUpdateAttribute("country", "Japan");
+    });
+
+    it("updates volunteers' notes", async () => {
+      await expectToUpdateAttribute("notes", "New notes");
     });
 
     it("returns an error if no name is provided", async () => {

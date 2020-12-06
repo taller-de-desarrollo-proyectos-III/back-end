@@ -18,7 +18,8 @@ describe("VolunteerRepository", () => {
     telegram: "@JohnD",
     admissionYear: "2016",
     graduationYear: "2016",
-    country: "Argentina"
+    country: "Argentina",
+    notes: "Notes"
   };
 
   const commissionA = new Commission({ name: "Commission A" });
@@ -100,6 +101,10 @@ describe("VolunteerRepository", () => {
 
     it("updates volunteer country", async () => {
       await expectToUpdateAttribute("country", "Croatia");
+    });
+
+    it("updates volunteer notes", async () => {
+      await expectToUpdateAttribute("notes", "New notes");
     });
   });
 

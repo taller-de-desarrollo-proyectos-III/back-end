@@ -31,7 +31,8 @@ do
       "surname": "'"$surname"'",
       "dni": "'"$dni"'",
       "email": "'"$email"'",
-      "phoneNumber": "'"$phoneNumber"'"
+      "phoneNumber": "'"$phoneNumber"'",
+      "notes": "Notes example"
   }'
 
 done
