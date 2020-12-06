@@ -17,9 +17,13 @@ describe("VolunteersController", () => {
   const firstCommission = new Commission({ name: "Commission A" });
   const secondCommission = new Commission({ name: "Commission B" });
   const commissions = [firstCommission, secondCommission];
+  const commissionUuids = commissions.map(({ uuid }) => uuid);
+
   const firstRole = new Role({ name: "Role A" });
   const secondRole = new Role({ name: "Role B" });
   const roles = [firstRole, secondRole];
+  const roleUuids = roles.map(({ uuid }) => uuid);
+
   let firstVolunteer: Volunteer;
   let secondVolunteer: Volunteer;
   let thirdVolunteer: Volunteer;
@@ -33,51 +37,95 @@ describe("VolunteersController", () => {
     await commissionRepository().create(secondCommission);
     await roleRepository().insert(firstRole);
     await roleRepository().insert(secondRole);
-    firstVolunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
-    secondVolunteer = await VolunteerGenerator.instance.withCommissions([secondCommission]);
-    thirdVolunteer = await VolunteerGenerator.instance.withRoles(roles);
+    firstVolunteer = await VolunteerGenerator.instance.with({ commissions });
+    secondVolunteer = await VolunteerGenerator.instance.with({ roles });
+    thirdVolunteer = await VolunteerGenerator.instance.with({ commissions, roles });
   });
 
   describe("GET /volunteers", () => {
-    it("get all volunteers that belong to the given commissions", async () => {
-      const commissionUuids = commissions.map(({ uuid }) => uuid);
-      const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
+    it("filters by all commissions and all roles", async () => {
+      const response = await testClient
+        .get(VolunteersRoutes.path)
+        .query({ commissionUuids: "ALL", roleUuids: "ALL" });
       expect(response.status).toEqual(StatusCodes.OK);
-      expect(response.body).toHaveLength(2);
-      expect(response.body).toEqual(expect.arrayContaining([firstVolunteer, secondVolunteer]));
+      expect(response.body).toHaveLength(1);
+      expect(response.body).toEqual(
+        expect.arrayContaining([
+          {
+            ...thirdVolunteer,
+            commissions: expect.arrayContaining(commissions),
+            roles: expect.arrayContaining(roles)
+          }
+        ])
+      );
     });
 
-    it("returns all volunteers that belong the provided commission uuid", async () => {
-      const commissionUuids = [firstCommission.uuid];
+    it("returns volunteers that belong to the given commissions and have no roles", async () => {
       const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
       expect(response.status).toEqual(StatusCodes.OK);
-      expect(response.body).toEqual([firstVolunteer]);
+      expect(response.body).toHaveLength(1);
+      expect(response.body).toEqual(
+        expect.arrayContaining([
+          {
+            ...firstVolunteer,
+            commissions: expect.arrayContaining(commissions),
+            roles: []
+          }
+        ])
+      );
     });
 
-    it("returns no volunteers if given an empty array", async () => {
+    it("returns volunteers that belong to the given roles and have no commissions", async () => {
+      const response = await testClient.get(VolunteersRoutes.path).query({ roleUuids });
+      expect(response.status).toEqual(StatusCodes.OK);
+      expect(response.body).toEqual([
+        {
+          ...secondVolunteer,
+          commissions: [],
+          roles: expect.arrayContaining(roles)
+        }
+      ]);
+    });
+
+    it("returns volunteers that belong to the given roles and commissions", async () => {
+      const response = await testClient
+        .get(VolunteersRoutes.path)
+        .query({ roleUuids, commissionUuids });
+      expect(response.status).toEqual(StatusCodes.OK);
+      expect(response.body).toEqual([
+        {
+          ...thirdVolunteer,
+          commissions: expect.arrayContaining(commissions),
+          roles: expect.arrayContaining(roles)
+        }
+      ]);
+    });
+
+    it("returns volunteers with no roles and no commissions", async () => {
+      const volunteer = await VolunteerGenerator.instance.with();
       const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids: [] });
       expect(response.status).toEqual(StatusCodes.OK);
-      expect(response.body).toEqual([]);
+      expect(response.body).toEqual([{ ...volunteer, commissions: [], roles: [] }]);
     });
 
     it("returns no volunteers if given unknown commissionUuids", async () => {
-      const commissionUuids = [UuidGenerator.generate()];
-      const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
+      const response = await testClient
+        .get(VolunteersRoutes.path)
+        .query({ commissionUuids: [UuidGenerator.generate()] });
       expect(response.status).toEqual(StatusCodes.OK);
       expect(response.body).toEqual([]);
     });
 
     it("returns an internal server error if given array of numbers", async () => {
-      const commissionUuids = [1, 2, 3, 4];
-      const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
+      const response = await testClient
+        .get(VolunteersRoutes.path)
+        .query({ commissionUuids: [1, 2, 3, 4] });
       expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(response.body).toEqual('invalid input syntax for type uuid: "1"');
     });
   });
 
   describe("POST /volunteers", () => {
-    const commissionUuids = commissions.map(({ uuid }) => uuid);
-    const roleUuids = roles.map(({ uuid }) => uuid);
     const expectToReturnBadRequestOnUndefinedAttribute = async ({
       attribute,
       message
@@ -277,24 +325,35 @@ describe("VolunteersController", () => {
   });
 
   describe("GET /volunteers/:uuid", () => {
-    it("returns a volunteer by uuid", async () => {
+    it("returns a volunteer by uuid with commissions", async () => {
       const uuid = firstVolunteer.uuid;
       const response = await testClient.get(`${VolunteersRoutes.path}/${uuid}`);
       expect(response.status).toEqual(StatusCodes.OK);
       expect(response.body).toEqual({
         ...firstVolunteer,
-        commissions: [firstCommission],
+        commissions,
         roles: []
       });
     });
 
     it("returns a volunteer by uuid with roles", async () => {
+      const uuid = secondVolunteer.uuid;
+      const response = await testClient.get(`${VolunteersRoutes.path}/${uuid}`);
+      expect(response.status).toEqual(StatusCodes.OK);
+      expect(response.body).toEqual({
+        ...secondVolunteer,
+        commissions: [],
+        roles: expect.arrayContaining(roles)
+      });
+    });
+
+    it("returns a volunteer by uuid with roles and commissions", async () => {
       const uuid = thirdVolunteer.uuid;
       const response = await testClient.get(`${VolunteersRoutes.path}/${uuid}`);
       expect(response.status).toEqual(StatusCodes.OK);
       expect(response.body).toEqual({
         ...thirdVolunteer,
-        commissions: [],
+        commissions: expect.arrayContaining(commissions),
         roles: expect.arrayContaining(roles)
       });
     });
@@ -316,7 +375,7 @@ describe("VolunteersController", () => {
 
   describe("PUT /volunteers", () => {
     const expectAttributeNotDefinedError = async (attributeName: string) => {
-      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const volunteer = await VolunteerGenerator.instance.with({ commissions: [firstCommission] });
       const response = await testClient.put(VolunteersRoutes.path).send(
         omit(
           {
@@ -331,7 +390,7 @@ describe("VolunteersController", () => {
     };
 
     const expectToUpdateAttribute = async (attributeName: string, value: string | number) => {
-      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const volunteer = await VolunteerGenerator.instance.with({ commissions: [firstCommission] });
       const response = await testClient.put(VolunteersRoutes.path).send({
         ...volunteer,
         [attributeName]: value,
@@ -342,7 +401,7 @@ describe("VolunteersController", () => {
     };
 
     it("adds a new commission to the volunteer", async () => {
-      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const volunteer = await VolunteerGenerator.instance.with({ commissions: [firstCommission] });
       const response = await testClient.put(VolunteersRoutes.path).send({
         ...volunteer,
         commissionUuids: [firstCommission.uuid, secondCommission.uuid]
@@ -354,7 +413,7 @@ describe("VolunteersController", () => {
     });
 
     it("adds role to the volunteer", async () => {
-      const volunteer = await VolunteerGenerator.instance.withRoles([firstRole]);
+      const volunteer = await VolunteerGenerator.instance.with({ roles: [firstRole] });
       const response = await testClient.put(VolunteersRoutes.path).send({
         ...volunteer,
         roleUuids: [firstRole.uuid]
@@ -364,7 +423,7 @@ describe("VolunteersController", () => {
     });
 
     it("removes all volunteers commission if no one is provided", async () => {
-      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const volunteer = await VolunteerGenerator.instance.with({ commissions: [firstCommission] });
       const response = await testClient.put(VolunteersRoutes.path).send({
         ...volunteer,
         commissionUuids: []
@@ -434,7 +493,7 @@ describe("VolunteersController", () => {
     });
 
     it("does not update the volunteer if the commissions update fails", async () => {
-      const volunteer = await VolunteerGenerator.instance.withCommissions([firstCommission]);
+      const volunteer = await VolunteerGenerator.instance.with({ commissions: [firstCommission] });
       const errorMessage = "unexpected error";
       VolunteerCommissionRepository.prototype.update = jest.fn(() => {
         throw new Error(errorMessage);

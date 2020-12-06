@@ -32,24 +32,16 @@ export const VolunteerGenerator = {
     });
   },
   instance: {
-    withNoCommissions: async () => VolunteerGenerator.instance.withCommissions([]),
-    withCommissions: async (commissions: Commission[] = []) => {
+    with: async ({ commissions = [], roles = [] }: IAttributes = defaultAttributes) => {
       return getManager().transaction(async manager => {
         const volunteer = VolunteerGenerator.getVolunteer();
         await volunteerRepository().insert(volunteer);
-        const volunteerCommissions = commissions.map(
+        const volunteerCommissions = commissions?.map(
           ({ uuid: commissionUuid }) =>
             new VolunteerCommission({ commissionUuid, volunteerUuid: volunteer.uuid })
         );
         await new VolunteerCommissionRepository(manager).bulkCreate(volunteerCommissions);
-        return volunteer;
-      });
-    },
-    withRoles: async (roles: Role[] = []) => {
-      return getManager().transaction(async manager => {
-        const volunteer = VolunteerGenerator.getVolunteer();
-        await volunteerRepository().insert(volunteer);
-        const volunteerRoles = roles.map(
+        const volunteerRoles = roles?.map(
           ({ uuid: roleUuid }) => new VolunteerRole({ roleUuid, volunteerUuid: volunteer.uuid })
         );
         await new VolunteerRoleRepository(manager).bulkCreate(volunteerRoles);
@@ -58,3 +50,10 @@ export const VolunteerGenerator = {
     }
   }
 };
+
+const defaultAttributes = { commissions: [], roles: [] };
+
+interface IAttributes {
+  commissions?: Commission[];
+  roles?: Role[];
+}

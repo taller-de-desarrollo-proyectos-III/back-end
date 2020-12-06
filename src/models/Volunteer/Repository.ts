@@ -1,5 +1,5 @@
 import { EntityRepository, getManager, EntityManager, Repository } from "typeorm";
-import { Commission, Role, Volunteer } from "..";
+import { Volunteer } from "..";
 import { IVolunteerAttributes } from "../Volunteer/Model";
 import { VolunteerNotFoundError } from "./Errors/VolunteerNotFoundError";
 import { AttributeNotDefinedError } from "../Errors";
@@ -22,29 +22,25 @@ export class VolunteerRepository {
     return this.repository.save(volunteer);
   }
 
-  public async findByCommissions(commissions: Commission[]) {
-    if (commissions.length === 0) return [];
+  public async find({ commissionUuids = [], roleUuids = [] }: IFindOptions = defaultFindOptions) {
+    const formattedCommissionUuids = commissionUuids.map(uuid => `'${uuid}'`).join(",");
+    const formattedRoleUuids = roleUuids.map(uuid => `'${uuid}'`).join(",");
 
-    const commissionUuids = commissions.map(({ uuid }) => `'${uuid}'`).join(",");
-    const results: IVolunteerAttributes[] = await this.repository.query(`
+    const commissionsWhereClause =
+      commissionUuids.length === 0 ? "IS NULL" : `IN (${formattedCommissionUuids})`;
+
+    const rolesWhereClause = roleUuids.length === 0 ? "IS NULL" : `IN (${formattedRoleUuids})`;
+
+    const query = `
       SELECT DISTINCT "Volunteers".uuid as uuid, "Volunteers".*
-      FROM "Volunteers" JOIN "VolunteerCommissions"
-      ON "VolunteerCommissions"."volunteerUuid" = "Volunteers"."uuid"
-      WHERE "VolunteerCommissions"."commissionUuid" IN (${commissionUuids})
-    `);
-    return results.map(result => new Volunteer(result));
-  }
+      FROM "Volunteers"
+      LEFT JOIN "VolunteerCommissions" ON "VolunteerCommissions"."volunteerUuid" = "Volunteers"."uuid"
+      LEFT JOIN "VolunteerRoles" ON "VolunteerRoles"."volunteerUuid" = "Volunteers"."uuid"
+      WHERE "VolunteerCommissions"."commissionUuid" ${commissionsWhereClause}
+      AND "VolunteerRoles"."roleUuid" ${rolesWhereClause}
+    `;
 
-  public async findByRoles(roles: Role[]) {
-    if (roles.length === 0) return [];
-
-    const roleUuids = roles.map(({ uuid }) => `'${uuid}'`).join(",");
-    const results: IVolunteerAttributes[] = await this.repository.query(`
-      SELECT DISTINCT "Volunteers".uuid as uuid, "Volunteers".*
-      FROM "Volunteers" JOIN "VolunteerRoles"
-      ON "VolunteerRoles"."volunteerUuid" = "Volunteers"."uuid"
-      WHERE "VolunteerRoles"."roleUuid" IN (${roleUuids})
-    `);
+    const results: IVolunteerAttributes[] = await this.repository.query(query);
     return results.map(result => new Volunteer(result));
   }
 
@@ -64,6 +60,13 @@ export class VolunteerRepository {
   public truncate() {
     return this.repository.delete({});
   }
+}
+
+const defaultFindOptions = { commissionUuids: [], roleUuids: [] };
+
+interface IFindOptions {
+  commissionUuids?: string[];
+  roleUuids?: string[];
 }
 
 export const volunteerRepository = () => new VolunteerRepository(getManager());

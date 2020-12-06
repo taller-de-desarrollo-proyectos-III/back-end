@@ -1,5 +1,4 @@
 import { Response } from "express";
-import { flatten } from "lodash";
 import { StatusCodes } from "http-status-codes";
 import { IFetchRequest, IPostRequest } from "../Request";
 import { volunteerRepository, VolunteerRepository } from "../../models/Volunteer";
@@ -12,13 +11,14 @@ import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../mod
 import { VolunteerNotFoundError } from "../../models/Volunteer/Errors";
 import { getManager } from "typeorm";
 import { roleRepository } from "../../models/Role";
+import { FilterParser } from "./FilterParser";
 
 export const VolunteersController = {
   create: async (request: IPostRequest<ICreateProps>, response: Response) => {
     try {
       const { commissionUuids, roleUuids, ...attributes } = request.body;
-      const commissions = await commissionRepository().findByUuids(commissionUuids || []);
-      const roles = await roleRepository().findByUuids(roleUuids || []);
+      const commissions = await FilterParser.parseCommissions(commissionUuids);
+      const roles = await FilterParser.parseRoles(roleUuids);
       const volunteer = new Volunteer({ ...attributes });
       await getManager().transaction(async manager => {
         await new VolunteerRepository(manager).insert(volunteer);
@@ -45,10 +45,16 @@ export const VolunteersController = {
   },
   get: async (request: IFetchRequest<IGetProps>, response: Response) => {
     try {
-      const { commissionUuids } = request.query;
-      const commissions = await commissionRepository().findByUuids(flatten([commissionUuids]));
-      const volunteers = await volunteerRepository().findByCommissions(commissions);
-      response.status(StatusCodes.OK).json(volunteers);
+      const filter = request.query;
+      const volunteers = await volunteerRepository().find(await FilterParser.parse(filter));
+      const jsonResponse = await Promise.all(
+        volunteers.map(async volunteer => {
+          const commissions = await commissionRepository().findByVolunteer(volunteer);
+          const roles = await roleRepository().findByVolunteer(volunteer);
+          return { ...volunteer, commissions, roles };
+        })
+      );
+      response.status(StatusCodes.OK).json(jsonResponse);
     } catch (error) {
       response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
     }
@@ -70,8 +76,8 @@ export const VolunteersController = {
   update: async (request: IPostRequest<IUpdateProps>, response: Response) => {
     try {
       const { uuid, commissionUuids, roleUuids, ...attributes } = request.body;
-      const commissions = await commissionRepository().findByUuids(commissionUuids || []);
-      const roles = await roleRepository().findByUuids(roleUuids || []);
+      const commissions = await FilterParser.parseCommissions(commissionUuids);
+      const roles = await FilterParser.parseRoles(roleUuids);
       const volunteer = new Volunteer({ uuid, ...attributes });
       await getManager().transaction(async manager => {
         await new VolunteerRepository(manager).save(volunteer);

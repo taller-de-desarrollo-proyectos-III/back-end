@@ -5,7 +5,7 @@ import { volunteerRoleRepository } from "../../../src/models/VolunteerRole";
 
 export const VolunteerRoleGenerator = {
   instance: async () => {
-    const volunteer = await VolunteerGenerator.instance.withNoCommissions();
+    const volunteer = await VolunteerGenerator.instance.with();
     const firstRole = await RoleGenerator.instance();
     const volunteerRole = new VolunteerRole({
       volunteerUuid: volunteer.uuid,
