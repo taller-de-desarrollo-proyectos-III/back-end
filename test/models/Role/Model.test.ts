@@ -17,6 +17,10 @@ describe("Role", () => {
     expect(() => new Role({ name: undefined as any })).toThrow(AttributeNotDefinedError);
   });
 
+  it("throws an error if name is an empty string", async () => {
+    expect(() => new Role({ name: "" })).toThrow(AttributeNotDefinedError);
+  });
+
   it("throws an error if no uuid is generated", () => {
     jest.spyOn(UuidGenerator, "generate").mockReturnValueOnce(undefined as any);
     expect(() => new Role({ name: "Role B" })).toThrow(AttributeNotDefinedError);

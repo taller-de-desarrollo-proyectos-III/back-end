@@ -17,6 +17,10 @@ describe("Commission", () => {
     expect(() => new Commission({ name: undefined as any })).toThrow(AttributeNotDefinedError);
   });
 
+  it("throws an error if name is an empty string", async () => {
+    expect(() => new Commission({ name: "" })).toThrow(AttributeNotDefinedError);
+  });
+
   it("throws an error if no uuid is generated", () => {
     jest.spyOn(UuidGenerator, "generate").mockReturnValueOnce(undefined as any);
     expect(() => new Commission({ name: "Commission B" })).toThrow(AttributeNotDefinedError);
