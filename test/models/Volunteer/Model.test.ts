@@ -15,7 +15,8 @@ describe("Volunteer", () => {
       telegram: "@JohnD",
       admissionYear: "2016",
       graduationYear: undefined as any,
-      country: "Argentina"
+      country: "Argentina",
+      notes: "Notes"
     };
     const volunteer = new Volunteer(attributes);
     expect(volunteer).toEqual({
@@ -52,7 +53,8 @@ describe("Volunteer", () => {
           telegram: "@JohnD",
           admissionYear: "2016",
           graduationYear: "2016",
-          country: "Argentina"
+          country: "Argentina",
+          notes: "Notes"
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -70,7 +72,8 @@ describe("Volunteer", () => {
           telegram: "@JohnD",
           admissionYear: "2016",
           graduationYear: "2016",
-          country: "Argentina"
+          country: "Argentina",
+          notes: "Notes"
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -88,7 +91,8 @@ describe("Volunteer", () => {
           telegram: "@JohnD",
           admissionYear: "2016",
           graduationYear: "2016",
-          country: "Argentina"
+          country: "Argentina",
+          notes: "Notes"
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -106,7 +110,8 @@ describe("Volunteer", () => {
           telegram: "@JohnD",
           admissionYear: "2016",
           graduationYear: "2016",
-          country: "Argentina"
+          country: "Argentina",
+          notes: "Notes"
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -124,7 +129,8 @@ describe("Volunteer", () => {
           telegram: "@JohnD",
           admissionYear: "2016",
           graduationYear: "2016",
-          country: "Argentina"
+          country: "Argentina",
+          notes: "Notes"
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -142,7 +148,8 @@ describe("Volunteer", () => {
           telegram: "@JohnD",
           admissionYear: "2016",
           graduationYear: "2016",
-          country: "Argentina"
+          country: "Argentina",
+          notes: "Notes"
         })
     ).toThrow(InvalidAttributeFormatError);
   });
@@ -160,7 +167,8 @@ describe("Volunteer", () => {
           telegram: "@JohnD",
           admissionYear: "20I6",
           graduationYear: "2016",
-          country: "Argentina"
+          country: "Argentina",
+          notes: "Notes"
         })
     ).toThrow(InvalidAttributeFormatError);
   });
@@ -178,7 +186,8 @@ describe("Volunteer", () => {
           telegram: "@JohnD",
           admissionYear: "2016",
           graduationYear: "20A6",
-          country: "Argentina"
+          country: "Argentina",
+          notes: "Notes"
         })
     ).toThrow(InvalidAttributeFormatError);
   });
@@ -196,7 +205,8 @@ describe("Volunteer", () => {
           telegram: "@JohnD",
           admissionYear: "2016",
           graduationYear: "201226",
-          country: "Argentina"
+          country: "Argentina",
+          notes: "Notes"
         })
     ).toThrow(InvalidAttributeFormatError);
   });
@@ -214,7 +224,8 @@ describe("Volunteer", () => {
           telegram: "@JohnD",
           admissionYear: "201226",
           graduationYear: "2010",
-          country: "Argentina"
+          country: "Argentina",
+          notes: "Notes"
         })
     ).toThrow(InvalidAttributeFormatError);
   });
@@ -233,7 +244,8 @@ describe("Volunteer", () => {
           telegram: "@JohnD",
           admissionYear: "2016",
           graduationYear: "2016",
-          country: "Argentina"
+          country: "Argentina",
+          notes: "Notes"
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -252,7 +264,8 @@ describe("Volunteer", () => {
           telegram: "@JohnD",
           admissionYear: "2016",
           graduationYear: "2016",
-          country: "Argentina"
+          country: "Argentina",
+          notes: "Notes"
         })
     ).toThrow(InvalidAttributeFormatError);
   });

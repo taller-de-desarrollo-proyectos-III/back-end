@@ -17,7 +17,8 @@ export class Volunteer {
     telegram,
     admissionYear,
     graduationYear,
-    country
+    country,
+    notes
   }: IVolunteerAttributes) {
     this.uuid = uuid || UuidGenerator.generate();
     this.dni = dni;
@@ -30,6 +31,7 @@ export class Volunteer {
     this.admissionYear = admissionYear;
     this.graduationYear = graduationYear;
     this.country = country;
+    this.notes = notes;
     this.validate();
   }
 
@@ -65,6 +67,9 @@ export class Volunteer {
 
   @Column()
   public country?: string;
+
+  @Column()
+  public notes?: string;
 
   public validate() {
     if (!isDefined(this.uuid)) throw new AttributeNotDefinedError("uuid");
@@ -102,4 +107,5 @@ export interface IVolunteerAttributes {
   admissionYear?: string;
   graduationYear?: string;
   country?: string;
+  notes?: string;
 }
