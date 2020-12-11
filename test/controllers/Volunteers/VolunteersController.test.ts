@@ -144,7 +144,8 @@ describe("VolunteersController", () => {
         admissionYear: "2016",
         graduationYear: "2016",
         country: "Argentina",
-        notes: "Notes"
+        notes: "Notes",
+        stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
       };
       delete attributes[attribute];
       const response = await testClient.post(VolunteersRoutes.path).send({
@@ -167,7 +168,8 @@ describe("VolunteersController", () => {
         admissionYear: "2016",
         graduationYear: "2016",
         country: "Argentina",
-        notes: "Notes"
+        notes: "Notes",
+        stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
       };
       const response = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(response.status).toEqual(StatusCodes.CREATED);
@@ -191,7 +193,8 @@ describe("VolunteersController", () => {
         admissionYear: "2016",
         graduationYear: "2016",
         country: "Argentina",
-        notes: "Notes"
+        notes: "Notes",
+        stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
       };
       const response = await testClient.post(VolunteersRoutes.path).send({
         ...attributes,
@@ -218,7 +221,8 @@ describe("VolunteersController", () => {
         admissionYear: "2016",
         graduationYear: "2016",
         country: "Argentina",
-        notes: "Notes"
+        notes: "Notes",
+        stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
       };
       const response = await testClient.post(VolunteersRoutes.path).send({
         ...attributes,
@@ -239,7 +243,8 @@ describe("VolunteersController", () => {
         name: "John",
         surname: "Doe",
         email: "johndoe@gmail.com",
-        phoneNumber: "1165287676"
+        phoneNumber: "1165287676",
+        stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
       };
       const response = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(response.status).toEqual(StatusCodes.CREATED);
@@ -318,7 +323,8 @@ describe("VolunteersController", () => {
         admissionYear: "2016",
         graduationYear: "2016",
         country: "Argentina",
-        notes: "Notes"
+        notes: "Notes",
+        stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
       };
       const firstResponse = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(firstResponse.status).toEqual(StatusCodes.CREATED);
@@ -499,6 +505,10 @@ describe("VolunteersController", () => {
 
     it("returns an error if no phoneNumber is provided", async () => {
       await expectAttributeNotDefinedError("phoneNumber");
+    });
+
+    it("returns an error if no stateUuid is provided", async () => {
+      await expectAttributeNotDefinedError("stateUuid");
     });
 
     it("does not update the volunteer if the commissions update fails", async () => {

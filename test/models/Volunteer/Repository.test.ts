@@ -19,7 +19,8 @@ describe("VolunteerRepository", () => {
     admissionYear: "2016",
     graduationYear: "2016",
     country: "Argentina",
-    notes: "Notes"
+    notes: "Notes",
+    stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
   };
 
   const commissionA = new Commission({ name: "Commission A" });

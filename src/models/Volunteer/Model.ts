@@ -18,7 +18,8 @@ export class Volunteer {
     admissionYear,
     graduationYear,
     country,
-    notes
+    notes,
+    stateUuid
   }: IVolunteerAttributes) {
     this.uuid = uuid || UuidGenerator.generate();
     this.dni = dni;
@@ -32,6 +33,7 @@ export class Volunteer {
     this.graduationYear = graduationYear;
     this.country = country;
     this.notes = notes;
+    this.stateUuid = stateUuid;
     this.validate();
   }
 
@@ -71,6 +73,9 @@ export class Volunteer {
   @Column()
   public notes?: string;
 
+  @Column()
+  public stateUuid: string;
+
   public validate() {
     if (!isDefined(this.uuid)) throw new AttributeNotDefinedError("uuid");
     if (!isDefined(this.dni)) throw new AttributeNotDefinedError("dni");
@@ -92,6 +97,8 @@ export class Volunteer {
     if (isDefined(this.graduationYear) && !length(this.graduationYear, 4, 4)) {
       throw new InvalidAttributeFormatError("graduationYear");
     }
+    if (!isDefined(this.stateUuid)) throw new AttributeNotDefinedError("stateUuid");
+    if (!isUUID(this.stateUuid)) throw new InvalidAttributeFormatError("stateUuid");
   }
 }
 
@@ -108,4 +115,5 @@ export interface IVolunteerAttributes {
   graduationYear?: string;
   country?: string;
   notes?: string;
+  stateUuid: string;
 }

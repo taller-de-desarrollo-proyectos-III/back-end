@@ -91,7 +91,8 @@ describe("CommissionRepository", () => {
         name: "name",
         surname: "surname",
         email: "email@gamil.com",
-        phoneNumber: "1234"
+        phoneNumber: "1234",
+        stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
       });
       const foundCommissions = await commissionRepository().findByVolunteer(volunteer);
       expect(foundCommissions).toEqual([]);

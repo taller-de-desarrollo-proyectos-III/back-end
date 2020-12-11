@@ -16,7 +16,8 @@ describe("Volunteer", () => {
       admissionYear: "2016",
       graduationYear: undefined as any,
       country: "Argentina",
-      notes: "Notes"
+      notes: "Notes",
+      stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
     };
     const volunteer = new Volunteer(attributes);
     expect(volunteer).toEqual({
@@ -31,7 +32,8 @@ describe("Volunteer", () => {
       name: "John",
       surname: "Doe",
       email: "johndoe@gmail.com",
-      phoneNumber: "1165287676"
+      phoneNumber: "1165287676",
+      stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
     };
     const volunteer = new Volunteer(attributes);
     expect(volunteer).toEqual({
@@ -54,7 +56,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -73,7 +76,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -92,7 +96,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -111,7 +116,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -130,7 +136,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -149,7 +156,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
         })
     ).toThrow(InvalidAttributeFormatError);
   });
@@ -168,7 +176,8 @@ describe("Volunteer", () => {
           admissionYear: "20I6",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
         })
     ).toThrow(InvalidAttributeFormatError);
   });
@@ -187,7 +196,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "20A6",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
         })
     ).toThrow(InvalidAttributeFormatError);
   });
@@ -206,7 +216,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "201226",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
         })
     ).toThrow(InvalidAttributeFormatError);
   });
@@ -225,7 +236,8 @@ describe("Volunteer", () => {
           admissionYear: "201226",
           graduationYear: "2010",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
         })
     ).toThrow(InvalidAttributeFormatError);
   });
@@ -245,7 +257,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -265,7 +278,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
         })
     ).toThrow(InvalidAttributeFormatError);
   });
