@@ -1,24 +1,13 @@
-import { Volunteer } from "../../../src/models";
+import { Volunteer, IVolunteerAttributes } from "../../../src/models";
 import { UUID_REGEX } from "../index";
 import { UuidGenerator } from "../../../src/models/UuidGenerator";
 import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../../src/models/Errors";
+import { VolunteerGenerator } from "../../Generators/Volunteer";
+import { omit } from "lodash";
 
 describe("Volunteer", () => {
   it("creates a valid volunteer model with its uuid generated", async () => {
-    const attributes = {
-      dni: "12345678",
-      name: "John",
-      surname: "Doe",
-      email: "johndoe@gmail.com",
-      linkedin: "John Doe",
-      phoneNumber: "1165287676",
-      telegram: "@JohnD",
-      admissionYear: "2016",
-      graduationYear: undefined as any,
-      country: "Argentina",
-      notes: "Notes",
-      stateUuid: UuidGenerator.generate()
-    };
+    const attributes = VolunteerGenerator.attributes();
     const volunteer = new Volunteer(attributes);
     expect(volunteer).toEqual({
       uuid: expect.stringMatching(UUID_REGEX),
@@ -43,284 +32,106 @@ describe("Volunteer", () => {
   });
 
   it("throws an error if no dni is provided", async () => {
-    expect(
-      () =>
-        new Volunteer({
-          dni: undefined as any,
-          name: "John",
-          surname: "Doe",
-          email: "johndoe@gmail.com",
-          linkedin: "John Doe",
-          phoneNumber: "1165287676",
-          telegram: "@JohnD",
-          admissionYear: "2016",
-          graduationYear: "2016",
-          country: "Argentina",
-          notes: "Notes",
-          stateUuid: UuidGenerator.generate()
-        })
-    ).toThrow(AttributeNotDefinedError);
+    const attributes = omit(VolunteerGenerator.attributes(), "dni") as IVolunteerAttributes;
+    expect(() => new Volunteer(attributes)).toThrow(AttributeNotDefinedError);
   });
 
   it("throws an error if no name is provided", async () => {
-    expect(
-      () =>
-        new Volunteer({
-          dni: "12345678",
-          name: undefined as any,
-          surname: "Doe",
-          email: "johndoe@gmail.com",
-          linkedin: "John Doe",
-          phoneNumber: "1165287676",
-          telegram: "@JohnD",
-          admissionYear: "2016",
-          graduationYear: "2016",
-          country: "Argentina",
-          notes: "Notes",
-          stateUuid: UuidGenerator.generate()
-        })
-    ).toThrow(AttributeNotDefinedError);
+    const attributes = omit(VolunteerGenerator.attributes(), "name") as IVolunteerAttributes;
+    const matcher = expect(() => new Volunteer(attributes));
+    matcher.toThrowError(AttributeNotDefinedError);
+    matcher.toThrowError(AttributeNotDefinedError.buildMessage("name"));
   });
 
   it("throws an error if no surname is provided", async () => {
-    expect(
-      () =>
-        new Volunteer({
-          dni: "12345678",
-          name: "John",
-          surname: undefined as any,
-          email: "johndoe@gmail.com",
-          linkedin: "John Doe",
-          phoneNumber: "1165287676",
-          telegram: "@JohnD",
-          admissionYear: "2016",
-          graduationYear: "2016",
-          country: "Argentina",
-          notes: "Notes",
-          stateUuid: UuidGenerator.generate()
-        })
-    ).toThrow(AttributeNotDefinedError);
+    const attributes = omit(VolunteerGenerator.attributes(), "surname") as IVolunteerAttributes;
+    const matcher = expect(() => new Volunteer(attributes));
+    matcher.toThrowError(AttributeNotDefinedError);
+    matcher.toThrowError(AttributeNotDefinedError.buildMessage("surname"));
   });
 
   it("throws an error if no email is provided", async () => {
-    expect(
-      () =>
-        new Volunteer({
-          dni: "12345678",
-          name: "John",
-          surname: "Doe",
-          email: undefined as any,
-          linkedin: "John Doe",
-          phoneNumber: "1165287676",
-          telegram: "@JohnD",
-          admissionYear: "2016",
-          graduationYear: "2016",
-          country: "Argentina",
-          notes: "Notes",
-          stateUuid: UuidGenerator.generate()
-        })
-    ).toThrow(AttributeNotDefinedError);
+    const attributes = omit(VolunteerGenerator.attributes(), "email") as IVolunteerAttributes;
+    const matcher = expect(() => new Volunteer(attributes));
+    matcher.toThrowError(AttributeNotDefinedError);
+    matcher.toThrowError(AttributeNotDefinedError.buildMessage("email"));
   });
 
-  it("throws an error if phone number is not defined", async () => {
-    expect(
-      () =>
-        new Volunteer({
-          dni: "12345678",
-          name: "John",
-          surname: "Doe",
-          email: "johndoe@gmail.com",
-          linkedin: "John Doe",
-          phoneNumber: undefined as any,
-          telegram: "@JohnD",
-          admissionYear: "2016",
-          graduationYear: "2016",
-          country: "Argentina",
-          notes: "Notes",
-          stateUuid: UuidGenerator.generate()
-        })
-    ).toThrow(AttributeNotDefinedError);
+  it("throws an error if phoneNumber is not defined", async () => {
+    const attributes = omit(VolunteerGenerator.attributes(), "phoneNumber") as IVolunteerAttributes;
+    const matcher = expect(() => new Volunteer(attributes));
+    matcher.toThrowError(AttributeNotDefinedError);
+    matcher.toThrowError(AttributeNotDefinedError.buildMessage("phoneNumber"));
   });
 
   it("throws an error if stateUuid is not defined", async () => {
-    expect(
-      () =>
-        new Volunteer({
-          dni: "12345678",
-          name: "John",
-          surname: "Doe",
-          email: "johndoe@gmail.com",
-          linkedin: "John Doe",
-          phoneNumber: "1165287676",
-          telegram: "@JohnD",
-          admissionYear: "2016",
-          graduationYear: "2016",
-          country: "Argentina",
-          notes: "Notes",
-          stateUuid: undefined as any
-        })
-    ).toThrow(AttributeNotDefinedError);
+    const attributes = omit(VolunteerGenerator.attributes(), "stateUuid") as IVolunteerAttributes;
+    const matcher = expect(() => new Volunteer(attributes));
+    matcher.toThrowError(AttributeNotDefinedError);
+    matcher.toThrowError(AttributeNotDefinedError.buildMessage("stateUuid"));
   });
 
   it("throws an error if stateUuid has invalid format", async () => {
-    expect(
-      () =>
-        new Volunteer({
-          dni: "12345678",
-          name: "John",
-          surname: "Doe",
-          email: "john@",
-          linkedin: "John Doe",
-          phoneNumber: "1165287676",
-          telegram: "@JohnD",
-          admissionYear: "2016",
-          graduationYear: "2016",
-          country: "Argentina",
-          notes: "Notes",
-          stateUuid: "invalid"
-        })
-    ).toThrow(InvalidAttributeFormatError);
+    const attributes = VolunteerGenerator.attributes();
+    attributes.stateUuid = "invalidFormat";
+    const matcher = expect(() => new Volunteer(attributes));
+    matcher.toThrowError(InvalidAttributeFormatError);
+    matcher.toThrowError(InvalidAttributeFormatError.buildMessage("stateUuid"));
   });
 
   it("throws an error if email has invalid format", async () => {
-    expect(
-      () =>
-        new Volunteer({
-          dni: "12345678",
-          name: "John",
-          surname: "Doe",
-          email: "john@",
-          linkedin: "John Doe",
-          phoneNumber: "1165287676",
-          telegram: "@JohnD",
-          admissionYear: "2016",
-          graduationYear: "2016",
-          country: "Argentina",
-          notes: "Notes",
-          stateUuid: UuidGenerator.generate()
-        })
-    ).toThrow(InvalidAttributeFormatError);
+    const attributes = VolunteerGenerator.attributes();
+    attributes.email = "john@";
+    const matcher = expect(() => new Volunteer(attributes));
+    matcher.toThrowError(InvalidAttributeFormatError);
+    matcher.toThrowError(InvalidAttributeFormatError.buildMessage("email"));
   });
 
   it("throws an error if admissionYear has invalid characters", async () => {
-    expect(
-      () =>
-        new Volunteer({
-          dni: "12345678",
-          name: "John",
-          surname: "Doe",
-          email: "john@gmail.com",
-          linkedin: "John Doe",
-          phoneNumber: "1165287676",
-          telegram: "@JohnD",
-          admissionYear: "20I6",
-          graduationYear: "2016",
-          country: "Argentina",
-          notes: "Notes",
-          stateUuid: UuidGenerator.generate()
-        })
-    ).toThrow(InvalidAttributeFormatError);
+    const attributes = VolunteerGenerator.attributes();
+    attributes.admissionYear = "20I6";
+    const matcher = expect(() => new Volunteer(attributes));
+    matcher.toThrowError(InvalidAttributeFormatError);
+    matcher.toThrowError(InvalidAttributeFormatError.buildMessage("admissionYear"));
   });
 
   it("throws an error if graduationYear has invalid characters", async () => {
-    expect(
-      () =>
-        new Volunteer({
-          dni: "12345678",
-          name: "John",
-          surname: "Doe",
-          email: "john@gmail.com",
-          linkedin: "John Doe",
-          phoneNumber: "1165287676",
-          telegram: "@JohnD",
-          admissionYear: "2016",
-          graduationYear: "20A6",
-          country: "Argentina",
-          notes: "Notes",
-          stateUuid: UuidGenerator.generate()
-        })
-    ).toThrow(InvalidAttributeFormatError);
+    const attributes = VolunteerGenerator.attributes();
+    attributes.graduationYear = "20A6";
+    const matcher = expect(() => new Volunteer(attributes));
+    matcher.toThrowError(InvalidAttributeFormatError);
+    matcher.toThrowError(InvalidAttributeFormatError.buildMessage("graduationYear"));
   });
 
   it("throws an error if graduationYear has more than four characters", async () => {
-    expect(
-      () =>
-        new Volunteer({
-          dni: "12345678",
-          name: "John",
-          surname: "Doe",
-          email: "john@gmail.com",
-          linkedin: "John Doe",
-          phoneNumber: "1165287676",
-          telegram: "@JohnD",
-          admissionYear: "2016",
-          graduationYear: "201226",
-          country: "Argentina",
-          notes: "Notes",
-          stateUuid: UuidGenerator.generate()
-        })
-    ).toThrow(InvalidAttributeFormatError);
+    const attributes = VolunteerGenerator.attributes();
+    attributes.graduationYear = "201226";
+    const matcher = expect(() => new Volunteer(attributes));
+    matcher.toThrowError(InvalidAttributeFormatError);
+    matcher.toThrowError(InvalidAttributeFormatError.buildMessage("graduationYear"));
   });
 
   it("throws an error if admissionYear has more than four characters", async () => {
-    expect(
-      () =>
-        new Volunteer({
-          dni: "12345678",
-          name: "John",
-          surname: "Doe",
-          email: "john@gmail.com",
-          linkedin: "John Doe",
-          phoneNumber: "1165287676",
-          telegram: "@JohnD",
-          admissionYear: "201226",
-          graduationYear: "2010",
-          country: "Argentina",
-          notes: "Notes",
-          stateUuid: UuidGenerator.generate()
-        })
-    ).toThrow(InvalidAttributeFormatError);
+    const attributes = VolunteerGenerator.attributes();
+    attributes.admissionYear = "201226";
+    const matcher = expect(() => new Volunteer(attributes));
+    matcher.toThrowError(InvalidAttributeFormatError);
+    matcher.toThrowError(InvalidAttributeFormatError.buildMessage("admissionYear"));
   });
 
   it("throws an error if no uuid is generated", () => {
-    jest.spyOn(UuidGenerator, "generate").mockReturnValueOnce(undefined as any);
-    expect(
-      () =>
-        new Volunteer({
-          dni: "12345678",
-          name: "John",
-          surname: "Doe",
-          email: "johndoe@gmail.com",
-          linkedin: "John Doe",
-          phoneNumber: "1165287676",
-          telegram: "@JohnD",
-          admissionYear: "2016",
-          graduationYear: "2016",
-          country: "Argentina",
-          notes: "Notes",
-          stateUuid: UuidGenerator.generate()
-        })
-    ).toThrow(AttributeNotDefinedError);
+    const attributes = VolunteerGenerator.attributes();
+    jest.spyOn(UuidGenerator, "generate").mockImplementation(undefined as any);
+    const matcher = expect(() => new Volunteer(attributes));
+    matcher.toThrowError(AttributeNotDefinedError);
+    matcher.toThrowError(AttributeNotDefinedError.buildMessage("uuid"));
   });
 
   it("throws an error if uuid has invalid format", () => {
-    jest.spyOn(UuidGenerator, "generate").mockReturnValueOnce("invalidUuidFormat");
-    expect(
-      () =>
-        new Volunteer({
-          dni: "12345678",
-          name: "John",
-          surname: "Doe",
-          email: "johndoe@gmail.com",
-          linkedin: "John Doe",
-          phoneNumber: "1165287676",
-          telegram: "@JohnD",
-          admissionYear: "2016",
-          graduationYear: "2016",
-          country: "Argentina",
-          notes: "Notes",
-          stateUuid: UuidGenerator.generate()
-        })
-    ).toThrow(InvalidAttributeFormatError);
+    const attributes = VolunteerGenerator.attributes();
+    jest.spyOn(UuidGenerator, "generate").mockImplementation(() => "invalidUuidFormat");
+    const matcher = expect(() => new Volunteer(attributes));
+    matcher.toThrowError(InvalidAttributeFormatError);
+    matcher.toThrowError(InvalidAttributeFormatError.buildMessage("uuid"));
   });
 });

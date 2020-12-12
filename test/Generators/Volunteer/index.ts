@@ -19,9 +19,9 @@ export const VolunteerGenerator = {
     VolunteerGenerator.index += 1;
     return VolunteerGenerator.index;
   },
-  getVolunteer: ({ stateUuid }: { stateUuid?: string } = {}) => {
+  attributes: ({ stateUuid }: { stateUuid?: string } = {}) => {
     const index = VolunteerGenerator.getIndex();
-    return new Volunteer({
+    return {
       dni: `${index}`,
       name: `John${index}`,
       surname: `Doe${index}`,
@@ -34,8 +34,10 @@ export const VolunteerGenerator = {
       country: "Argentina",
       notes: "Notes",
       stateUuid: stateUuid || UuidGenerator.generate()
-    });
+    };
   },
+  getVolunteer: ({ stateUuid }: { stateUuid?: string } = {}) =>
+    new Volunteer(VolunteerGenerator.attributes({ stateUuid })),
   instance: {
     with: async ({ commissions = [], roles = [], state }: IAttributes = defaultAttributes) => {
       return getManager().transaction(async manager => {
