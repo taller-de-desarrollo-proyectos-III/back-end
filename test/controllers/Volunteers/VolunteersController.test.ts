@@ -64,6 +64,7 @@ describe("VolunteersController", () => {
         expect.arrayContaining([
           {
             ...thirdVolunteer,
+            state: secondState,
             commissions: expect.arrayContaining(commissions),
             roles: expect.arrayContaining(roles)
           }
@@ -79,6 +80,7 @@ describe("VolunteersController", () => {
         expect.arrayContaining([
           {
             ...firstVolunteer,
+            state: firstState,
             commissions: expect.arrayContaining(commissions),
             roles: []
           }
@@ -92,6 +94,7 @@ describe("VolunteersController", () => {
       expect(response.body).toEqual([
         {
           ...secondVolunteer,
+          state: secondState,
           commissions: [],
           roles: expect.arrayContaining(roles)
         }
@@ -106,6 +109,7 @@ describe("VolunteersController", () => {
       expect(response.body).toEqual([
         {
           ...thirdVolunteer,
+          state: secondState,
           commissions: expect.arrayContaining(commissions),
           roles: expect.arrayContaining(roles)
         }
@@ -113,10 +117,11 @@ describe("VolunteersController", () => {
     });
 
     it("returns volunteers with no roles and no commissions", async () => {
-      const volunteer = await VolunteerGenerator.instance.with();
+      const state = firstState;
+      const volunteer = await VolunteerGenerator.instance.with({ state });
       const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids: [] });
       expect(response.status).toEqual(StatusCodes.OK);
-      expect(response.body).toEqual([{ ...volunteer, commissions: [], roles: [] }]);
+      expect(response.body).toEqual([{ ...volunteer, commissions: [], roles: [], state }]);
     });
 
     it("returns no volunteers if given unknown commissionUuids", async () => {

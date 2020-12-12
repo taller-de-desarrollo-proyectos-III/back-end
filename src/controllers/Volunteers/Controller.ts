@@ -1,16 +1,20 @@
 import { Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { IFetchRequest, IPostRequest } from "../Request";
+import { ICreateProps, IGetProps, IUpdateProps } from "./Interfaces";
+
 import { volunteerRepository, VolunteerRepository } from "../../models/Volunteer";
 import { VolunteerCommissionRepository } from "../../models/VolunteerCommission";
 import { VolunteerRoleRepository } from "../../models/VolunteerRole";
 import { commissionRepository } from "../../models/Commission";
-import { Volunteer, VolunteerCommission, VolunteerRole } from "../../models";
-import { ICreateProps, IGetProps, IUpdateProps } from "./Interfaces";
+import { roleRepository } from "../../models/Role";
+import { stateRepository } from "../../models/State";
+
 import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../models/Errors";
 import { VolunteerNotFoundError } from "../../models/Volunteer/Errors";
+import { Volunteer, VolunteerCommission, VolunteerRole } from "../../models";
+
 import { getManager } from "typeorm";
-import { roleRepository } from "../../models/Role";
 import { FilterParser } from "./FilterParser";
 
 export const VolunteersController = {
@@ -51,7 +55,8 @@ export const VolunteersController = {
         volunteers.map(async volunteer => {
           const commissions = await commissionRepository().findByVolunteer(volunteer);
           const roles = await roleRepository().findByVolunteer(volunteer);
-          return { ...volunteer, commissions, roles };
+          const state = await stateRepository().findByUuid(volunteer.stateUuid);
+          return { ...volunteer, commissions, roles, state };
         })
       );
       response.status(StatusCodes.OK).json(jsonResponse);
