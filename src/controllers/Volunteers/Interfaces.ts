@@ -20,6 +20,7 @@ export interface ICreateProps {
   notes?: string;
   commissionUuids?: TCommissionUuids;
   roleUuids?: TRoleUuids;
+  stateUuid: string;
 }
 
 export interface IUpdateProps extends ICreateProps {

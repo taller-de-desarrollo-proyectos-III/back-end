@@ -16,7 +16,8 @@ describe("Volunteer", () => {
       admissionYear: "2016",
       graduationYear: undefined as any,
       country: "Argentina",
-      notes: "Notes"
+      notes: "Notes",
+      stateUuid: UuidGenerator.generate()
     };
     const volunteer = new Volunteer(attributes);
     expect(volunteer).toEqual({
@@ -31,7 +32,8 @@ describe("Volunteer", () => {
       name: "John",
       surname: "Doe",
       email: "johndoe@gmail.com",
-      phoneNumber: "1165287676"
+      phoneNumber: "1165287676",
+      stateUuid: UuidGenerator.generate()
     };
     const volunteer = new Volunteer(attributes);
     expect(volunteer).toEqual({
@@ -54,7 +56,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: UuidGenerator.generate()
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -73,7 +76,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: UuidGenerator.generate()
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -92,7 +96,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: UuidGenerator.generate()
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -111,7 +116,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: UuidGenerator.generate()
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -130,9 +136,50 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: UuidGenerator.generate()
         })
     ).toThrow(AttributeNotDefinedError);
+  });
+
+  it("throws an error if stateUuid is not defined", async () => {
+    expect(
+      () =>
+        new Volunteer({
+          dni: "12345678",
+          name: "John",
+          surname: "Doe",
+          email: "johndoe@gmail.com",
+          linkedin: "John Doe",
+          phoneNumber: "1165287676",
+          telegram: "@JohnD",
+          admissionYear: "2016",
+          graduationYear: "2016",
+          country: "Argentina",
+          notes: "Notes",
+          stateUuid: undefined as any
+        })
+    ).toThrow(AttributeNotDefinedError);
+  });
+
+  it("throws an error if stateUuid has invalid format", async () => {
+    expect(
+      () =>
+        new Volunteer({
+          dni: "12345678",
+          name: "John",
+          surname: "Doe",
+          email: "john@",
+          linkedin: "John Doe",
+          phoneNumber: "1165287676",
+          telegram: "@JohnD",
+          admissionYear: "2016",
+          graduationYear: "2016",
+          country: "Argentina",
+          notes: "Notes",
+          stateUuid: "invalid"
+        })
+    ).toThrow(InvalidAttributeFormatError);
   });
 
   it("throws an error if email has invalid format", async () => {
@@ -149,7 +196,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: UuidGenerator.generate()
         })
     ).toThrow(InvalidAttributeFormatError);
   });
@@ -168,7 +216,8 @@ describe("Volunteer", () => {
           admissionYear: "20I6",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: UuidGenerator.generate()
         })
     ).toThrow(InvalidAttributeFormatError);
   });
@@ -187,7 +236,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "20A6",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: UuidGenerator.generate()
         })
     ).toThrow(InvalidAttributeFormatError);
   });
@@ -206,7 +256,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "201226",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: UuidGenerator.generate()
         })
     ).toThrow(InvalidAttributeFormatError);
   });
@@ -225,7 +276,8 @@ describe("Volunteer", () => {
           admissionYear: "201226",
           graduationYear: "2010",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: UuidGenerator.generate()
         })
     ).toThrow(InvalidAttributeFormatError);
   });
@@ -245,7 +297,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: UuidGenerator.generate()
         })
     ).toThrow(AttributeNotDefinedError);
   });
@@ -265,7 +318,8 @@ describe("Volunteer", () => {
           admissionYear: "2016",
           graduationYear: "2016",
           country: "Argentina",
-          notes: "Notes"
+          notes: "Notes",
+          stateUuid: UuidGenerator.generate()
         })
     ).toThrow(InvalidAttributeFormatError);
   });
