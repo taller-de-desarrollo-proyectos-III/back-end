@@ -145,7 +145,7 @@ describe("VolunteersController", () => {
         graduationYear: "2016",
         country: "Argentina",
         notes: "Notes",
-        stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
+        stateUuid: UuidGenerator.generate()
       };
       delete attributes[attribute];
       const response = await testClient.post(VolunteersRoutes.path).send({
@@ -169,7 +169,7 @@ describe("VolunteersController", () => {
         graduationYear: "2016",
         country: "Argentina",
         notes: "Notes",
-        stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
+        stateUuid: UuidGenerator.generate()
       };
       const response = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(response.status).toEqual(StatusCodes.CREATED);
@@ -194,7 +194,7 @@ describe("VolunteersController", () => {
         graduationYear: "2016",
         country: "Argentina",
         notes: "Notes",
-        stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
+        stateUuid: UuidGenerator.generate()
       };
       const response = await testClient.post(VolunteersRoutes.path).send({
         ...attributes,
@@ -222,7 +222,7 @@ describe("VolunteersController", () => {
         graduationYear: "2016",
         country: "Argentina",
         notes: "Notes",
-        stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
+        stateUuid: UuidGenerator.generate()
       };
       const response = await testClient.post(VolunteersRoutes.path).send({
         ...attributes,
@@ -244,7 +244,7 @@ describe("VolunteersController", () => {
         surname: "Doe",
         email: "johndoe@gmail.com",
         phoneNumber: "1165287676",
-        stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
+        stateUuid: UuidGenerator.generate()
       };
       const response = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(response.status).toEqual(StatusCodes.CREATED);
@@ -324,7 +324,7 @@ describe("VolunteersController", () => {
         graduationYear: "2016",
         country: "Argentina",
         notes: "Notes",
-        stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
+        stateUuid: UuidGenerator.generate()
       };
       const firstResponse = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(firstResponse.status).toEqual(StatusCodes.CREATED);

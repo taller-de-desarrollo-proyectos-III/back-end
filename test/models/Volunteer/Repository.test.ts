@@ -6,6 +6,7 @@ import { VolunteerNotFoundError } from "../../../src/models/Volunteer/Errors";
 import { AttributeNotDefinedError } from "../../../src/models/Errors";
 import { VolunteerGenerator } from "../../Generators/Volunteer";
 import { roleRepository } from "../../../src/models/Role";
+import { UuidGenerator } from "../../../src/models/UuidGenerator";
 
 describe("VolunteerRepository", () => {
   const attributes = {
@@ -20,7 +21,7 @@ describe("VolunteerRepository", () => {
     graduationYear: "2016",
     country: "Argentina",
     notes: "Notes",
-    stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
+    stateUuid: UuidGenerator.generate()
   };
 
   const commissionA = new Commission({ name: "Commission A" });

@@ -9,6 +9,7 @@ import {
 import { VolunteerCommissionRepository } from "../../../src/models/VolunteerCommission";
 import { getManager } from "typeorm";
 import { VolunteerRoleRepository } from "../../../src/models/VolunteerRole";
+import { UuidGenerator } from "../../../src/models/UuidGenerator";
 
 export const VolunteerGenerator = {
   index: 0,
@@ -30,7 +31,7 @@ export const VolunteerGenerator = {
       graduationYear: "2016",
       country: "Argentina",
       notes: "Notes",
-      stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
+      stateUuid: UuidGenerator.generate()
     });
   },
   instance: {

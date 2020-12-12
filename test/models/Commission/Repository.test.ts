@@ -4,6 +4,7 @@ import { Commission, Volunteer } from "../../../src/models";
 import { QueryFailedError } from "typeorm";
 import { CommissionNotFoundError } from "../../../src/models/Commission/Errors";
 import { VolunteerGenerator } from "../../Generators/Volunteer";
+import { UuidGenerator } from "../../../src/models/UuidGenerator";
 
 describe("CommissionRepository", () => {
   beforeEach(async () => {
@@ -92,7 +93,7 @@ describe("CommissionRepository", () => {
         surname: "surname",
         email: "email@gamil.com",
         phoneNumber: "1234",
-        stateUuid: "4ad4c348-3b66-11eb-adc1-0242ac120002"
+        stateUuid: UuidGenerator.generate()
       });
       const foundCommissions = await commissionRepository().findByVolunteer(volunteer);
       expect(foundCommissions).toEqual([]);
