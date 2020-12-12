@@ -6,23 +6,6 @@ import { InvalidAttributeFormatError } from "../Errors/InvalidAttributeFormatErr
 
 @Entity({ name: "Volunteers" })
 export class Volunteer {
-  constructor(attributes: IVolunteerAttributes) {
-    this.uuid = attributes.uuid || UuidGenerator.generate();
-    this.dni = attributes.dni;
-    this.name = attributes.name;
-    this.surname = attributes.surname;
-    this.email = attributes.email;
-    this.linkedin = attributes.linkedin;
-    this.phoneNumber = attributes.phoneNumber;
-    this.telegram = attributes.telegram;
-    this.admissionYear = attributes.admissionYear;
-    this.graduationYear = attributes.graduationYear;
-    this.country = attributes.country;
-    this.notes = attributes.notes;
-    this.stateUuid = attributes.stateUuid;
-    this.validate();
-  }
-
   @Column({ primary: true })
   public uuid: string;
 
@@ -61,6 +44,23 @@ export class Volunteer {
 
   @Column()
   public stateUuid: string;
+
+  constructor(attributes: IVolunteerAttributes) {
+    this.uuid = attributes.uuid || UuidGenerator.generate();
+    this.dni = attributes.dni;
+    this.name = attributes.name;
+    this.surname = attributes.surname;
+    this.email = attributes.email;
+    this.linkedin = attributes.linkedin;
+    this.phoneNumber = attributes.phoneNumber;
+    this.telegram = attributes.telegram;
+    this.admissionYear = attributes.admissionYear;
+    this.graduationYear = attributes.graduationYear;
+    this.country = attributes.country;
+    this.notes = attributes.notes;
+    this.stateUuid = attributes.stateUuid;
+    this.validate();
+  }
 
   public validate() {
     if (!isDefined(this.uuid)) throw new AttributeNotDefinedError("uuid");
