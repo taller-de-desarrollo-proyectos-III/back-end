@@ -1,29 +1,13 @@
 import { volunteerRepository } from "../../../src/models/Volunteer";
 import { commissionRepository } from "../../../src/models/Commission";
-import { Commission, Role, Volunteer } from "../../../src/models";
+import { Commission, Role } from "../../../src/models";
 import { QueryFailedError } from "typeorm";
 import { VolunteerNotFoundError } from "../../../src/models/Volunteer/Errors";
 import { AttributeNotDefinedError } from "../../../src/models/Errors";
 import { VolunteerGenerator } from "../../Generators/Volunteer";
 import { roleRepository } from "../../../src/models/Role";
-import { UuidGenerator } from "../../../src/models/UuidGenerator";
 
 describe("VolunteerRepository", () => {
-  const attributes = {
-    dni: "12345678",
-    name: "John",
-    surname: "Doe",
-    email: "johndoe@gmail.com",
-    linkedin: "John Doe",
-    phoneNumber: "1165287676",
-    telegram: "@JohnD",
-    admissionYear: "2016",
-    graduationYear: "2016",
-    country: "Argentina",
-    notes: "Notes",
-    stateUuid: UuidGenerator.generate()
-  };
-
   const commissionA = new Commission({ name: "Commission A" });
   const commissionB = new Commission({ name: "Commission B" });
   const commissionC = new Commission({ name: "Commission C" });
@@ -50,14 +34,14 @@ describe("VolunteerRepository", () => {
   });
 
   it("saves a volunteer model on the database", async () => {
-    const volunteer = new Volunteer(attributes);
+    const volunteer = VolunteerGenerator.getVolunteer();
     await volunteerRepository().insert(volunteer);
     expect(await volunteerRepository().findByUuid(volunteer.uuid)).toEqual(volunteer);
   });
 
   describe("update", () => {
     const expectToUpdateAttribute = async (attributeName: string, value: string | number) => {
-      const volunteer = new Volunteer(attributes);
+      const volunteer = VolunteerGenerator.getVolunteer();
       await volunteerRepository().insert(volunteer);
       volunteer[attributeName] = value;
       await volunteerRepository().save(volunteer);
@@ -112,7 +96,7 @@ describe("VolunteerRepository", () => {
 
   describe("find", () => {
     it("returns volunteers with no commissions and no roles if no filter is passed", async () => {
-      const volunteer = new Volunteer(attributes);
+      const volunteer = VolunteerGenerator.getVolunteer();
       await volunteerRepository().insert(volunteer);
       expect(await volunteerRepository().find()).toEqual([volunteer]);
     });
@@ -173,7 +157,7 @@ describe("VolunteerRepository", () => {
   });
 
   it("throws an error if the volunteer does not exist", async () => {
-    const volunteer = new Volunteer(attributes);
+    const volunteer = VolunteerGenerator.getVolunteer();
     await expect(volunteerRepository().findByUuid(volunteer.uuid)).rejects.toThrow(
       VolunteerNotFoundError
     );
@@ -186,14 +170,14 @@ describe("VolunteerRepository", () => {
   });
 
   it("throws an error when trying to insert a duplicated volunteer", async () => {
-    const volunteer = new Volunteer(attributes);
+    const volunteer = VolunteerGenerator.getVolunteer();
     await volunteerRepository().insert(volunteer);
     await expect(volunteerRepository().insert(volunteer)).rejects.toThrow(QueryFailedError);
   });
 
   it("removes all entries from Volunteers table", async () => {
-    const firstVolunteer = new Volunteer(attributes);
-    const secondVolunteer = new Volunteer(attributes);
+    const firstVolunteer = VolunteerGenerator.getVolunteer();
+    const secondVolunteer = VolunteerGenerator.getVolunteer();
     await volunteerRepository().insert(firstVolunteer);
     await volunteerRepository().insert(secondVolunteer);
 
