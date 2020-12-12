@@ -3,6 +3,7 @@ import { volunteerCommissionRepository } from "../../../src/models/VolunteerComm
 import { UuidGenerator } from "../../../src/models/UuidGenerator";
 import { volunteerRepository } from "../../../src/models/Volunteer";
 import { commissionRepository } from "../../../src/models/Commission";
+import { stateRepository } from "../../../src/models/State";
 import { Commission, Volunteer, VolunteerCommission } from "../../../src/models";
 import { CommissionGenerator } from "../../Generators/Commission";
 import { VolunteerGenerator } from "../../Generators/Volunteer";
@@ -12,6 +13,7 @@ describe("VolunteerCommissionRepository", () => {
   beforeEach(async () => {
     await volunteerRepository().truncate();
     await commissionRepository().truncate();
+    await stateRepository().truncate();
   });
 
   it("saves volunteer commissions on the database", async () => {

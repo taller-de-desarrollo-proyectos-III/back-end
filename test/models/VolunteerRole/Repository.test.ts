@@ -4,6 +4,7 @@ import { volunteerRepository } from "../../../src/models/Volunteer";
 import { Role, Volunteer, VolunteerRole } from "../../../src/models";
 import { VolunteerGenerator } from "../../Generators/Volunteer";
 import { roleRepository } from "../../../src/models/Role";
+import { stateRepository } from "../../../src/models/State";
 import { RoleGenerator } from "../../Generators/Role";
 import { volunteerRoleRepository } from "../../../src/models/VolunteerRole";
 import { VolunteerRoleGenerator } from "../../Generators/VolunteerRole";
@@ -12,6 +13,7 @@ describe("VolunteerRoleRepository", () => {
   beforeEach(async () => {
     await volunteerRepository().truncate();
     await roleRepository().truncate();
+    await stateRepository().truncate();
   });
 
   it("saves volunteer roles on the database", async () => {

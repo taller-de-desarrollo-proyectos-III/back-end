@@ -5,13 +5,14 @@ import { commissionRepository } from "../../../src/models/Commission";
 import { VolunteerCommissionRepository } from "../../../src/models/VolunteerCommission";
 import { UuidGenerator } from "../../../src/models/UuidGenerator";
 import { VolunteersRoutes } from "../../../src/routes/VolunteersRoutes";
-import { Commission, Role, Volunteer } from "../../../src/models";
+import { Commission, Role, Volunteer, State } from "../../../src/models";
 import { UUID_REGEX } from "../../models";
 import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../../src/models/Errors";
 import { VolunteerNotFoundError } from "../../../src/models/Volunteer/Errors";
 import { VolunteerGenerator } from "../../Generators/Volunteer";
 import { omit } from "lodash";
 import { roleRepository } from "../../../src/models/Role";
+import { stateRepository } from "../../../src/models/State";
 
 describe("VolunteersController", () => {
   const firstCommission = new Commission({ name: "Commission A" });
@@ -24,6 +25,9 @@ describe("VolunteersController", () => {
   const roles = [firstRole, secondRole];
   const roleUuids = roles.map(({ uuid }) => uuid);
 
+  const firstState = new State({ name: "State A" });
+  const secondState = new State({ name: "State B" });
+
   let firstVolunteer: Volunteer;
   let secondVolunteer: Volunteer;
   let thirdVolunteer: Volunteer;
@@ -32,14 +36,21 @@ describe("VolunteersController", () => {
     await volunteerRepository().truncate();
     await commissionRepository().truncate();
     await roleRepository().truncate();
+    await stateRepository().truncate();
 
     await commissionRepository().create(firstCommission);
     await commissionRepository().create(secondCommission);
+
     await roleRepository().insert(firstRole);
     await roleRepository().insert(secondRole);
-    firstVolunteer = await VolunteerGenerator.instance.with({ commissions });
-    secondVolunteer = await VolunteerGenerator.instance.with({ roles });
-    thirdVolunteer = await VolunteerGenerator.instance.with({ commissions, roles });
+
+    await stateRepository().insert(firstState);
+    await stateRepository().insert(secondState);
+
+    const volunteerGenerator = VolunteerGenerator.instance.with;
+    firstVolunteer = await volunteerGenerator({ commissions, state: firstState });
+    secondVolunteer = await volunteerGenerator({ roles, state: secondState });
+    thirdVolunteer = await volunteerGenerator({ commissions, roles, state: secondState });
   });
 
   describe("GET /volunteers", () => {
@@ -169,7 +180,7 @@ describe("VolunteersController", () => {
         graduationYear: "2016",
         country: "Argentina",
         notes: "Notes",
-        stateUuid: UuidGenerator.generate()
+        stateUuid: firstState.uuid
       };
       const response = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(response.status).toEqual(StatusCodes.CREATED);
@@ -194,7 +205,7 @@ describe("VolunteersController", () => {
         graduationYear: "2016",
         country: "Argentina",
         notes: "Notes",
-        stateUuid: UuidGenerator.generate()
+        stateUuid: secondState.uuid
       };
       const response = await testClient.post(VolunteersRoutes.path).send({
         ...attributes,
@@ -222,7 +233,7 @@ describe("VolunteersController", () => {
         graduationYear: "2016",
         country: "Argentina",
         notes: "Notes",
-        stateUuid: UuidGenerator.generate()
+        stateUuid: firstState.uuid
       };
       const response = await testClient.post(VolunteersRoutes.path).send({
         ...attributes,
@@ -244,7 +255,7 @@ describe("VolunteersController", () => {
         surname: "Doe",
         email: "johndoe@gmail.com",
         phoneNumber: "1165287676",
-        stateUuid: UuidGenerator.generate()
+        stateUuid: secondState.uuid
       };
       const response = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(response.status).toEqual(StatusCodes.CREATED);
@@ -324,7 +335,7 @@ describe("VolunteersController", () => {
         graduationYear: "2016",
         country: "Argentina",
         notes: "Notes",
-        stateUuid: UuidGenerator.generate()
+        stateUuid: firstState.uuid
       };
       const firstResponse = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(firstResponse.status).toEqual(StatusCodes.CREATED);
