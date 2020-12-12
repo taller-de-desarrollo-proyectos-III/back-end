@@ -6,34 +6,20 @@ import { InvalidAttributeFormatError } from "../Errors/InvalidAttributeFormatErr
 
 @Entity({ name: "Volunteers" })
 export class Volunteer {
-  constructor({
-    uuid,
-    dni,
-    name,
-    surname,
-    email,
-    linkedin,
-    phoneNumber,
-    telegram,
-    admissionYear,
-    graduationYear,
-    country,
-    notes,
-    stateUuid
-  }: IVolunteerAttributes) {
-    this.uuid = uuid || UuidGenerator.generate();
-    this.dni = dni;
-    this.name = name;
-    this.surname = surname;
-    this.email = email;
-    this.linkedin = linkedin;
-    this.phoneNumber = phoneNumber;
-    this.telegram = telegram;
-    this.admissionYear = admissionYear;
-    this.graduationYear = graduationYear;
-    this.country = country;
-    this.notes = notes;
-    this.stateUuid = stateUuid;
+  constructor(attributes: IVolunteerAttributes) {
+    this.uuid = attributes.uuid || UuidGenerator.generate();
+    this.dni = attributes.dni;
+    this.name = attributes.name;
+    this.surname = attributes.surname;
+    this.email = attributes.email;
+    this.linkedin = attributes.linkedin;
+    this.phoneNumber = attributes.phoneNumber;
+    this.telegram = attributes.telegram;
+    this.admissionYear = attributes.admissionYear;
+    this.graduationYear = attributes.graduationYear;
+    this.country = attributes.country;
+    this.notes = attributes.notes;
+    this.stateUuid = attributes.stateUuid;
     this.validate();
   }
 
