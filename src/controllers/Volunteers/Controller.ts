@@ -15,6 +15,7 @@ import { VolunteerNotFoundError } from "../../models/Volunteer/Errors";
 import { Volunteer, VolunteerCommission, VolunteerRole } from "../../models";
 
 import { getManager } from "typeorm";
+import { omit } from "lodash";
 import { FilterParser } from "./FilterParser";
 
 export const VolunteersController = {
@@ -56,7 +57,7 @@ export const VolunteersController = {
           const commissions = await commissionRepository().findByVolunteer(volunteer);
           const roles = await roleRepository().findByVolunteer(volunteer);
           const state = await stateRepository().findByUuid(volunteer.stateUuid);
-          return { ...volunteer, commissions, roles, state };
+          return { ...omit(volunteer, "stateUuid"), commissions, roles, state };
         })
       );
       response.status(StatusCodes.OK).json(jsonResponse);
@@ -70,7 +71,10 @@ export const VolunteersController = {
       const volunteer = await volunteerRepository().findByUuid(uuid);
       const commissions = await commissionRepository().findByVolunteer(volunteer);
       const roles = await roleRepository().findByVolunteer(volunteer);
-      return response.status(StatusCodes.OK).json({ ...volunteer, commissions, roles });
+      const state = await stateRepository().findByUuid(volunteer.stateUuid);
+      return response
+        .status(StatusCodes.OK)
+        .json({ ...omit(volunteer, "stateUuid"), commissions, roles, state });
     } catch (error) {
       if (error instanceof VolunteerNotFoundError) {
         return response.status(StatusCodes.BAD_REQUEST).json(error.message);
