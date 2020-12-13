@@ -81,7 +81,8 @@
     "db:all:migrate": "yarn db:migrate && yarn db:test:migrate",
     "db:all:drop": "yarn db:drop && yarn db:test:drop",
     "db:all:create": "yarn db:create && yarn db:test:create",
-    "db:all:reboot": "yarn db:all:drop && yarn db:all:create && yarn db:all:migrate"
+    "db:all:reboot": "yarn db:all:drop && yarn db:all:create && yarn db:all:migrate && yarn db:seed:up",
+    "db:seed:up": "bash scripts/createStates.sh && bash scripts/createCommissions.sh && bash scripts/createRoles.sh && bash scripts/createVolunteers.sh"
   },
   "repository": "git@github.com:taller-de-desarrollo-proyectos-III/back-end.git",
   "license": "MIT",
