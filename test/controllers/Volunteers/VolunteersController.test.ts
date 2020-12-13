@@ -54,10 +54,10 @@ describe("VolunteersController", () => {
   });
 
   describe("GET /volunteers", () => {
-    it("filters by all commissions and all roles", async () => {
+    it("filters by all commissions, all roles and all states", async () => {
       const response = await testClient
         .get(VolunteersRoutes.path)
-        .query({ commissionUuids: "ALL", roleUuids: "ALL" });
+        .query({ commissionUuids: "ALL", roleUuids: "ALL", stateUuids: "ALL" });
       expect(response.status).toEqual(StatusCodes.OK);
       expect(response.body).toHaveLength(1);
       expect(response.body).toEqual(
@@ -72,8 +72,34 @@ describe("VolunteersController", () => {
       );
     });
 
+    it("returns volunteers with no commissions, no roles but with the given states", async () => {
+      const volunteerA = await VolunteerGenerator.instance.with({ state: firstState });
+      const volunteerB = await VolunteerGenerator.instance.with({ state: secondState });
+      const response = await testClient.get(VolunteersRoutes.path).query({ stateUuids: "ALL" });
+      expect(response.status).toEqual(StatusCodes.OK);
+      expect(response.body).toHaveLength(2);
+      expect(response.body).toEqual(
+        expect.arrayContaining([
+          {
+            ...omit(volunteerA, "stateUuid"),
+            state: firstState,
+            commissions: [],
+            roles: []
+          },
+          {
+            ...omit(volunteerB, "stateUuid"),
+            state: secondState,
+            commissions: [],
+            roles: []
+          }
+        ])
+      );
+    });
+
     it("returns volunteers that belong to the given commissions and have no roles", async () => {
-      const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids });
+      const response = await testClient
+        .get(VolunteersRoutes.path)
+        .query({ commissionUuids, stateUuids: "ALL" });
       expect(response.status).toEqual(StatusCodes.OK);
       expect(response.body).toHaveLength(1);
       expect(response.body).toEqual(
@@ -89,7 +115,9 @@ describe("VolunteersController", () => {
     });
 
     it("returns volunteers that belong to the given roles and have no commissions", async () => {
-      const response = await testClient.get(VolunteersRoutes.path).query({ roleUuids });
+      const response = await testClient
+        .get(VolunteersRoutes.path)
+        .query({ roleUuids, stateUuids: "ALL" });
       expect(response.status).toEqual(StatusCodes.OK);
       expect(response.body).toEqual([
         {
@@ -104,7 +132,7 @@ describe("VolunteersController", () => {
     it("returns volunteers that belong to the given roles and commissions", async () => {
       const response = await testClient
         .get(VolunteersRoutes.path)
-        .query({ roleUuids, commissionUuids });
+        .query({ roleUuids, commissionUuids, stateUuids: "ALL" });
       expect(response.status).toEqual(StatusCodes.OK);
       expect(response.body).toEqual([
         {
@@ -119,7 +147,9 @@ describe("VolunteersController", () => {
     it("returns volunteers with no roles and no commissions", async () => {
       const state = firstState;
       const volunteer = await VolunteerGenerator.instance.with({ state });
-      const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids: [] });
+      const response = await testClient
+        .get(VolunteersRoutes.path)
+        .query({ commissionUuids: [], roles: [], stateUuids: "ALL" });
       expect(response.status).toEqual(StatusCodes.OK);
       expect(response.body).toEqual([
         { ...omit(volunteer, "stateUuid"), commissions: [], roles: [], state }

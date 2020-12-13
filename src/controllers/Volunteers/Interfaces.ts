@@ -1,9 +1,11 @@
 export type TCommissionUuids = string[] | "ALL";
 export type TRoleUuids = string[] | "ALL";
+export type TStateUuids = string[] | "ALL";
 
 export interface IGetProps {
   commissionUuids: TCommissionUuids;
   roleUuids: TRoleUuids;
+  stateUuids: TStateUuids;
 }
 
 export interface ICreateProps {
