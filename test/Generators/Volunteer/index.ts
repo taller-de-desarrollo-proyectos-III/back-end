@@ -2,6 +2,7 @@ import { volunteerRepository } from "../../../src/models/Volunteer";
 import {
   Commission,
   Role,
+  State,
   Volunteer,
   VolunteerCommission,
   VolunteerRole
@@ -10,6 +11,7 @@ import { VolunteerCommissionRepository } from "../../../src/models/VolunteerComm
 import { getManager } from "typeorm";
 import { VolunteerRoleRepository } from "../../../src/models/VolunteerRole";
 import { UuidGenerator } from "../../../src/models/UuidGenerator";
+import { StateGenerator } from "../State";
 
 export const VolunteerGenerator = {
   index: 0,
@@ -17,9 +19,9 @@ export const VolunteerGenerator = {
     VolunteerGenerator.index += 1;
     return VolunteerGenerator.index;
   },
-  getVolunteer: () => {
+  attributes: ({ stateUuid }: { stateUuid?: string } = {}) => {
     const index = VolunteerGenerator.getIndex();
-    return new Volunteer({
+    return {
       dni: `${index}`,
       name: `John${index}`,
       surname: `Doe${index}`,
@@ -31,13 +33,16 @@ export const VolunteerGenerator = {
       graduationYear: "2016",
       country: "Argentina",
       notes: "Notes",
-      stateUuid: UuidGenerator.generate()
-    });
+      stateUuid: stateUuid || UuidGenerator.generate()
+    };
   },
+  getVolunteer: ({ stateUuid }: { stateUuid?: string } = {}) =>
+    new Volunteer(VolunteerGenerator.attributes({ stateUuid })),
   instance: {
-    with: async ({ commissions = [], roles = [] }: IAttributes = defaultAttributes) => {
+    with: async ({ commissions = [], roles = [], state }: IAttributes = defaultAttributes) => {
       return getManager().transaction(async manager => {
-        const volunteer = VolunteerGenerator.getVolunteer();
+        const { uuid: stateUuid } = state || (await StateGenerator.instance());
+        const volunteer = VolunteerGenerator.getVolunteer({ stateUuid });
         await volunteerRepository().insert(volunteer);
         const volunteerCommissions = commissions?.map(
           ({ uuid: commissionUuid }) =>
@@ -54,9 +59,10 @@ export const VolunteerGenerator = {
   }
 };
 
-const defaultAttributes = { commissions: [], roles: [] };
+const defaultAttributes = { commissions: [], roles: [], state: undefined };
 
 interface IAttributes {
   commissions?: Commission[];
   roles?: Role[];
+  state?: State;
 }

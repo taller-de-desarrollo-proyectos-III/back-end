@@ -23,7 +23,8 @@
     "noUnusedParameters": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
-    "strict": true
+    "strict": true,
+    "strictPropertyInitialization": false
   },
   "exclude": ["node_modules", "build", "coverage"]
 }

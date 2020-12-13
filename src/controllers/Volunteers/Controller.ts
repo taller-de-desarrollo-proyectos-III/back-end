@@ -1,16 +1,18 @@
 import { Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { IFetchRequest, IPostRequest } from "../Request";
+import { ICreateProps, IGetProps, IUpdateProps } from "./Interfaces";
+import { VolunteerSerializer } from "./Serializer";
+
 import { volunteerRepository, VolunteerRepository } from "../../models/Volunteer";
 import { VolunteerCommissionRepository } from "../../models/VolunteerCommission";
 import { VolunteerRoleRepository } from "../../models/VolunteerRole";
-import { commissionRepository } from "../../models/Commission";
-import { Volunteer, VolunteerCommission, VolunteerRole } from "../../models";
-import { ICreateProps, IGetProps, IUpdateProps } from "./Interfaces";
+
 import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../models/Errors";
 import { VolunteerNotFoundError } from "../../models/Volunteer/Errors";
+import { Volunteer, VolunteerCommission, VolunteerRole } from "../../models";
+
 import { getManager } from "typeorm";
-import { roleRepository } from "../../models/Role";
 import { FilterParser } from "./FilterParser";
 
 export const VolunteersController = {
@@ -47,13 +49,7 @@ export const VolunteersController = {
     try {
       const filter = request.query;
       const volunteers = await volunteerRepository().find(await FilterParser.parse(filter));
-      const jsonResponse = await Promise.all(
-        volunteers.map(async volunteer => {
-          const commissions = await commissionRepository().findByVolunteer(volunteer);
-          const roles = await roleRepository().findByVolunteer(volunteer);
-          return { ...volunteer, commissions, roles };
-        })
-      );
+      const jsonResponse = await Promise.all(volunteers.map(VolunteerSerializer.serialize));
       response.status(StatusCodes.OK).json(jsonResponse);
     } catch (error) {
       response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
@@ -63,9 +59,7 @@ export const VolunteersController = {
     try {
       const { uuid } = request.params;
       const volunteer = await volunteerRepository().findByUuid(uuid);
-      const commissions = await commissionRepository().findByVolunteer(volunteer);
-      const roles = await roleRepository().findByVolunteer(volunteer);
-      return response.status(StatusCodes.OK).json({ ...volunteer, commissions, roles });
+      return response.status(StatusCodes.OK).json(await VolunteerSerializer.serialize(volunteer));
     } catch (error) {
       if (error instanceof VolunteerNotFoundError) {
         return response.status(StatusCodes.BAD_REQUEST).json(error.message);

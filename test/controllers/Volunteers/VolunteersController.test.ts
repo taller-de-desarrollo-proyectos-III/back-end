@@ -5,13 +5,14 @@ import { commissionRepository } from "../../../src/models/Commission";
 import { VolunteerCommissionRepository } from "../../../src/models/VolunteerCommission";
 import { UuidGenerator } from "../../../src/models/UuidGenerator";
 import { VolunteersRoutes } from "../../../src/routes/VolunteersRoutes";
-import { Commission, Role, Volunteer } from "../../../src/models";
+import { Commission, Role, Volunteer, State } from "../../../src/models";
 import { UUID_REGEX } from "../../models";
 import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../../src/models/Errors";
 import { VolunteerNotFoundError } from "../../../src/models/Volunteer/Errors";
 import { VolunteerGenerator } from "../../Generators/Volunteer";
 import { omit } from "lodash";
 import { roleRepository } from "../../../src/models/Role";
+import { stateRepository } from "../../../src/models/State";
 
 describe("VolunteersController", () => {
   const firstCommission = new Commission({ name: "Commission A" });
@@ -24,6 +25,9 @@ describe("VolunteersController", () => {
   const roles = [firstRole, secondRole];
   const roleUuids = roles.map(({ uuid }) => uuid);
 
+  const firstState = new State({ name: "State A" });
+  const secondState = new State({ name: "State B" });
+
   let firstVolunteer: Volunteer;
   let secondVolunteer: Volunteer;
   let thirdVolunteer: Volunteer;
@@ -32,14 +36,21 @@ describe("VolunteersController", () => {
     await volunteerRepository().truncate();
     await commissionRepository().truncate();
     await roleRepository().truncate();
+    await stateRepository().truncate();
 
     await commissionRepository().create(firstCommission);
     await commissionRepository().create(secondCommission);
+
     await roleRepository().insert(firstRole);
     await roleRepository().insert(secondRole);
-    firstVolunteer = await VolunteerGenerator.instance.with({ commissions });
-    secondVolunteer = await VolunteerGenerator.instance.with({ roles });
-    thirdVolunteer = await VolunteerGenerator.instance.with({ commissions, roles });
+
+    await stateRepository().insert(firstState);
+    await stateRepository().insert(secondState);
+
+    const volunteerGenerator = VolunteerGenerator.instance.with;
+    firstVolunteer = await volunteerGenerator({ commissions, state: firstState });
+    secondVolunteer = await volunteerGenerator({ roles, state: secondState });
+    thirdVolunteer = await volunteerGenerator({ commissions, roles, state: secondState });
   });
 
   describe("GET /volunteers", () => {
@@ -52,7 +63,8 @@ describe("VolunteersController", () => {
       expect(response.body).toEqual(
         expect.arrayContaining([
           {
-            ...thirdVolunteer,
+            ...omit(thirdVolunteer, "stateUuid"),
+            state: secondState,
             commissions: expect.arrayContaining(commissions),
             roles: expect.arrayContaining(roles)
           }
@@ -67,7 +79,8 @@ describe("VolunteersController", () => {
       expect(response.body).toEqual(
         expect.arrayContaining([
           {
-            ...firstVolunteer,
+            ...omit(firstVolunteer, "stateUuid"),
+            state: firstState,
             commissions: expect.arrayContaining(commissions),
             roles: []
           }
@@ -80,7 +93,8 @@ describe("VolunteersController", () => {
       expect(response.status).toEqual(StatusCodes.OK);
       expect(response.body).toEqual([
         {
-          ...secondVolunteer,
+          ...omit(secondVolunteer, "stateUuid"),
+          state: secondState,
           commissions: [],
           roles: expect.arrayContaining(roles)
         }
@@ -94,7 +108,8 @@ describe("VolunteersController", () => {
       expect(response.status).toEqual(StatusCodes.OK);
       expect(response.body).toEqual([
         {
-          ...thirdVolunteer,
+          ...omit(thirdVolunteer, "stateUuid"),
+          state: secondState,
           commissions: expect.arrayContaining(commissions),
           roles: expect.arrayContaining(roles)
         }
@@ -102,10 +117,13 @@ describe("VolunteersController", () => {
     });
 
     it("returns volunteers with no roles and no commissions", async () => {
-      const volunteer = await VolunteerGenerator.instance.with();
+      const state = firstState;
+      const volunteer = await VolunteerGenerator.instance.with({ state });
       const response = await testClient.get(VolunteersRoutes.path).query({ commissionUuids: [] });
       expect(response.status).toEqual(StatusCodes.OK);
-      expect(response.body).toEqual([{ ...volunteer, commissions: [], roles: [] }]);
+      expect(response.body).toEqual([
+        { ...omit(volunteer, "stateUuid"), commissions: [], roles: [], state }
+      ]);
     });
 
     it("returns no volunteers if given unknown commissionUuids", async () => {
@@ -133,44 +151,17 @@ describe("VolunteersController", () => {
       attribute: string;
       message: string;
     }) => {
-      const attributes = {
-        dni: "12345678",
-        name: "John",
-        surname: "Doe",
-        email: "johndoe@",
-        linkedin: "John Doe",
-        phoneNumber: "1165287676",
-        telegram: "@JohnD",
-        admissionYear: "2016",
-        graduationYear: "2016",
-        country: "Argentina",
-        notes: "Notes",
-        stateUuid: UuidGenerator.generate()
-      };
-      delete attributes[attribute];
+      const attributes = VolunteerGenerator.attributes({ stateUuid: firstState.uuid });
       const response = await testClient.post(VolunteersRoutes.path).send({
-        ...attributes,
+        ...omit(attributes, attribute),
         commissionUuids
       });
       expect(response.status).toEqual(StatusCodes.BAD_REQUEST);
       expect(response.body).toEqual(message);
     };
 
-    it("creates a new volunteer with no commissions", async () => {
-      const attributes = {
-        dni: "12345678",
-        name: "John",
-        surname: "Doe",
-        email: "johndoe@gmail.com",
-        linkedin: "John Doe",
-        phoneNumber: "1165287676",
-        telegram: "@JohnD",
-        admissionYear: "2016",
-        graduationYear: "2016",
-        country: "Argentina",
-        notes: "Notes",
-        stateUuid: UuidGenerator.generate()
-      };
+    it("creates a new volunteer with no commissions and no roles", async () => {
+      const attributes = VolunteerGenerator.attributes({ stateUuid: firstState.uuid });
       const response = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(response.status).toEqual(StatusCodes.CREATED);
       expect(response.body).toEqual({
@@ -182,20 +173,7 @@ describe("VolunteersController", () => {
     });
 
     it("creates a new volunteer with commissions", async () => {
-      const attributes = {
-        dni: "12345678",
-        name: "John",
-        surname: "Doe",
-        email: "johndoe@gmail.com",
-        linkedin: "John Doe",
-        phoneNumber: "1165287676",
-        telegram: "@JohnD",
-        admissionYear: "2016",
-        graduationYear: "2016",
-        country: "Argentina",
-        notes: "Notes",
-        stateUuid: UuidGenerator.generate()
-      };
+      const attributes = VolunteerGenerator.attributes({ stateUuid: secondState.uuid });
       const response = await testClient.post(VolunteersRoutes.path).send({
         ...attributes,
         commissionUuids
@@ -210,20 +188,7 @@ describe("VolunteersController", () => {
     });
 
     it("creates a new volunteer with roles", async () => {
-      const attributes = {
-        dni: "12345678",
-        name: "John",
-        surname: "Doe",
-        email: "johndoe@gmail.com",
-        linkedin: "John Doe",
-        phoneNumber: "1165287676",
-        telegram: "@JohnD",
-        admissionYear: "2016",
-        graduationYear: "2016",
-        country: "Argentina",
-        notes: "Notes",
-        stateUuid: UuidGenerator.generate()
-      };
+      const attributes = VolunteerGenerator.attributes({ stateUuid: firstState.uuid });
       const response = await testClient.post(VolunteersRoutes.path).send({
         ...attributes,
         roleUuids
@@ -244,7 +209,7 @@ describe("VolunteersController", () => {
         surname: "Doe",
         email: "johndoe@gmail.com",
         phoneNumber: "1165287676",
-        stateUuid: UuidGenerator.generate()
+        stateUuid: secondState.uuid
       };
       const response = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(response.status).toEqual(StatusCodes.CREATED);
@@ -312,20 +277,7 @@ describe("VolunteersController", () => {
         .spyOn(UuidGenerator, "generate")
         .mockImplementation(() => "4c925fdc-8fd4-47ed-9a24-fa81ed5cc9da");
 
-      const attributes = {
-        dni: "12345678",
-        name: "John",
-        surname: "Doe",
-        email: "johndoe@gmail.com",
-        linkedin: "John Doe",
-        phoneNumber: "1165287676",
-        telegram: "@JohnD",
-        admissionYear: "2016",
-        graduationYear: "2016",
-        country: "Argentina",
-        notes: "Notes",
-        stateUuid: UuidGenerator.generate()
-      };
+      const attributes = VolunteerGenerator.attributes({ stateUuid: firstState.uuid });
       const firstResponse = await testClient.post(VolunteersRoutes.path).send(attributes);
       expect(firstResponse.status).toEqual(StatusCodes.CREATED);
 
@@ -341,9 +293,10 @@ describe("VolunteersController", () => {
       const response = await testClient.get(`${VolunteersRoutes.path}/${uuid}`);
       expect(response.status).toEqual(StatusCodes.OK);
       expect(response.body).toEqual({
-        ...firstVolunteer,
-        commissions,
-        roles: []
+        ...omit(firstVolunteer, "stateUuid"),
+        commissions: expect.arrayContaining(commissions),
+        roles: [],
+        state: firstState
       });
     });
 
@@ -352,9 +305,10 @@ describe("VolunteersController", () => {
       const response = await testClient.get(`${VolunteersRoutes.path}/${uuid}`);
       expect(response.status).toEqual(StatusCodes.OK);
       expect(response.body).toEqual({
-        ...secondVolunteer,
+        ...omit(secondVolunteer, "stateUuid"),
         commissions: [],
-        roles: expect.arrayContaining(roles)
+        roles: expect.arrayContaining(roles),
+        state: secondState
       });
     });
 
@@ -363,9 +317,10 @@ describe("VolunteersController", () => {
       const response = await testClient.get(`${VolunteersRoutes.path}/${uuid}`);
       expect(response.status).toEqual(StatusCodes.OK);
       expect(response.body).toEqual({
-        ...thirdVolunteer,
+        ...omit(thirdVolunteer, "stateUuid"),
         commissions: expect.arrayContaining(commissions),
-        roles: expect.arrayContaining(roles)
+        roles: expect.arrayContaining(roles),
+        state: secondState
       });
     });
 

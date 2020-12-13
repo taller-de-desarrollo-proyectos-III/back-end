@@ -6,37 +6,6 @@ import { InvalidAttributeFormatError } from "../Errors/InvalidAttributeFormatErr
 
 @Entity({ name: "Volunteers" })
 export class Volunteer {
-  constructor({
-    uuid,
-    dni,
-    name,
-    surname,
-    email,
-    linkedin,
-    phoneNumber,
-    telegram,
-    admissionYear,
-    graduationYear,
-    country,
-    notes,
-    stateUuid
-  }: IVolunteerAttributes) {
-    this.uuid = uuid || UuidGenerator.generate();
-    this.dni = dni;
-    this.name = name;
-    this.surname = surname;
-    this.email = email;
-    this.linkedin = linkedin;
-    this.phoneNumber = phoneNumber;
-    this.telegram = telegram;
-    this.admissionYear = admissionYear;
-    this.graduationYear = graduationYear;
-    this.country = country;
-    this.notes = notes;
-    this.stateUuid = stateUuid;
-    this.validate();
-  }
-
   @Column({ primary: true })
   public uuid: string;
 
@@ -76,29 +45,72 @@ export class Volunteer {
   @Column()
   public stateUuid: string;
 
-  public validate() {
-    if (!isDefined(this.uuid)) throw new AttributeNotDefinedError("uuid");
-    if (!isDefined(this.dni)) throw new AttributeNotDefinedError("dni");
-    if (!isDefined(this.name)) throw new AttributeNotDefinedError("name");
-    if (!isDefined(this.surname)) throw new AttributeNotDefinedError("surname");
-    if (!isDefined(this.email)) throw new AttributeNotDefinedError("email");
-    if (!isDefined(this.phoneNumber)) throw new AttributeNotDefinedError("phoneNumber");
-    if (!isUUID(this.uuid)) throw new InvalidAttributeFormatError("uuid");
-    if (!isEmail(this.email)) throw new InvalidAttributeFormatError("email");
-    if (isDefined(this.admissionYear) && !isNumberString(this.admissionYear)) {
-      throw new InvalidAttributeFormatError("admissionYear");
-    }
-    if (isDefined(this.graduationYear) && !isNumberString(this.graduationYear)) {
-      throw new InvalidAttributeFormatError("graduationYear");
-    }
-    if (isDefined(this.admissionYear) && !length(this.admissionYear, 4, 4)) {
-      throw new InvalidAttributeFormatError("admissionYear");
-    }
-    if (isDefined(this.graduationYear) && !length(this.graduationYear, 4, 4)) {
-      throw new InvalidAttributeFormatError("graduationYear");
-    }
-    if (!isDefined(this.stateUuid)) throw new AttributeNotDefinedError("stateUuid");
-    if (!isUUID(this.stateUuid)) throw new InvalidAttributeFormatError("stateUuid");
+  constructor(attributes: IVolunteerAttributes) {
+    this.setUuid(attributes.uuid || UuidGenerator.generate());
+    this.setDni(attributes.dni);
+    this.setName(attributes.name);
+    this.setSurname(attributes.surname);
+    this.setEmail(attributes.email);
+    this.linkedin = attributes.linkedin;
+    this.setPhoneNumber(attributes.phoneNumber);
+    this.telegram = attributes.telegram;
+    this.setAdmissionYear(attributes.admissionYear);
+    this.setGraduationYear(attributes.graduationYear);
+    this.country = attributes.country;
+    this.notes = attributes.notes;
+    this.setStateUuid(attributes.stateUuid);
+  }
+
+  private setUuid(uuid: string) {
+    if (!isDefined(uuid)) throw new AttributeNotDefinedError("uuid");
+    if (!isUUID(uuid)) throw new InvalidAttributeFormatError("uuid");
+    this.uuid = uuid;
+  }
+
+  private setDni(dni: string) {
+    if (!isDefined(dni)) throw new AttributeNotDefinedError("dni");
+    this.dni = dni;
+  }
+
+  private setName(name: string) {
+    if (!isDefined(name)) throw new AttributeNotDefinedError("name");
+    this.name = name;
+  }
+
+  private setSurname(surname: string) {
+    if (!isDefined(surname)) throw new AttributeNotDefinedError("surname");
+    this.surname = surname;
+  }
+
+  private setEmail(email: string) {
+    if (!isDefined(email)) throw new AttributeNotDefinedError("email");
+    if (!isEmail(email)) throw new InvalidAttributeFormatError("email");
+    this.email = email;
+  }
+
+  private setPhoneNumber(phoneNumber: string) {
+    if (!isDefined(phoneNumber)) throw new AttributeNotDefinedError("phoneNumber");
+    this.phoneNumber = phoneNumber;
+  }
+
+  private setAdmissionYear(admissionYear?: string) {
+    if (!isDefined(admissionYear)) return;
+    if (!isNumberString(admissionYear)) throw new InvalidAttributeFormatError("admissionYear");
+    if (!length(admissionYear, 4, 4)) throw new InvalidAttributeFormatError("admissionYear");
+    this.admissionYear = admissionYear;
+  }
+
+  private setGraduationYear(graduationYear?: string) {
+    if (!isDefined(graduationYear)) return;
+    if (!isNumberString(graduationYear)) throw new InvalidAttributeFormatError("graduationYear");
+    if (!length(graduationYear, 4, 4)) throw new InvalidAttributeFormatError("graduationYear");
+    this.graduationYear = graduationYear;
+  }
+
+  private setStateUuid(stateUuid: string) {
+    if (!isDefined(stateUuid)) throw new AttributeNotDefinedError("stateUuid");
+    if (!isUUID(stateUuid)) throw new InvalidAttributeFormatError("stateUuid");
+    this.stateUuid = stateUuid;
   }
 }
 
