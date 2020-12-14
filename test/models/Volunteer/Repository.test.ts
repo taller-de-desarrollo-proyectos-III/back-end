@@ -25,6 +25,9 @@ describe("VolunteerRepository", () => {
   const stateC = new State({ name: "State C" });
   const stateD = new State({ name: "State D" });
 
+  const states = [stateA, stateB, stateC, stateD];
+  const stateUuids = states.map(({ uuid }) => uuid);
+
   beforeEach(async () => {
     await volunteerRepository().truncate();
     await commissionRepository().truncate();
@@ -124,18 +127,41 @@ describe("VolunteerRepository", () => {
   });
 
   describe("find", () => {
-    it("returns volunteers with no commissions and no roles if no filter is passed", async () => {
+    it("returns no volunteers if no filter is passed", async () => {
       const volunteer = VolunteerGenerator.getVolunteer({ stateUuid: stateC.uuid });
       await volunteerRepository().insert(volunteer);
-      expect(await volunteerRepository().find()).toEqual([volunteer]);
+      expect(await volunteerRepository().find()).toEqual([]);
+    });
+
+    it("returns no volunteers if the given states does not match with the volunteers", async () => {
+      await VolunteerGenerator.instance.with({ state: stateA });
+      await VolunteerGenerator.instance.with({ state: stateB });
+      const uuids = [stateC, stateD].map(({ uuid }) => uuid);
+      const foundVolunteers = await volunteerRepository().find({ stateUuids: uuids });
+      expect(foundVolunteers).toEqual([]);
+    });
+
+    it("returns all volunteers with the given states", async () => {
+      const volunteerA = await VolunteerGenerator.instance.with({ state: stateA });
+      const volunteerB = await VolunteerGenerator.instance.with({ state: stateB });
+      const uuids = [stateA, stateB].map(({ uuid }) => uuid);
+      const foundVolunteers = await volunteerRepository().find({ stateUuids: uuids });
+      expect(foundVolunteers).toHaveLength(2);
+      expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
+    });
+
+    it("returns volunteers with no commissions and no roles and states", async () => {
+      const volunteer = VolunteerGenerator.getVolunteer({ stateUuid: stateC.uuid });
+      await volunteerRepository().insert(volunteer);
+      expect(await volunteerRepository().find({ stateUuids })).toEqual([volunteer]);
     });
 
     it("returns all the volunteers with commissions and no roles", async () => {
       const commissions = [commissionA, commissionB];
       const commissionUuids = commissions.map(({ uuid }) => uuid);
-      const volunteerA = await VolunteerGenerator.instance.with({ commissions });
-      const volunteerB = await VolunteerGenerator.instance.with({ commissions });
-      const foundVolunteers = await volunteerRepository().find({ commissionUuids });
+      const volunteerA = await VolunteerGenerator.instance.with({ commissions, state: stateA });
+      const volunteerB = await VolunteerGenerator.instance.with({ commissions, state: stateB });
+      const foundVolunteers = await volunteerRepository().find({ commissionUuids, stateUuids });
       expect(foundVolunteers).toHaveLength(2);
       expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
     });
@@ -143,9 +169,9 @@ describe("VolunteerRepository", () => {
     it("returns all the volunteers with only roles and no commissions", async () => {
       const roles = [roleA, roleB];
       const roleUuids = roles.map(({ uuid }) => uuid);
-      const volunteerA = await VolunteerGenerator.instance.with({ roles });
-      const volunteerB = await VolunteerGenerator.instance.with({ roles });
-      const foundVolunteers = await volunteerRepository().find({ roleUuids });
+      const volunteerA = await VolunteerGenerator.instance.with({ roles, state: stateA });
+      const volunteerB = await VolunteerGenerator.instance.with({ roles, state: stateB });
+      const foundVolunteers = await volunteerRepository().find({ roleUuids, stateUuids });
       expect(foundVolunteers).toHaveLength(2);
       expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
     });
@@ -153,9 +179,10 @@ describe("VolunteerRepository", () => {
     it("returns volunteers even if additional non-matching commissions are given", async () => {
       const commissions = [commissionA, commissionB, commissionC, commissionD];
       const commissionUuids = commissions.map(({ uuid }) => uuid);
-      const volunteerA = await VolunteerGenerator.instance.with({ commissions: [commissionA] });
-      const volunteerB = await VolunteerGenerator.instance.with({ commissions: [commissionA] });
-      const foundVolunteers = await volunteerRepository().find({ commissionUuids });
+      const generator = VolunteerGenerator.instance.with;
+      const volunteerA = await generator({ commissions: [commissionA], state: stateA });
+      const volunteerB = await generator({ commissions: [commissionA], state: stateB });
+      const foundVolunteers = await volunteerRepository().find({ commissionUuids, stateUuids });
       expect(foundVolunteers).toHaveLength(2);
       expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
     });
@@ -163,9 +190,9 @@ describe("VolunteerRepository", () => {
     it("returns volunteers even if additional non-matching roles are given", async () => {
       const roles = [roleA, roleB, roleC, roleD];
       const roleUuids = roles.map(({ uuid }) => uuid);
-      const volunteerA = await VolunteerGenerator.instance.with({ roles: [roleA] });
-      const volunteerB = await VolunteerGenerator.instance.with({ roles: [roleB] });
-      const foundVolunteers = await volunteerRepository().find({ roleUuids });
+      const volunteerA = await VolunteerGenerator.instance.with({ roles: [roleA], state: stateC });
+      const volunteerB = await VolunteerGenerator.instance.with({ roles: [roleB], state: stateB });
+      const foundVolunteers = await volunteerRepository().find({ roleUuids, stateUuids });
       expect(foundVolunteers).toHaveLength(2);
       expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
     });
@@ -177,9 +204,14 @@ describe("VolunteerRepository", () => {
       const roles = [roleA, roleB];
       const roleUuids = roles.map(({ uuid }) => uuid);
 
-      const volunteerA = await VolunteerGenerator.instance.with({ commissions, roles });
-      const volunteerB = await VolunteerGenerator.instance.with({ commissions, roles });
-      const foundVolunteers = await volunteerRepository().find({ commissionUuids, roleUuids });
+      const generator = VolunteerGenerator.instance.with;
+      const volunteerA = await generator({ commissions, roles, state: stateB });
+      const volunteerB = await generator({ commissions, roles, state: stateD });
+      const foundVolunteers = await volunteerRepository().find({
+        commissionUuids,
+        roleUuids,
+        stateUuids
+      });
       expect(foundVolunteers).toHaveLength(2);
       expect(foundVolunteers).toEqual(expect.arrayContaining([volunteerA, volunteerB]));
     });

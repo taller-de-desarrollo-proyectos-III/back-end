@@ -22,14 +22,21 @@ export class VolunteerRepository {
     return this.repository.save(volunteer);
   }
 
-  public async find({ commissionUuids = [], roleUuids = [] }: IFindOptions = defaultFindOptions) {
+  public async find({
+    commissionUuids = [],
+    roleUuids = [],
+    stateUuids = []
+  }: IFindOptions = defaultFindOptions) {
     const formattedCommissionUuids = commissionUuids.map(uuid => `'${uuid}'`).join(",");
     const formattedRoleUuids = roleUuids.map(uuid => `'${uuid}'`).join(",");
+    const formattedStateUuids = stateUuids.map(uuid => `'${uuid}'`).join(",");
 
     const commissionsWhereClause =
       commissionUuids.length === 0 ? "IS NULL" : `IN (${formattedCommissionUuids})`;
 
     const rolesWhereClause = roleUuids.length === 0 ? "IS NULL" : `IN (${formattedRoleUuids})`;
+
+    const statesWhereClause = stateUuids.length === 0 ? "IS NULL" : `IN (${formattedStateUuids})`;
 
     const query = `
       SELECT DISTINCT "Volunteers".uuid as uuid, "Volunteers".*
@@ -38,6 +45,7 @@ export class VolunteerRepository {
       LEFT JOIN "VolunteerRoles" ON "VolunteerRoles"."volunteerUuid" = "Volunteers"."uuid"
       WHERE "VolunteerCommissions"."commissionUuid" ${commissionsWhereClause}
       AND "VolunteerRoles"."roleUuid" ${rolesWhereClause}
+      AND "Volunteers"."stateUuid" ${statesWhereClause}
     `;
 
     const results: IVolunteerAttributes[] = await this.repository.query(query);
@@ -62,11 +70,12 @@ export class VolunteerRepository {
   }
 }
 
-const defaultFindOptions = { commissionUuids: [], roleUuids: [] };
+const defaultFindOptions = { commissionUuids: [], roleUuids: [], stateUuids: [] };
 
 interface IFindOptions {
   commissionUuids?: string[];
   roleUuids?: string[];
+  stateUuids?: string[];
 }
 
 export const volunteerRepository = () => new VolunteerRepository(getManager());
