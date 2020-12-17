@@ -33,6 +33,7 @@ export const VolunteerGenerator = {
       graduationYear: "2016",
       country: "Argentina",
       notes: "Notes",
+      pronoun: "They",
       stateUuid: stateUuid || UuidGenerator.generate()
     };
   },
