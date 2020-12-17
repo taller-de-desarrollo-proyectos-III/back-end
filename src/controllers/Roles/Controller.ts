@@ -9,8 +9,8 @@ import { roleRepository } from "../../models/Role";
 export const RolesController = {
   create: async (request: IPostRequest<ICreateProps>, response: Response) => {
     try {
-      const { name } = request.body;
-      const role = new Role({ name });
+      const { name, description } = request.body;
+      const role = new Role({ name, description });
       await roleRepository().insert(role);
       return response.status(StatusCodes.CREATED).json(role);
     } catch (error) {
@@ -33,8 +33,8 @@ export const RolesController = {
   },
   update: async (request: IPostRequest<IUpdateProps>, response: Response) => {
     try {
-      const { uuid, name } = request.body;
-      const role = new Role({ uuid, name });
+      const { uuid, name, description } = request.body;
+      const role = new Role({ uuid, name, description });
       await roleRepository().save(role);
       return response.status(StatusCodes.CREATED).json(role);
     } catch (error) {

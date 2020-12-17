@@ -9,12 +9,12 @@ import { stateRepository } from "../../../src/models/State";
 import { VolunteerGenerator } from "../../Generators/Volunteer";
 
 describe("VolunteerSerializer", () => {
-  const firstCommission = new Commission({ name: "Commission A" });
-  const secondCommission = new Commission({ name: "Commission B" });
+  const firstCommission = new Commission({ name: "Commission A", description: "Commission A" });
+  const secondCommission = new Commission({ name: "Commission B", description: "Commission B" });
   const commissions = [firstCommission, secondCommission];
 
-  const firstRole = new Role({ name: "Role A" });
-  const secondRole = new Role({ name: "Role B" });
+  const firstRole = new Role({ name: "Role A", description: "Role A" });
+  const secondRole = new Role({ name: "Role B", description: "Role B" });
   const roles = [firstRole, secondRole];
 
   const firstState = new State({ name: "State A" });

@@ -9,8 +9,8 @@ import { commissionRepository } from "../../models/Commission";
 export const CommissionsController = {
   create: async (request: IPostRequest<ICreateProps>, response: Response) => {
     try {
-      const { name } = request.body;
-      const commission = new Commission({ name });
+      const { name, description } = request.body;
+      const commission = new Commission({ name, description });
       await commissionRepository().create(commission);
       return response.status(StatusCodes.CREATED).json(commission);
     } catch (error) {
@@ -33,8 +33,8 @@ export const CommissionsController = {
   },
   update: async (request: IPostRequest<IUpdateProps>, response: Response) => {
     try {
-      const { uuid, name } = request.body;
-      const commission = new Commission({ uuid, name });
+      const { uuid, name, description } = request.body;
+      const commission = new Commission({ uuid, name, description });
       await commissionRepository().save(commission);
       return response.status(StatusCodes.CREATED).json(commission);
     } catch (error) {

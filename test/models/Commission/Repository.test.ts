@@ -13,14 +13,14 @@ describe("CommissionRepository", () => {
   });
 
   it("saves a commission model on the database", async () => {
-    const commission = new Commission({ name: "Commission A" });
+    const commission = new Commission({ name: "Commission A", description: "Commission A" });
     await commissionRepository().create(commission);
     expect(await commissionRepository().findByUuid(commission.uuid)).toEqual(commission);
   });
 
   it("finds all commissions by a list of uuids", async () => {
-    const firstCommission = new Commission({ name: "Commission A" });
-    const secondCommission = new Commission({ name: "Commission B" });
+    const firstCommission = new Commission({ name: "Commission A", description: "Commission A" });
+    const secondCommission = new Commission({ name: "Commission B", description: "Commission B" });
     await commissionRepository().create(firstCommission);
     await commissionRepository().create(secondCommission);
     const commissions = [firstCommission, secondCommission];
@@ -31,21 +31,21 @@ describe("CommissionRepository", () => {
   });
 
   it("throws an error if the commission does not exist", async () => {
-    const commission = new Commission({ name: "Commission B" });
+    const commission = new Commission({ name: "Commission B", description: "Commission B" });
     await expect(commissionRepository().findByUuid(commission.uuid)).rejects.toThrow(
       CommissionNotFoundError
     );
   });
 
   it("throws an error when trying to insert a duplicated commission", async () => {
-    const commission = new Commission({ name: "Commission C" });
+    const commission = new Commission({ name: "Commission C", description: "Commission C" });
     await commissionRepository().create(commission);
     await expect(commissionRepository().create(commission)).rejects.toThrow(QueryFailedError);
   });
 
   it("throws an error when trying to insert a commission with an existing name", async () => {
-    const commission = new Commission({ name: "Commission C" });
-    const anotherCommission = new Commission({ name: "Commission C" });
+    const commission = new Commission({ name: "Commission C", description: "Commission C" });
+    const anotherCommission = new Commission({ name: "Commission C", description: "Commission C" });
     await commissionRepository().create(commission);
     const matcher = expect(commissionRepository().create(anotherCommission));
     await matcher.rejects.toThrow(QueryFailedError);
@@ -55,8 +55,8 @@ describe("CommissionRepository", () => {
   });
 
   it("removes all entries from Commission table", async () => {
-    const firstCommission = new Commission({ name: "Commission A" });
-    const secondCommission = new Commission({ name: "Commission B" });
+    const firstCommission = new Commission({ name: "Commission A", description: "Commission A" });
+    const secondCommission = new Commission({ name: "Commission B", description: "Commission B" });
     await commissionRepository().create(firstCommission);
     await commissionRepository().create(secondCommission);
 
@@ -70,8 +70,8 @@ describe("CommissionRepository", () => {
 
   describe("findByVolunteer", () => {
     it("finds all commission from the given volunteer", async () => {
-      const firstCommission = new Commission({ name: "first" });
-      const secondCommission = new Commission({ name: "second" });
+      const firstCommission = new Commission({ name: "first", description: "first" });
+      const secondCommission = new Commission({ name: "second", description: "second" });
       await commissionRepository().create(firstCommission);
       await commissionRepository().create(secondCommission);
       const commissions = [firstCommission, secondCommission];
@@ -102,7 +102,7 @@ describe("CommissionRepository", () => {
 
   describe("update", () => {
     it("updates commission name", async () => {
-      const commission = new Commission({ name: "Communication" });
+      const commission = new Commission({ name: "Communication", description: "Communication" });
       const attributeName = "name";
       const value = "newName";
       await commissionRepository().create(commission);

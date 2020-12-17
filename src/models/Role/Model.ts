@@ -6,9 +6,10 @@ import { InvalidAttributeFormatError } from "../Errors/InvalidAttributeFormatErr
 
 @Entity({ name: "Roles" })
 export class Role {
-  constructor({ uuid, name }: IRoleAttributes) {
+  constructor({ uuid, name, description }: IRoleAttributes) {
     this.uuid = uuid || UuidGenerator.generate();
     this.name = name;
+    this.description = description;
     this.validate();
   }
 
@@ -17,6 +18,9 @@ export class Role {
 
   @Column()
   public name: string;
+
+  @Column()
+  public description: string;
 
   public validate() {
     if (!isDefined(this.uuid)) throw new AttributeNotDefinedError("uuid");
@@ -29,4 +33,5 @@ export class Role {
 interface IRoleAttributes {
   uuid?: string;
   name: string;
+  description: string;
 }
