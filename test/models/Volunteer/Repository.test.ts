@@ -10,15 +10,15 @@ import { roleRepository } from "../../../src/models/Role";
 import { UuidGenerator } from "../../../src/models/UuidGenerator";
 
 describe("VolunteerRepository", () => {
-  const commissionA = new Commission({ name: "Commission A" });
-  const commissionB = new Commission({ name: "Commission B" });
-  const commissionC = new Commission({ name: "Commission C" });
-  const commissionD = new Commission({ name: "Commission D" });
+  const commissionA = new Commission({ name: "Commission A", description: "Commission A" });
+  const commissionB = new Commission({ name: "Commission B", description: "Commission B" });
+  const commissionC = new Commission({ name: "Commission C", description: "Commission C" });
+  const commissionD = new Commission({ name: "Commission D", description: "Commission D" });
 
-  const roleA = new Role({ name: "Role A" });
-  const roleB = new Role({ name: "Role B" });
-  const roleC = new Role({ name: "Role C" });
-  const roleD = new Role({ name: "Role D" });
+  const roleA = new Role({ name: "Role A", description: "Role A" });
+  const roleB = new Role({ name: "Role B", description: "Role B" });
+  const roleC = new Role({ name: "Role C", description: "Role C" });
+  const roleD = new Role({ name: "Role D", description: "Role D" });
 
   const stateA = new State({ name: "State A" });
   const stateB = new State({ name: "State B" });

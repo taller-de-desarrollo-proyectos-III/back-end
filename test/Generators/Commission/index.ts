@@ -8,7 +8,10 @@ export const CommissionGenerator = {
     return CommissionGenerator.index;
   },
   instance: async () => {
-    const commission = new Commission({ name: `name${CommissionGenerator.getIndex()}` });
+    const commission = new Commission({
+      name: `name${CommissionGenerator.getIndex()}`,
+      description: "Commission A"
+    });
     await commissionRepository().create(commission);
     return commissionRepository().findByUuid(commission.uuid);
   }

@@ -7,14 +7,14 @@ describe("RoleRepository", () => {
   beforeEach(() => roleRepository().truncate());
 
   it("saves a role model on the database", async () => {
-    const role = new Role({ name: "Role A" });
+    const role = new Role({ name: "Role A", description: "Role A" });
     await roleRepository().insert(role);
     expect(await roleRepository().findByUuid(role.uuid)).toEqual(role);
   });
 
   it("finds all roles by a list of uuids", async () => {
-    const firstRoles = new Role({ name: "Role A" });
-    const secondRoles = new Role({ name: "Role B" });
+    const firstRoles = new Role({ name: "Role A", description: "Role A" });
+    const secondRoles = new Role({ name: "Role B", description: "Role B" });
     await roleRepository().insert(firstRoles);
     await roleRepository().insert(secondRoles);
     const roles = [firstRoles, secondRoles];
@@ -23,19 +23,19 @@ describe("RoleRepository", () => {
   });
 
   it("throws an error if the role does not exist", async () => {
-    const role = new Role({ name: "Role B" });
+    const role = new Role({ name: "Role B", description: "Role B" });
     await expect(roleRepository().findByUuid(role.uuid)).rejects.toThrow(RoleNotFoundError);
   });
 
   it("throws an error when trying to insert a duplicated role", async () => {
-    const role = new Role({ name: "Role C" });
+    const role = new Role({ name: "Role C", description: "Role C" });
     await roleRepository().insert(role);
     await expect(roleRepository().insert(role)).rejects.toThrow(QueryFailedError);
   });
 
   it("throws an error when trying to insert a role with an existing name", async () => {
-    const role = new Role({ name: "Role C" });
-    const anotherRole = new Role({ name: "Role C" });
+    const role = new Role({ name: "Role C", description: "Role C" });
+    const anotherRole = new Role({ name: "Role C", description: "Role C" });
     await roleRepository().insert(role);
     const matcher = expect(roleRepository().insert(anotherRole));
     await matcher.rejects.toThrow(QueryFailedError);
@@ -43,8 +43,8 @@ describe("RoleRepository", () => {
   });
 
   it("removes all entries from Role table", async () => {
-    const firstRole = new Role({ name: "Role A" });
-    const secondRole = new Role({ name: "Role B" });
+    const firstRole = new Role({ name: "Role A", description: "Role A" });
+    const secondRole = new Role({ name: "Role B", description: "Role B" });
     await roleRepository().insert(firstRole);
     await roleRepository().insert(secondRole);
 
@@ -58,7 +58,7 @@ describe("RoleRepository", () => {
 
   describe("update", () => {
     it("updates role's name", async () => {
-      const role = new Role({ name: "Administrator" });
+      const role = new Role({ name: "Administrator", description: "Administrator" });
       const newName = "newName";
       role.name = newName;
       await roleRepository().save(role);

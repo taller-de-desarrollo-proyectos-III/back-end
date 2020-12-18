@@ -15,13 +15,13 @@ import { roleRepository } from "../../../src/models/Role";
 import { stateRepository } from "../../../src/models/State";
 
 describe("VolunteersController", () => {
-  const firstCommission = new Commission({ name: "Commission A" });
-  const secondCommission = new Commission({ name: "Commission B" });
+  const firstCommission = new Commission({ name: "Commission A", description: "Commission A" });
+  const secondCommission = new Commission({ name: "Commission B", description: "Commission B" });
   const commissions = [firstCommission, secondCommission];
   const commissionUuids = commissions.map(({ uuid }) => uuid);
 
-  const firstRole = new Role({ name: "Role A" });
-  const secondRole = new Role({ name: "Role B" });
+  const firstRole = new Role({ name: "Role A", description: "Role A" });
+  const secondRole = new Role({ name: "Role B", description: "Role B" });
   const roles = [firstRole, secondRole];
   const roleUuids = roles.map(({ uuid }) => uuid);
 

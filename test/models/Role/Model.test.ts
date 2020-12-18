@@ -5,7 +5,7 @@ import { AttributeNotDefinedError, InvalidAttributeFormatError } from "../../../
 
 describe("Role", () => {
   it("creates a valid role model with its uuid generated", async () => {
-    const attributes = { name: "Role A" };
+    const attributes = { name: "Role A", description: "Role A" };
     const role = new Role(attributes);
     expect(role).toEqual({
       uuid: expect.stringMatching(UUID_REGEX),
@@ -14,20 +14,26 @@ describe("Role", () => {
   });
 
   it("throws an error if no name is provided", async () => {
-    expect(() => new Role({ name: undefined as any })).toThrow(AttributeNotDefinedError);
+    expect(() => new Role({ name: undefined as any, description: "Role A" })).toThrow(
+      AttributeNotDefinedError
+    );
   });
 
   it("throws an error if name is an empty string", async () => {
-    expect(() => new Role({ name: "" })).toThrow(AttributeNotDefinedError);
+    expect(() => new Role({ name: "", description: "Role A" })).toThrow(AttributeNotDefinedError);
   });
 
   it("throws an error if no uuid is generated", () => {
     jest.spyOn(UuidGenerator, "generate").mockReturnValueOnce(undefined as any);
-    expect(() => new Role({ name: "Role B" })).toThrow(AttributeNotDefinedError);
+    expect(() => new Role({ name: "Role B", description: "Role B" })).toThrow(
+      AttributeNotDefinedError
+    );
   });
 
   it("throws an error if uuid has invalid format", () => {
     jest.spyOn(UuidGenerator, "generate").mockReturnValueOnce("invalidUuidFormat");
-    expect(() => new Role({ name: "Role C" })).toThrow(InvalidAttributeFormatError);
+    expect(() => new Role({ name: "Role C", description: "Role C" })).toThrow(
+      InvalidAttributeFormatError
+    );
   });
 });

@@ -8,7 +8,7 @@ export const RoleGenerator = {
     return RoleGenerator.index;
   },
   instance: async () => {
-    const role = new Role({ name: `name${RoleGenerator.getIndex()}` });
+    const role = new Role({ name: `name${RoleGenerator.getIndex()}`, description: "Role A" });
     await roleRepository().insert(role);
     return role;
   }

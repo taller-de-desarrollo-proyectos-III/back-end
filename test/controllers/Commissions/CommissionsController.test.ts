@@ -11,8 +11,8 @@ import { CommissionGenerator } from "../../Generators/Commission";
 import { omit } from "lodash";
 
 describe("CommissionsController", () => {
-  const firstCommission = new Commission({ name: "Commission A" });
-  const secondCommission = new Commission({ name: "Commission B" });
+  const firstCommission = new Commission({ name: "Commission A", description: "Commission A" });
+  const secondCommission = new Commission({ name: "Commission B", description: "Commission B" });
   const commissions = [firstCommission, secondCommission];
 
   beforeEach(async () => commissionRepository().truncate());
@@ -111,10 +111,14 @@ describe("CommissionsController", () => {
 
     it("creates two commissions and expect them to be in the database", async () => {
       let response;
-      response = await testClient.post(CommissionsRoutes.path).send({ name: "commission A" });
+      response = await testClient
+        .post(CommissionsRoutes.path)
+        .send({ name: "commission A", description: "commission A" });
       expect(response.status).toEqual(StatusCodes.CREATED);
       const commissionA = response.body;
-      response = await testClient.post(CommissionsRoutes.path).send({ name: "commission B" });
+      response = await testClient
+        .post(CommissionsRoutes.path)
+        .send({ name: "commission B", description: "commission B" });
       expect(response.status).toEqual(StatusCodes.CREATED);
       const commissionB = response.body;
 

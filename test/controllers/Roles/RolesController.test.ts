@@ -11,8 +11,8 @@ import { RoleGenerator } from "../../Generators/Role";
 import { omit } from "lodash";
 
 describe("RolesController", () => {
-  const firstRole = new Role({ name: "Role A" });
-  const secondRole = new Role({ name: "Role B" });
+  const firstRole = new Role({ name: "Role A", description: "Role A" });
+  const secondRole = new Role({ name: "Role B", description: "Role B" });
   const roles = [firstRole, secondRole];
 
   beforeEach(async () => roleRepository().truncate());
@@ -110,10 +110,14 @@ describe("RolesController", () => {
 
     it("creates two roles and expect them to be in the database", async () => {
       let response;
-      response = await testClient.post(RolesRoutes.path).send({ name: "role A" });
+      response = await testClient
+        .post(RolesRoutes.path)
+        .send({ name: "role A", description: "role A" });
       expect(response.status).toEqual(StatusCodes.CREATED);
       const roleA = response.body;
-      response = await testClient.post(RolesRoutes.path).send({ name: "role B" });
+      response = await testClient
+        .post(RolesRoutes.path)
+        .send({ name: "role B", description: "role B" });
       expect(response.status).toEqual(StatusCodes.CREATED);
       const roleB = response.body;
 
