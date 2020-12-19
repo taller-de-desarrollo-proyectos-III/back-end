@@ -20,6 +20,7 @@ export interface ICreateProps {
   graduationYear?: string;
   country?: string;
   notes?: string;
+  pronoun?: string;
   commissionUuids?: TCommissionUuids;
   roleUuids?: TRoleUuids;
   stateUuid: string;

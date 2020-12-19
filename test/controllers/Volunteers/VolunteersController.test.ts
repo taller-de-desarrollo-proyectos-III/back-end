@@ -472,6 +472,10 @@ describe("VolunteersController", () => {
       await expectToUpdateAttribute("notes", "New notes");
     });
 
+    it("updates volunteers' pronoun", async () => {
+      await expectToUpdateAttribute("pronoun", "They");
+    });
+
     it("returns an error if no name is provided", async () => {
       await expectAttributeNotDefinedError("name");
     });

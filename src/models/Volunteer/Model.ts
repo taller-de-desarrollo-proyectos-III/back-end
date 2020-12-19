@@ -45,6 +45,9 @@ export class Volunteer {
   @Column()
   public stateUuid: string;
 
+  @Column()
+  public pronoun?: string;
+
   constructor(attributes: IVolunteerAttributes) {
     this.setUuid(attributes.uuid || UuidGenerator.generate());
     this.setDni(attributes.dni);
@@ -59,6 +62,7 @@ export class Volunteer {
     this.country = attributes.country;
     this.notes = attributes.notes;
     this.setStateUuid(attributes.stateUuid);
+    this.pronoun = attributes.pronoun;
   }
 
   private setUuid(uuid: string) {
@@ -128,4 +132,5 @@ export interface IVolunteerAttributes {
   country?: string;
   notes?: string;
   stateUuid: string;
+  pronoun?: string;
 }

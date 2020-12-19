@@ -124,6 +124,10 @@ describe("VolunteerRepository", () => {
     it("updates volunteer notes", async () => {
       await expectToUpdateAttribute("notes", "New notes");
     });
+
+    it("updates volunteer pronoun", async () => {
+      await expectToUpdateAttribute("pronoun", "They");
+    });
   });
 
   describe("find", () => {
