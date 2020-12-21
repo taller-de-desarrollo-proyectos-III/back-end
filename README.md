@@ -15,10 +15,7 @@ This project has Node.js as a server-side and React as front-end framework to cr
 
 ## API documentation
 
-- Volunteers: [API Volunteers](/Documentation/APIVolunteers.html)
-- Commissions: [API Commissions](/Documentation/APICommissions.html)
-- Roles: [API Roles](/Documentation/APIRoles.html)
-- States: [API States](/Documentation/APIStates.html)
+- You can see the document [here](/Documentation/APIdocumentation.pdf)
 
 ## ORM with TypeORM
 
