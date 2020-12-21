@@ -58,7 +58,9 @@ yarn dev
 
 The page will reload if you make edits.
 
-### Prettier
+### Code formatter
+
+For time saving and good practices, we use [prettier](https://prettier.io/). You only need to run the following instruction:
 
 ```bash
 yarn format:all
