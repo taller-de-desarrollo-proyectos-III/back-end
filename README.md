@@ -9,23 +9,48 @@
 
 - Website: https://tdp3-backend.herokuapp.com
 
-## Install Tools
+## Documentation
+
+This project has Node.js as a server-side and React as front-end framework to create the UI.
+
+## API documentation
+
+- Volunteers: [API Volunteers](/Documentation/APIVolunteers.html)
+- Commissions: [API Commissions](/Documentation/APICommissions.html)
+- Roles: [API Roles](/Documentation/APIRoles.html)
+- States: [API States](/Documentation/APIStates.html)
+
+## ORM with TypeORM
+
+- Using [Data Mapper Pattern](https://typeorm.io/#/active-record-data-mapper/what-is-the-data-mapper-pattern)
+
+## Database
+
+- PostgreSQL v12.1
+
+## Deployment
+
+- Using Node.js buildpack.
+
+## Available scripts
+
+### Install Tools
 
 - **`nvm`**: You can follow the following [instructions](https://github.com/nvm-sh/nvm)
 - **`yarn`**: You can follow the following [instructions](https://classic.yarnpkg.com/en/docs/install/#debian-stable)
 - **`node`**: `nvm install 12.14.0`
 
-### Set node version
+#### Set node version
 
 Stand on the repository root and execute: `nvm use`
 
-## Install dependencies
+### Install dependencies
 
 ```bash
 yarn install
 ```
 
-## Run server in development mode
+### Run server in development mode
 
 Runs the app in the development mode.
 Open [http://localhost:5000](http://localhost:5000) to view it in the browser.
@@ -36,19 +61,25 @@ yarn dev
 
 The page will reload if you make edits.
 
-## Tests
+### Prettier
+
+```bash
+yarn format:all
+```
+
+### Tests
 
 ```bash
 yarn test
 ```
 
-## Linter
+### Linter
 
 ```bash
 yarn lint
 ```
 
-## Javascript Compilation
+### Javascript Compilation
 
 Builds the app for production to the `build` folder.
 
@@ -56,9 +87,9 @@ Builds the app for production to the `build` folder.
 yarn build
 ```
 
-## Database
+### Database
 
-### Development setup
+#### Development setup
 
 - Runs the database container in the background:
 
@@ -78,9 +109,9 @@ yarn db:up
 yarn db:stop
 ```
 
-### Connections
+#### Connections
 
-#### Create
+##### Create
 
 - Creates the current NODE_ENV stage database
 
@@ -94,7 +125,7 @@ yarn db:create
 yarn db:test:create
 ```
 
-#### Migrate
+##### Migrate
 
 - Migrates the current NODE_ENV stage database
 
@@ -108,7 +139,7 @@ yarn db:migrate
 yarn db:test:migrate
 ```
 
-#### Drop
+##### Drop
 
 - Drops the current NODE_ENV stage database
 
@@ -122,7 +153,7 @@ yarn db:drop
 yarn db:test:drop
 ```
 
-#### Shortcut
+##### Shortcut
 
 - Drops, creates and migrates the current NODE_ENV stage and test database
 
