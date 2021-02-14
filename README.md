@@ -5,10 +5,6 @@
 - Build: [![Build Status](https://travis-ci.com/taller-de-desarrollo-proyectos-III/back-end.svg?branch=main)](https://travis-ci.com/taller-de-desarrollo-proyectos-III/back-end)
 - Website: https://nahual-datos-voluntaries.herokuapp.com/
 
-## Staging
-
-- Website: https://tdp3-backend.herokuapp.com
-
 ## Documentation
 
 This project has Node.js as a server-side and React as front-end framework to create the UI.
